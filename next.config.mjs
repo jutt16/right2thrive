@@ -9,7 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // distDir: 'build',
+  output: 'export', // ✅ This tells Next.js to generate static HTML
+  trailingSlash: true, // Optional: for better compatibility with some shared hosts
 }
 
 export default nextConfig
