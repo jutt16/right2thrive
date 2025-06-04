@@ -13,7 +13,7 @@ export default function Home() {
           <div className="grid gap-8 md:grid-cols-2 md:items-center">
             <div className="space-y-6">
               <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-                Right 2Thrive
+                Right 2Thrive UK
               </h1>
               <p className="text-lg text-gray-300">
                 Cultural Wellbeing Hub - Building Communities That Thrive, Not
