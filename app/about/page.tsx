@@ -6,12 +6,12 @@ export default function About() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="bg-[#2c261f] py-20 text-white">
+      <section className="bg-[#00990d] py-20 text-white">
         <div className="container mx-auto px-4">
           <div className="grid gap-8 md:grid-cols-2 md:items-center">
             <div className="space-y-6">
               <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-                RIGHT 2 THRIVE UK
+                Right2Thrive UK
               </h1>
               <p className="text-xl text-gray-300">
                 Cultural Wellbeing Hub - Building Communities That Thrive, Not
@@ -35,7 +35,7 @@ export default function About() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <h2 className="mb-4 text-3xl font-bold text-[#2c261f]">About Us</h2>
+            <h2 className="mb-4 text-3xl font-bold text-[#ff961b]">About Us</h2>
           </div>
           <div className="mx-auto max-w-4xl text-lg text-gray-700 space-y-6 text-left">
             <p>
@@ -78,7 +78,7 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-[#2c261f] py-16 text-white">
+      <section className="bg-[#00990d] py-16 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="mb-6 text-3xl font-bold">Join Our Mission</h2>
           <p className="mx-auto mb-8 max-w-2xl text-gray-300">
@@ -87,14 +87,14 @@ export default function About() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/wellbeing-hub">
-              <Button className="bg-teal-500 text-white hover:bg-teal-600">
+              <Button className="bg-blue-500 text-white hover:bg-blue-600">
                 Access Wellbeing Hub
               </Button>
             </Link>
             <Link href="/contact">
               <Button
                 variant="outline"
-                className="border-teal-500 text-white hover:bg-teal-500 hover:text-white"
+                className="border-orange-500 text-white hover:bg-orange-500 hover:text-white"
               >
                 Contact Us
               </Button>

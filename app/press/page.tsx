@@ -14,7 +14,7 @@ export default function PressRelease() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#2c261f]">Press Release</h1>
+        <h1 className="text-3xl font-bold text-[#ff961b]">Press Release</h1>
         <p className="text-gray-600">
           Latest news and announcements from Right2Thrive UK
         </p>
@@ -28,7 +28,7 @@ export default function PressRelease() {
               <Calendar className="h-4 w-4" />
               <span>3rd June 2025</span>
             </div>
-            <CardTitle className="text-2xl font-bold text-[#2c261f]">
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">
               Launch of the Right2Thrive UK Wellbeing Platform on the 17th July 2025
             </CardTitle>
             <CardDescription>
@@ -52,7 +52,7 @@ export default function PressRelease() {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <Button className="flex items-center bg-[#2c261f] text-white hover:bg-[#3c362f]">
+              <Button className="flex items-center bg-[#00990d] text-white hover:bg-[#3c362f]">
                 <Download className="mr-2 h-4 w-4" />
                 Download Press Release
               </Button>
@@ -67,7 +67,7 @@ export default function PressRelease() {
 
       {/* Resources for Media */}
       <section>
-        <h2 className="mb-6 text-2xl font-bold text-[#2c261f]">
+        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
           Resources for Media
         </h2>
         <div className="grid gap-6 md:grid-cols-3">

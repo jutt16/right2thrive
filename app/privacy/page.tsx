@@ -6,19 +6,19 @@ export default function PrivacyPolicy() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Link href="/">
-        <Button variant="ghost" className="mb-4 flex items-center text-[#2c261f]">
+        <Button variant="ghost" className="mb-4 flex items-center text-[#ff961b]">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Home
         </Button>
       </Link>
 
       <div className="mx-auto max-w-3xl">
-        <h1 className="mb-6 text-3xl font-bold text-[#2c261f]">Privacy Policy</h1>
+        <h1 className="mb-6 text-3xl font-bold text-[#ff961b]">Privacy Policy</h1>
         <div className="space-y-6 text-gray-700">
           <p>Last Updated: May 15, 2025</p>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">1. Introduction</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">1. Introduction</h2>
             <p>
               Right2Thrive UK ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy
               explains how we collect, use, disclose, and safeguard your information when you use our website, Veris
@@ -31,9 +31,9 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">2. Information We Collect</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">2. Information We Collect</h2>
             <p>We may collect the following types of information:</p>
-            <h3 className="mt-4 text-lg font-medium text-[#2c261f]">2.1 Personal Information</h3>
+            <h3 className="mt-4 text-lg font-medium text-[#ff961b]">2.1 Personal Information</h3>
             <p>Personal information is data that can be used to identify you directly or indirectly. We may collect:</p>
             <ul className="ml-6 list-disc space-y-2">
               <li>Contact information (name, email address, phone number)</li>
@@ -42,7 +42,7 @@ export default function PrivacyPolicy() {
               <li>Health information (mental health assessment responses, wellbeing data)</li>
             </ul>
 
-            <h3 className="mt-4 text-lg font-medium text-[#2c261f]">2.2 Usage Information</h3>
+            <h3 className="mt-4 text-lg font-medium text-[#ff961b]">2.2 Usage Information</h3>
             <p>We may collect information about how you use our Services, including:</p>
             <ul className="ml-6 list-disc space-y-2">
               <li>Log data (IP address, browser type, pages visited, time spent)</li>
@@ -52,7 +52,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">3. How We Use Your Information</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">3. How We Use Your Information</h2>
             <p>We may use the information we collect for various purposes, including to:</p>
             <ul className="ml-6 list-disc space-y-2">
               <li>Provide, maintain, and improve our Services</li>
@@ -67,7 +67,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">4. How We Share Your Information</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">4. How We Share Your Information</h2>
             <p>We may share your information with the following categories of third parties:</p>
             <ul className="ml-6 list-disc space-y-2">
               <li>
@@ -91,7 +91,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">5. Data Security</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">5. Data Security</h2>
             <p>
               We have implemented appropriate technical and organizational security measures designed to protect the
               security of any personal information we process. However, please also remember that we cannot guarantee
@@ -100,7 +100,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">6. Your Data Protection Rights</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">6. Your Data Protection Rights</h2>
             <p>Depending on your location, you may have the following rights regarding your personal information:</p>
             <ul className="ml-6 list-disc space-y-2">
               <li>The right to access the personal information we hold about you</li>
@@ -118,7 +118,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">7. Children's Privacy</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">7. Children's Privacy</h2>
             <p>
               Our Services are not intended for children under the age of 16. We do not knowingly collect personal
               information from children under 16. If you are a parent or guardian and believe that your child has
@@ -127,7 +127,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">8. Changes to This Privacy Policy</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">8. Changes to This Privacy Policy</h2>
             <p>
               We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new
               Privacy Policy on this page and updating the "Last Updated" date at the top of this Privacy Policy.
@@ -139,7 +139,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold text-[#2c261f]">9. Contact Us</h2>
+            <h2 className="text-xl font-semibold text-[#ff961b]">9. Contact Us</h2>
             <p>If you have any questions about this Privacy Policy, please contact us at:</p>
             <p>
               Right2Thrive UK

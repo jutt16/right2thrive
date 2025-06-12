@@ -10,7 +10,7 @@ export default function Blog() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#2c261f]">Blog</h1>
+        <h1 className="text-3xl font-bold text-[#ff961b]">Blog</h1>
         <p className="text-gray-600">
           Insights, resources, and stories about mental health and culturally responsive wellbeing
         </p>
@@ -51,7 +51,7 @@ export default function Blog() {
                   <span>Dr. Emma Johnson</span>
                 </div>
               </div>
-              <CardTitle className="mb-4 text-2xl font-bold text-[#2c261f]">
+              <CardTitle className="mb-4 text-2xl font-bold text-[#ff961b]">
                 Cultural Competence in Mental Health: Why It Matters
               </CardTitle>
               <CardDescription className="mb-4 text-base">
@@ -59,7 +59,7 @@ export default function Blog() {
                 improve outcomes for diverse communities.
               </CardDescription>
               <Link href="/blog/cultural-competence-in-mental-health">
-                <Button className="bg-[#2c261f] text-white hover:bg-[#3c362f]">
+                <Button className="bg-[#00990d] text-white hover:bg-[#3c362f]">
                   Read Article
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -71,7 +71,7 @@ export default function Blog() {
 
       {/* Recent Articles */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-bold text-[#2c261f]">Recent Articles</h2>
+        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">Recent Articles</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card className="border-2 border-teal-100">
             <div className="relative h-48 w-full">
@@ -101,7 +101,7 @@ export default function Blog() {
             </CardHeader>
             <CardFooter>
               <Link href="/blog/understanding-gad7-phq9" className="w-full">
-                <Button variant="ghost" className="w-full text-teal-600 hover:text-teal-700">
+                <Button variant="ghost" className="w-full text-orange-600 hover:text-teal-700">
                   Read More
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -137,7 +137,7 @@ export default function Blog() {
             </CardHeader>
             <CardFooter>
               <Link href="/blog/traditional-healing-practices" className="w-full">
-                <Button variant="ghost" className="w-full text-teal-600 hover:text-teal-700">
+                <Button variant="ghost" className="w-full text-orange-600 hover:text-teal-700">
                   Read More
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -173,7 +173,7 @@ export default function Blog() {
             </CardHeader>
             <CardFooter>
               <Link href="/blog/supporting-young-people" className="w-full">
-                <Button variant="ghost" className="w-full text-teal-600 hover:text-teal-700">
+                <Button variant="ghost" className="w-full text-orange-600 hover:text-teal-700">
                   Read More
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -185,7 +185,7 @@ export default function Blog() {
 
       {/* More Articles */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-bold text-[#2c261f]">More Articles</h2>
+        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">More Articles</h2>
         <div className="space-y-6">
           <Card>
             <div className="grid md:grid-cols-4">
@@ -208,7 +208,7 @@ export default function Blog() {
                     <span>Dr. Robert Chen</span>
                   </div>
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-[#2c261f]">
+                <h3 className="mb-2 text-lg font-bold text-[#ff961b]">
                   Culturally Adapted Mindfulness Techniques for Anxiety
                 </h3>
                 <p className="mb-4 text-gray-600">
@@ -216,7 +216,7 @@ export default function Blog() {
                   and promote mental wellbeing.
                 </p>
                 <Link href="/blog/mindfulness-techniques">
-                  <Button variant="ghost" className="text-teal-600 hover:text-teal-700">
+                  <Button variant="ghost" className="text-orange-600 hover:text-teal-700">
                     Read More
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -246,7 +246,7 @@ export default function Blog() {
                     <span>Olivia Parker</span>
                   </div>
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-[#2c261f]">
+                <h3 className="mb-2 text-lg font-bold text-[#ff961b]">
                   The Role of Community in Mental Health Support
                 </h3>
                 <p className="mb-4 text-gray-600">
@@ -254,7 +254,7 @@ export default function Blog() {
                   health recovery and resilience.
                 </p>
                 <Link href="/blog/community-support">
-                  <Button variant="ghost" className="text-teal-600 hover:text-teal-700">
+                  <Button variant="ghost" className="text-orange-600 hover:text-teal-700">
                     Read More
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -284,7 +284,7 @@ export default function Blog() {
                     <span>Daniel Lee</span>
                   </div>
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-[#2c261f]">
+                <h3 className="mb-2 text-lg font-bold text-[#ff961b]">
                   Digital Mental Health Tools: Benefits and Limitations
                 </h3>
                 <p className="mb-4 text-gray-600">
@@ -292,7 +292,7 @@ export default function Blog() {
                   culturally responsive and accessible.
                 </p>
                 <Link href="/blog/digital-mental-health">
-                  <Button variant="ghost" className="text-teal-600 hover:text-teal-700">
+                  <Button variant="ghost" className="text-orange-600 hover:text-teal-700">
                     Read More
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -304,7 +304,7 @@ export default function Blog() {
       </div>
 
       {/* Newsletter Signup */}
-      <div className="rounded-lg bg-[#2c261f] p-8 text-white">
+      <div className="rounded-lg bg-[#00990d] p-8 text-white">
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <h2 className="mb-2 text-2xl font-bold">Subscribe to Our Newsletter</h2>
@@ -319,11 +319,11 @@ export default function Blog() {
                 placeholder="Your email address"
                 className="rounded-r-none border-r-0 bg-white text-gray-900"
               />
-              <Button className="rounded-l-none bg-teal-500 hover:bg-teal-600">Subscribe</Button>
+              <Button className="rounded-l-none bg-blue-500 hover:bg-blue-600">Subscribe</Button>
             </div>
             <p className="text-xs text-gray-400">
               We respect your privacy. Unsubscribe at any time. See our{" "}
-              <Link href="/privacy" className="underline hover:text-teal-400">
+              <Link href="/privacy" className="underline hover:text-orange-400">
                 Privacy Policy
               </Link>
               .

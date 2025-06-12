@@ -4,7 +4,7 @@ import { Instagram, Twitter, Mail, Phone } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-[#2c261f] text-white">
+    <footer className="border-t bg-[#00990d] text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="flex flex-col items-center md:items-start">
@@ -16,13 +16,13 @@ export default function Footer() {
             <p className="text-sm text-gray-300">Together, we can create a safe, supportive environment where every young person and family has the opportunity to heal, grow, and thrive.</p>
             <div className="mt-4 flex space-x-4">
               <Link href="https://instagram.com/@Right2ThriveUK" target="_blank" rel="noopener noreferrer">
-                <Instagram className="h-5 w-5 text-white hover:text-teal-400" />
+                <Instagram className="h-5 w-5 text-white hover:text-orange-400" />
               </Link>
               <Link href="https://twitter.com/@Right2ThriveUK" target="_blank" rel="noopener noreferrer">
-                <Twitter className="h-5 w-5 text-white hover:text-teal-400" />
+                <Twitter className="h-5 w-5 text-white hover:text-orange-400" />
               </Link>
               <Link href="mailto:hello@right2thriveuk.com">
-                <Mail className="h-5 w-5 text-white hover:text-teal-400" />
+                <Mail className="h-5 w-5 text-white hover:text-orange-400" />
               </Link>
             </div>
           </div>
@@ -31,27 +31,27 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="hover:text-teal-400">
+                <Link href="/" className="hover:text-orange-400">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/cultural-activities" className="hover:text-teal-400">
+                <Link href="/cultural-activities" className="hover:text-orange-400">
                   Cultural Activities
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-teal-400">
+                <Link href="/blog" className="hover:text-orange-400">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="/wellbeing-hub" className="hover:text-teal-400">
+                <Link href="/wellbeing-hub" className="hover:text-orange-400">
                   Wellbeing Hub
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-teal-400">
+                <Link href="/about" className="hover:text-orange-400">
                   About Us
                 </Link>
               </li>
@@ -62,22 +62,22 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-semibold">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/wellbeing-hub/gad7" className="hover:text-teal-400">
+                <Link href="/wellbeing-hub/gad7" className="hover:text-orange-400">
                   GAD-7 Assessment
                 </Link>
               </li>
               <li>
-                <Link href="/wellbeing-hub/phq9" className="hover:text-teal-400">
+                <Link href="/wellbeing-hub/phq9" className="hover:text-orange-400">
                   PHQ-9 Assessment
                 </Link>
               </li>
               <li>
-                <Link href="/wellbeing-hub/resources" className="hover:text-teal-400">
+                <Link href="/wellbeing-hub/resources" className="hover:text-orange-400">
                   Mental Health Resources
                 </Link>
               </li>
               <li>
-                <Link href="/wellbeing-hub/support" className="hover:text-teal-400">
+                <Link href="/wellbeing-hub/support" className="hover:text-orange-400">
                   Support Services
                 </Link>
               </li>

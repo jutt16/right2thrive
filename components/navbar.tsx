@@ -73,12 +73,12 @@ export default function Navbar() {
   const AuthButtons = () => (
     <>
       <Link href="/auth/login">
-        <Button variant="outline" className="border-teal-500 text-teal-600 hover:bg-teal-500 hover:text-white">
+        <Button variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white">
           Login
         </Button>
       </Link>
       <Link href="/auth/signup">
-        <Button className="bg-teal-500 text-white hover:bg-teal-600">Sign Up</Button>
+        <Button className="bg-blue-500 text-white hover:bg-blue-600">Sign Up</Button>
       </Link>
     </>
   )
@@ -105,7 +105,7 @@ export default function Navbar() {
   )
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-[#2c261f] text-white">
+    <header className="sticky top-0 z-50 w-full border-b bg-[#00990d] text-white">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
           <Link href="/" className="flex items-center space-x-2">
@@ -116,32 +116,32 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:items-center md:space-x-6">
-          <Link href="/" className="text-sm font-medium transition-colors hover:text-teal-400">
+          <Link href="/" className="text-sm font-medium transition-colors hover:text-orange-400">
             Home
           </Link>
-          <Link href="/about" className="text-sm font-medium transition-colors hover:text-teal-400">
+          <Link href="/about" className="text-sm font-medium transition-colors hover:text-orange-400">
             About Us
           </Link>
-          <Link href="/cultural-activities" className="text-sm font-medium transition-colors hover:text-teal-400">
+          <Link href="/cultural-activities" className="text-sm font-medium transition-colors hover:text-orange-400">
             Cultural Activities
           </Link>
-          <Link href="/blog" className="text-sm font-medium transition-colors hover:text-teal-400">
+          <Link href="/blog" className="text-sm font-medium transition-colors hover:text-orange-400">
             Blog
           </Link>
-          <Link href="/wellbeing-hub" className="text-sm font-medium transition-colors hover:text-teal-400">
+          <Link href="/wellbeing-hub" className="text-sm font-medium transition-colors hover:text-orange-400">
             Wellbeing Hub
           </Link>
-          <Link href="/press" className="text-sm font-medium transition-colors hover:text-teal-400">
+          <Link href="/press" className="text-sm font-medium transition-colors hover:text-orange-400">
             Press Release
           </Link>
         </nav>
 
         <div className="hidden items-center space-x-4 md:flex">
           <Link href="https://instagram.com/@Right2ThriveUK" target="_blank" rel="noopener noreferrer">
-            <Instagram className="h-5 w-5 text-white hover:text-teal-400" />
+            <Instagram className="h-5 w-5 text-white hover:text-orange-400" />
           </Link>
           <Link href="https://twitter.com/@Right2ThriveUK" target="_blank" rel="noopener noreferrer">
-            <Twitter className="h-5 w-5 text-white hover:text-teal-400" />
+            <Twitter className="h-5 w-5 text-white hover:text-orange-400" />
           </Link>
           {isAuthenticated ? <ProfileMenu /> : <AuthButtons />}
         </div>
@@ -155,51 +155,51 @@ export default function Navbar() {
       {/* Mobile Navigation */}
       <div
         className={cn(
-          "absolute left-0 right-0 z-50 bg-[#2c261f] px-4 py-4 shadow-lg md:hidden",
+          "absolute left-0 right-0 z-50 bg-[#00990d] px-4 py-4 shadow-lg md:hidden",
           isMenuOpen ? "block" : "hidden",
         )}
       >
         <nav className="flex flex-col space-y-4">
-          <Link href="/" className="text-sm font-medium transition-colors hover:text-teal-400" onClick={toggleMenu}>
+          <Link href="/" className="text-sm font-medium transition-colors hover:text-orange-400" onClick={toggleMenu}>
             Home
           </Link>
           <Link
             href="/cultural-activities"
-            className="text-sm font-medium transition-colors hover:text-teal-400"
+            className="text-sm font-medium transition-colors hover:text-orange-400"
             onClick={toggleMenu}
           >
             Cultural Activities
           </Link>
-          <Link href="/blog" className="text-sm font-medium transition-colors hover:text-teal-400" onClick={toggleMenu}>
+          <Link href="/blog" className="text-sm font-medium transition-colors hover:text-orange-400" onClick={toggleMenu}>
             Blog
           </Link>
           <Link
             href="/wellbeing-hub"
-            className="text-sm font-medium transition-colors hover:text-teal-400"
+            className="text-sm font-medium transition-colors hover:text-orange-400"
             onClick={toggleMenu}
           >
             Wellbeing Hub
           </Link>
           <Link
             href="/about"
-            className="text-sm font-medium transition-colors hover:text-teal-400"
+            className="text-sm font-medium transition-colors hover:text-orange-400"
             onClick={toggleMenu}
           >
-            RIGHT 2 THRIVE UK
+            Right2Thrive UK
           </Link>
           <Link
             href="/press"
-            className="text-sm font-medium transition-colors hover:text-teal-400"
+            className="text-sm font-medium transition-colors hover:text-orange-400"
             onClick={toggleMenu}
           >
             Press Release
           </Link>
           <div className="flex items-center space-x-4 pt-2">
             <Link href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-              <Instagram className="h-5 w-5 text-white hover:text-teal-400" />
+              <Instagram className="h-5 w-5 text-white hover:text-orange-400" />
             </Link>
             <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              <Twitter className="h-5 w-5 text-white hover:text-teal-400" />
+              <Twitter className="h-5 w-5 text-white hover:text-orange-400" />
             </Link>
           </div>
           <div className="flex flex-col space-y-2">
@@ -207,7 +207,7 @@ export default function Navbar() {
               <>
                 <Button 
                   variant="outline" 
-                  className="w-full border-teal-500 text-white hover:bg-teal-500 hover:text-white"
+                  className="w-full border-orange-500 text-white hover:bg-orange-500 hover:text-white"
                   onClick={() => {
                     handleProfileClick()
                     toggleMenu()
@@ -218,7 +218,7 @@ export default function Navbar() {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full border-teal-500 text-white hover:bg-teal-500 hover:text-white"
+                  className="w-full border-orange-500 text-white hover:bg-orange-500 hover:text-white"
                   onClick={() => {
                     handleLogout()
                     toggleMenu()
@@ -233,13 +233,13 @@ export default function Navbar() {
                 <Link href="/auth/login" onClick={toggleMenu}>
                   <Button
                     variant="outline"
-                    className="w-full border-teal-500 text-white hover:bg-teal-500 hover:text-white"
+                    className="w-full border-orange-500 text-white hover:bg-orange-500 hover:text-white"
                   >
                     Login
                   </Button>
                 </Link>
                 <Link href="/auth/signup" onClick={toggleMenu}>
-                  <Button className="w-full bg-teal-500 text-white hover:bg-teal-600">Sign Up</Button>
+                  <Button className="w-full bg-blue-500 text-white hover:bg-blue-600">Sign Up</Button>
                 </Link>
               </>
             )}

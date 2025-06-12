@@ -271,7 +271,7 @@ export default function WellbeingHub() {
                 <div className="flex items-center justify-between border-b pb-2">
                   <div className="flex items-center space-x-3">
                     <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-teal-600" />
+                      <FileText className="h-4 w-4 text-orange-600" />
                     </div>
                     <div>
                       <p className="font-medium">Completed GAD-7 Assessment</p>
@@ -288,7 +288,7 @@ export default function WellbeingHub() {
                 <div className="flex items-center justify-between border-b pb-2">
                   <div className="flex items-center space-x-3">
                     <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-teal-600" />
+                      <FileText className="h-4 w-4 text-orange-600" />
                     </div>
                     <div>
                       <p className="font-medium">Completed PHQ-9 Assessment</p>
@@ -305,7 +305,7 @@ export default function WellbeingHub() {
                 <div className="flex items-center justify-between border-b pb-2">
                   <div className="flex items-center space-x-3">
                     <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-teal-600" />
+                      <FileText className="h-4 w-4 text-orange-600" />
                     </div>
                     <div>
                       <p className="font-medium">Completed GAD-7 Assessment</p>
@@ -322,7 +322,7 @@ export default function WellbeingHub() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-teal-600" />
+                      <FileText className="h-4 w-4 text-orange-600" />
                     </div>
                     <div>
                       <p className="font-medium">Completed PHQ-9 Assessment</p>
@@ -358,7 +358,7 @@ export default function WellbeingHub() {
               </CardContent>
               <CardFooter>
                 <Link href="/wellbeing-hub/gad7">
-                  <Button className="bg-[#2c261f] text-white hover:bg-[#3c362f]">
+                  <Button className="bg-[#00990d] text-white hover:bg-[#3c362f]">
                     Take Assessment
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -382,7 +382,7 @@ export default function WellbeingHub() {
               </CardContent>
               <CardFooter>
                 <Link href="/wellbeing-hub/phq9">
-                  <Button className="bg-[#2c261f] text-white hover:bg-[#3c362f]">
+                  <Button className="bg-[#00990d] text-white hover:bg-[#3c362f]">
                     Take Assessment
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -544,7 +544,7 @@ export default function WellbeingHub() {
                         href="https://www.mind.org.uk"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.mind.org.uk
                       </a>
@@ -555,7 +555,7 @@ export default function WellbeingHub() {
                         href="https://www.mentalhealth.org.uk"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.mentalhealth.org.uk
                       </a>
@@ -566,7 +566,7 @@ export default function WellbeingHub() {
                         href="https://www.nhs.uk/mental-health"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.nhs.uk/mental-health
                       </a>
@@ -577,7 +577,7 @@ export default function WellbeingHub() {
                         href="https://www.nhs.uk/every-mind-matters"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.nhs.uk/every-mind-matters
                       </a>
@@ -600,7 +600,7 @@ export default function WellbeingHub() {
                         href="https://www.blackmindsmatteruk.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.blackmindsmatteruk.com
                       </a>
@@ -611,7 +611,7 @@ export default function WellbeingHub() {
                         href="https://www.myh.org.uk"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.myh.org.uk
                       </a>
@@ -622,7 +622,7 @@ export default function WellbeingHub() {
                         href="https://www.nafsiyat.org.uk"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.nafsiyat.org.uk
                       </a>
@@ -633,7 +633,7 @@ export default function WellbeingHub() {
                         href="https://www.bamestream.org.uk"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-600 hover:text-teal-700"
+                        className="text-orange-600 hover:text-teal-700"
                       >
                         www.bamestream.org.uk
                       </a>
@@ -704,7 +704,7 @@ export default function WellbeingHub() {
       </Tabs>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#2c261f]">
+        <h1 className="text-3xl font-bold text-[#ff961b]">
           Right2Thrive UK Wellbeing Hub
         </h1>
         <br />
@@ -721,7 +721,7 @@ export default function WellbeingHub() {
           The Digital Wellbeing Hub ensures support is available anytime,
           anywhere, in ways that feel safe and empowering.
         </p>
-        <h2 className="text-2xl font-bold text-[#2c261f]">
+        <h2 className="text-2xl font-bold text-[#ff961b]">
           Professional & Peer Support
         </h2>
         <p className="text-gray-600">

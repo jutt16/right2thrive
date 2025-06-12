@@ -53,7 +53,7 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: {
-          DEFAULT: "#2c261f",
+          DEFAULT: "#ff961b",
           teal: "#40a9a1",
           gold: "#d4af37",
         },

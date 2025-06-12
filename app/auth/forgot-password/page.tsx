@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
           <div className="flex justify-center">
             <Image src="/logo.png" alt="Right2Thrive UK Logo" width={80} height={80} className="mb-4 rounded-full" />
           </div>
-          <CardTitle className="text-2xl font-bold text-[#2c261f]">Reset Password</CardTitle>
+          <CardTitle className="text-2xl font-bold text-[#ff961b]">Reset Password</CardTitle>
           <CardDescription>
             {!isSubmitted
               ? "Enter your email address and we'll send you a link to reset your password"
@@ -127,7 +127,7 @@ export default function ForgotPasswordPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]"
+                  className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Sending..." : "Send Reset Link"}
@@ -187,7 +187,7 @@ export default function ForgotPasswordPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]"
+                  className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Resetting..." : "Reset Password"}
@@ -206,7 +206,7 @@ export default function ForgotPasswordPage() {
         <CardFooter className="flex justify-center">
           {!isReset && (
             <Link href="/auth/login">
-              <Button variant="ghost" className="flex items-center text-teal-600 hover:text-teal-700">
+              <Button variant="ghost" className="flex items-center text-orange-600 hover:text-teal-700">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Login
               </Button>
@@ -214,7 +214,7 @@ export default function ForgotPasswordPage() {
           )}
           {isReset && (
             <Link href="/auth/login">
-              <Button className="bg-teal-500 text-white hover:bg-teal-600">Go to Login</Button>
+              <Button className="bg-blue-500 text-white hover:bg-blue-600">Go to Login</Button>
             </Link>
           )}
         </CardFooter>

@@ -314,7 +314,7 @@ export default function PHQ9Assessment() {
       <div className="container mx-auto px-4 py-8">
         <Button
           variant="ghost"
-          className="mb-4 flex items-center text-[#2c261f]"
+          className="mb-4 flex items-center text-[#ff961b]"
           onClick={() => router.push("/wellbeing-hub")}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -322,7 +322,7 @@ export default function PHQ9Assessment() {
         </Button>
 
         <div className="mx-auto max-w-4xl">
-          <h1 className="mb-8 text-center text-3xl font-bold text-[#2c261f]">Choose Assessment Type</h1>
+          <h1 className="mb-8 text-center text-3xl font-bold text-[#ff961b]">Choose Assessment Type</h1>
           <div className="grid gap-6 md:grid-cols-2">
             <Card 
               className="cursor-pointer border-2 border-teal-100 transition-all hover:border-teal-300 hover:shadow-lg"
@@ -351,7 +351,7 @@ export default function PHQ9Assessment() {
               }}
             >
               <CardHeader>
-                <CardTitle className="text-xl font-bold text-[#2c261f]">General Questions</CardTitle>
+                <CardTitle className="text-xl font-bold text-[#ff961b]">General Questions</CardTitle>
                 <CardDescription>
                   Complete the standard PHQ-9 assessment with general questions
                 </CardDescription>
@@ -362,7 +362,7 @@ export default function PHQ9Assessment() {
                 </p>
               </CardContent>
               <CardFooter>
-                <Button className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]">
+                <Button className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]">
                   Start Assessment
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -373,7 +373,7 @@ export default function PHQ9Assessment() {
               className="border-2 border-teal-100"
             >
               <CardHeader>
-                <CardTitle className="text-xl font-bold text-[#2c261f]">Specific Therapist Questions</CardTitle>
+                <CardTitle className="text-xl font-bold text-[#ff961b]">Specific Therapist Questions</CardTitle>
                 <CardDescription>
                   Complete the PHQ-9 assessment with questions tailored by your therapist
                 </CardDescription>
@@ -426,7 +426,7 @@ export default function PHQ9Assessment() {
 
                 {selectedTherapistDetails && !isLoadingTherapistDetails && (
                   <div className="mt-4 rounded-md border border-teal-100 bg-teal-50 p-4">
-                    <h3 className="mb-2 text-lg font-semibold text-[#2c261f]">
+                    <h3 className="mb-2 text-lg font-semibold text-[#ff961b]">
                       {selectedTherapistDetails.first_name} {selectedTherapistDetails.last_name}
                     </h3>
                     <div className="space-y-2">
@@ -446,7 +446,7 @@ export default function PHQ9Assessment() {
               </CardContent>
               <CardFooter>
                 <Button 
-                  className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]"
+                  className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]"
                   onClick={async () => {
                     if (selectedTherapist) {
                       try {
@@ -495,7 +495,7 @@ export default function PHQ9Assessment() {
     <div className="container mx-auto px-4 py-8">
       <Button
         variant="ghost"
-        className="mb-4 flex items-center text-[#2c261f]"
+        className="mb-4 flex items-center text-[#ff961b]"
         onClick={() => router.push("/wellbeing-hub")}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -505,7 +505,7 @@ export default function PHQ9Assessment() {
       {!showResults ? (
         <Card className="mx-auto max-w-2xl border-2 border-teal-100">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-[#2c261f]">{assessmentData.title}</CardTitle>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">{assessmentData.title}</CardTitle>
             <CardDescription>{assessmentData.description}</CardDescription>
             <Progress value={progress} className="h-2 w-full bg-gray-200" />
             <p className="mt-2 text-sm text-gray-500">
@@ -514,7 +514,7 @@ export default function PHQ9Assessment() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              <div className="text-lg font-medium text-[#2c261f]">
+              <div className="text-lg font-medium text-[#ff961b]">
                 {assessmentData.questions[currentQuestion].question_text}
               </div>
               <RadioGroup
@@ -543,7 +543,7 @@ export default function PHQ9Assessment() {
             <Button
               onClick={handleNext}
               disabled={answers[currentQuestion] === -1 || isSubmitting}
-              className="bg-[#2c261f] text-white hover:bg-[#3c362f]"
+              className="bg-[#00990d] text-white hover:bg-[#3c362f]"
             >
               {currentQuestion === assessmentData.questions.length - 1 ? (isSubmitting ? "Submitting..." : "Submit") : "Next"}
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -553,7 +553,7 @@ export default function PHQ9Assessment() {
       ) : (
         <Card className="mx-auto max-w-2xl border-2 border-teal-100">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-[#2c261f]">Assessment Completed</CardTitle>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">Assessment Completed</CardTitle>
             <CardDescription>Thank you for completing the PHQ-9 assessment.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -585,7 +585,7 @@ export default function PHQ9Assessment() {
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="bg-[#2c261f] text-white hover:bg-[#3c362f]"
+              className="bg-[#00990d] text-white hover:bg-[#3c362f]"
             >
               {isSubmitting ? "Saving..." : "Return to Wellbeing Hub"}
               <ArrowRight className="ml-2 h-4 w-4" />

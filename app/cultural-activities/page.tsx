@@ -14,7 +14,7 @@ export default function CulturalActivities() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#2c261f]">
+        <h1 className="text-3xl font-bold text-[#ff961b]">
           Cultural Activities
         </h1>
         <p className="text-gray-600">
@@ -25,7 +25,7 @@ export default function CulturalActivities() {
 
       {/* Featured Event */}
       <section className="mb-12">
-        <div className="overflow-hidden rounded-lg bg-[#2c261f] text-white shadow-lg">
+        <div className="overflow-hidden rounded-lg bg-[#00990d] text-white shadow-lg">
           <div className="grid md:grid-cols-2">
             <div className="p-8 md:p-12">
               <h2 className="mb-4 text-2xl font-bold">
@@ -45,7 +45,7 @@ export default function CulturalActivities() {
                 <div className="flex items-center">
                   <MapPin className="mr-2 h-5 w-5 text-teal-400" />
                   <span>
-                    Right 2 Thrive UK Wellbeing Hub<br /> 37/38 North Square, Edmonton
+                    Right2Thrive UK Wellbeing Hub<br /> 37/38 North Square, Edmonton
                     Green Shopping Centre<br />London N9 0HY
                   </span>
                 </div>
@@ -54,7 +54,7 @@ export default function CulturalActivities() {
                   <span>15 spots remaining</span>
                 </div>
               </div>
-              <Button className="bg-teal-500 text-white hover:bg-teal-600">
+              <Button className="bg-blue-500 text-white hover:bg-blue-600">
                 Register Now
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -73,7 +73,7 @@ export default function CulturalActivities() {
 
       {/* Upcoming Events */}
       <section className="mb-12">
-        <h2 className="mb-6 text-2xl font-bold text-[#2c261f]">
+        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
           Upcoming Activities
         </h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -109,7 +109,7 @@ export default function CulturalActivities() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]">
+              <Button className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]">
                 Register
               </Button>
             </CardFooter>
@@ -147,7 +147,7 @@ export default function CulturalActivities() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]">
+              <Button className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]">
                 Register
               </Button>
             </CardFooter>
@@ -185,7 +185,7 @@ export default function CulturalActivities() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]">
+              <Button className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]">
                 Register
               </Button>
             </CardFooter>
@@ -195,7 +195,7 @@ export default function CulturalActivities() {
 
       {/* Past Events */}
       <section className="mb-12">
-        <h2 className="mb-6 text-2xl font-bold text-[#2c261f]">
+        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
           Past Activities
         </h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -290,7 +290,7 @@ export default function CulturalActivities() {
 
       {/* Community Testimonials */}
       {/* <section>
-        <h2 className="mb-6 text-2xl font-bold text-[#2c261f]">
+        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
           Community Testimonials
         </h2>
         <div className="grid gap-6 md:grid-cols-2">
@@ -302,7 +302,7 @@ export default function CulturalActivities() {
                 me connect with my roots and find new ways to manage my
                 anxiety."
               </p>
-              <p className="font-medium text-[#2c261f]">
+              <p className="font-medium text-[#ff961b]">
                 - Sarah K., Workshop Participant
               </p>
             </CardContent>
@@ -316,7 +316,7 @@ export default function CulturalActivities() {
                 a space where I feel seen and understood. The mindfulness
                 sessions have been particularly helpful."
               </p>
-              <p className="font-medium text-[#2c261f]">
+              <p className="font-medium text-[#ff961b]">
                 - Michael T., Regular Attendee
               </p>
             </CardContent>

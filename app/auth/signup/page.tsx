@@ -80,7 +80,7 @@ export default function SignupPage() {
           <div className="flex justify-center">
             <Image src="/logo.png" alt="Right2Thrive UK Logo" width={80} height={80} className="mb-4 rounded-full" />
           </div>
-          <CardTitle className="text-2xl font-bold text-[#2c261f]">Create an Account</CardTitle>
+          <CardTitle className="text-2xl font-bold text-[#ff961b]">Create an Account</CardTitle>
           <CardDescription>Sign up to access the Right2Thrive UK wellbeing platform</CardDescription>
         </CardHeader>
         <CardContent>
@@ -146,17 +146,17 @@ export default function SignupPage() {
                 <Checkbox id="terms" className="mt-1" required />
                 <Label htmlFor="terms" className="text-sm font-normal">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-teal-600 hover:text-teal-700">
+                  <Link href="/terms" className="text-orange-600 hover:text-teal-700">
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-teal-600 hover:text-teal-700">
+                  <Link href="/privacy" className="text-orange-600 hover:text-teal-700">
                     Privacy Policy
                   </Link>
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]" disabled={isLoading}>
                 {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </div>
@@ -180,7 +180,7 @@ export default function SignupPage() {
           </Button>
           <div className="text-center text-sm">
             Already have an account?{" "}
-            <Link href="/auth/login" className="font-medium text-teal-600 hover:text-teal-700">
+            <Link href="/auth/login" className="font-medium text-orange-600 hover:text-teal-700">
               Sign in
             </Link>
           </div>

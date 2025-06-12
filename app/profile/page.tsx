@@ -219,7 +219,7 @@ export default function Profile() {
     <div className="container mx-auto px-4 py-8">
       <Card className="mx-auto max-w-2xl border-2 border-teal-100">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-[#2c261f]">Profile Information</CardTitle>
+          <CardTitle className="text-2xl font-bold text-[#ff961b]">Profile Information</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -321,7 +321,7 @@ export default function Profile() {
 
             <Button 
               type="submit" 
-              className="w-full bg-[#2c261f] text-white hover:bg-[#3c362f]"
+              className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]"
               disabled={isLoading}
             >
               {isLoading ? "Saving..." : "Save Changes"}
