@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from 'react';
 import {
   Card,
   CardContent,
@@ -68,6 +69,14 @@ interface Assessment {
 }
 
 export default function WellbeingHub() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <WellbeingHubContent />
+    </Suspense>
+  );
+}
+
+function WellbeingHubContent() {
   // const [activeTab, setActiveTab] = useState("dashboard");
   // Inside your WellbeingHub component, replace the useState for activeTab with:
   const searchParams = useSearchParams();
