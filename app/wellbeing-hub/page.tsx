@@ -27,6 +27,7 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface AssessmentAnswer {
   question_id: number;
@@ -74,6 +75,7 @@ export default function WellbeingHub() {
   const [phq9Assessments, setPhq9Assessments] = useState<Assessment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -134,6 +136,19 @@ export default function WellbeingHub() {
       month: "long",
       year: "numeric",
     });
+  };
+
+  // Handler for Take Assessment buttons
+  const handleTakeAssessment = (assessmentPath: string) => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
+      if (token && user) {
+        router.push(assessmentPath);
+      } else {
+        router.push("/auth/login");
+      }
+    }
   };
 
   return (
@@ -357,12 +372,13 @@ export default function WellbeingHub() {
                 </p>
               </CardContent>
               <CardFooter>
-                <Link href="/wellbeing-hub/gad7">
-                  <Button className="bg-[#00990d] text-white hover:bg-[#3c362f]">
-                    Take Assessment
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+                <Button
+                  className="bg-[#00990d] text-white hover:bg-[#3c362f]"
+                  onClick={() => handleTakeAssessment("/wellbeing-hub/gad7")}
+                >
+                  Take Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </CardFooter>
             </Card>
 
@@ -381,12 +397,13 @@ export default function WellbeingHub() {
                 </p>
               </CardContent>
               <CardFooter>
-                <Link href="/wellbeing-hub/phq9">
-                  <Button className="bg-[#00990d] text-white hover:bg-[#3c362f]">
-                    Take Assessment
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+                <Button
+                  className="bg-[#00990d] text-white hover:bg-[#3c362f]"
+                  onClick={() => handleTakeAssessment("/wellbeing-hub/phq9")}
+                >
+                  Take Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </CardFooter>
             </Card>
           </div>
@@ -709,7 +726,7 @@ export default function WellbeingHub() {
         </h1>
         <br />
         <p className="text-gray-600">
-          Welcome To Right2ThriveUK Wellbeing Hub <br />
+          Welcome To Right2ThriveUK Wellbeing Hub <br />
           <br />
           <span className="font-bold">
             • Culturally responsive mental health assessments <br />
