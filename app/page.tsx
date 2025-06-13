@@ -36,7 +36,7 @@ export default function Home() {
                   Get Started
                 </Button>
               </Link>
-              <Link href="/wellbeing-hub">
+              <Link href="/wellbeing-hub?tab=assessments">
                 <Button
                   variant="outline"
                   className="bg-blue-500 text-white hover:bg-blue-600"

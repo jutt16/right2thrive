@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -67,7 +68,12 @@ interface Assessment {
 }
 
 export default function WellbeingHub() {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  // const [activeTab, setActiveTab] = useState("dashboard");
+  // Inside your WellbeingHub component, replace the useState for activeTab with:
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("tab") || "dashboard"
+  );
   const [selectedAssessment, setSelectedAssessment] =
     useState<Assessment | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -86,6 +92,14 @@ export default function WellbeingHub() {
       fetchAssessments();
     }
   }, [isClient]);
+
+  useEffect(() => {
+    if (isClient) {
+      // Update the URL when activeTab changes
+      const newUrl = `${window.location.pathname}?tab=${activeTab}`;
+      window.history.pushState({}, "", newUrl);
+    }
+  }, [activeTab, isClient]);
 
   const fetchAssessments = async () => {
     if (!isClient) return;
@@ -154,34 +168,34 @@ export default function WellbeingHub() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Tabs
-        defaultValue="dashboard"
+        defaultValue={activeTab}
         className="space-y-4"
         onValueChange={setActiveTab}
       >
-        <TabsList className="grid w-full grid-cols-4 md:w-auto">
+        <TabsList className="gflex w-full overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-4">
           <TabsTrigger
             value="dashboard"
-            className="data-[state=active]:bg-red-500 data-[state=active]:text-white hover:bg-red-100"
+            className="text-xs md:text-sm data-[state=active]:bg-red-500 data-[state=active]:text-white hover:bg-red-100"
           >
             Dashboard
           </TabsTrigger>
           <TabsTrigger
             value="assessments"
-            className="data-[state=active]:bg-orange-500 data-[state=active]:text-white hover:bg-orange-100"
+            className="text-xs md:text-sm data-[state=active]:bg-orange-500 data-[state=active]:text-white hover:bg-orange-100"
           >
             Assessments
           </TabsTrigger>
           <TabsTrigger
             value="resources"
-            className="data-[state=active]:bg-green-500 data-[state=active]:text-white hover:bg-green-100"
+            className="text-xs md:text-sm data-[state=active]:bg-green-500 data-[state=active]:text-white hover:bg-green-100"
           >
             Resources
           </TabsTrigger>
           <TabsTrigger
             value="wellbeing-update"
-            className="data-[state=active]:bg-blue-500 data-[state=active]:text-white hover:bg-blue-100"
+            className="text-xs md:text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white hover:bg-blue-100"
           >
-            Wellbeing Update
+            Wellbeing
           </TabsTrigger>
         </TabsList>
 
