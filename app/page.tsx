@@ -65,7 +65,7 @@ export default function Home() {
             This Is How We Do It
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-            We're not your typical mental health service. We're your neighbors,
+            We're not your typical mental health service. We're your neighbours,
             your community, your people. We get it because we've been there too.
           </p>
 
@@ -237,7 +237,7 @@ export default function Home() {
             {/* Quote on the Right */}
             <blockquote className="italic text-gray-600 md:text-left text-center">
               “I was drowning in stress and didn't know where to turn.
-              Right2Thrive didn't just throw a lifeline – they taught me how to
+              Right2Thrive UK didn't just throw a lifeline – they taught me how to
               swim again. Now my whole family is stronger, and I'm showing up as
               the parent I always wanted to be.”
               <br />

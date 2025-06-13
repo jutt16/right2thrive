@@ -91,10 +91,10 @@ export default function Footer() {
                 <Mail className="h-4 w-4" />
                 <span>hello@right2thriveuk.com</span>
               </li>
-              <li className="flex items-center space-x-2">
+              {/* <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
                 <span>+44 123 456 7890</span>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
