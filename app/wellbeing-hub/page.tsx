@@ -69,6 +69,27 @@ interface Assessment {
 }
 
 export default function WellbeingHub() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
+      if (token && user) {
+        setIsAuthenticated(true);
+        setUserData(JSON.parse(user));
+      } else {
+        router.push("/auth/login");
+      }
+    }
+  }, [router]); // Add router to dependencies
+
+  if (!isAuthenticated) {
+    return null; // or a loading spinner while redirect happens
+  }
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <WellbeingHubContent />
