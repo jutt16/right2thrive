@@ -81,7 +81,7 @@ function WellbeingHubContent() {
   // Inside your WellbeingHub component, replace the useState for activeTab with:
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(
-    searchParams.get("tab") || "dashboard"
+    searchParams.get("tab") || "assessments"
   );
   const [selectedAssessment, setSelectedAssessment] =
     useState<Assessment | null>(null);
