@@ -284,7 +284,7 @@ export default function Navbar() {
               <>
                 <Button
                   variant="outline"
-                  className="w-full border-orange-500 text-white hover:bg-orange-500 hover:text-white"
+                  className="w-full border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
                   onClick={() => {
                     handleProfileClick();
                     toggleMenu();
@@ -295,7 +295,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full border-orange-500 text-white hover:bg-orange-500 hover:text-white"
+                  className="w-full border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
                   onClick={() => {
                     handleLogout();
                     toggleMenu();
@@ -310,7 +310,7 @@ export default function Navbar() {
                 <Link href="/auth/login" onClick={toggleMenu}>
                   <Button
                     variant="outline"
-                    className="w-full border-orange-500 text-white hover:bg-orange-500 hover:text-white"
+                    className="w-full border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
                   >
                     Login
                   </Button>
