@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Instagram, Twitter, User, LogOut } from "lucide-react";
+import { Menu, X, Instagram, Twitter, User, Heart, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -112,6 +112,16 @@ export default function Navbar() {
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
+
+        {/* My Wellbeing with Heart icon */}
+        <DropdownMenuItem
+          onClick={() => router.push("/my-wellbeing")}
+          className="cursor-pointer"
+        >
+          <Heart className="mr-2 h-4 w-4" />
+          <span>My Wellbeing</span>
+        </DropdownMenuItem>
+
         <DropdownMenuItem
           onClick={handleLogout}
           className="cursor-pointer text-red-600"
@@ -293,6 +303,20 @@ export default function Navbar() {
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </Button>
+
+                {/* Add My Wellbeing */}
+                <Button
+                  variant="outline"
+                  className="w-full border-pink-500 text-pink-600 hover:bg-pink-500 hover:text-white"
+                  onClick={() => {
+                    router.push("/my-wellbeing");
+                    toggleMenu();
+                  }}
+                >
+                  <Heart className="mr-2 h-4 w-4" />
+                  My Wellbeing
+                </Button>
+
                 <Button
                   variant="outline"
                   className="w-full border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
