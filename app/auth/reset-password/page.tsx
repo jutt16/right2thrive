@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -18,8 +17,6 @@ import { Label } from "@/components/ui/label"
 import { ArrowLeft, CheckCircle, Eye, EyeOff } from "lucide-react"
 
 export default function ResetPasswordPage() {
-  const searchParams = useSearchParams()
-
   const [email, setEmail] = useState("")
   const [token, setToken] = useState("")
   const [password, setPassword] = useState("")
@@ -29,13 +26,17 @@ export default function ResetPasswordPage() {
   const [isReset, setIsReset] = useState(false)
   const [error, setError] = useState("")
 
+  // ✅ Use `window.location` instead of `useSearchParams`
   useEffect(() => {
-    const tokenFromUrl = searchParams.get("token")
-    const emailFromUrl = searchParams.get("email")
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href)
+      const tokenFromUrl = url.searchParams.get("token")
+      const emailFromUrl = url.searchParams.get("email")
 
-    if (tokenFromUrl) setToken(tokenFromUrl)
-    if (emailFromUrl) setEmail(emailFromUrl)
-  }, [searchParams])
+      if (tokenFromUrl) setToken(tokenFromUrl)
+      if (emailFromUrl) setEmail(emailFromUrl)
+    }
+  }, [])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,9 +46,7 @@ export default function ResetPasswordPage() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reset-password`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
           token,
@@ -94,7 +93,9 @@ export default function ResetPasswordPage() {
         <CardContent>
           {!isReset ? (
             <form onSubmit={handleResetPassword}>
-              {error && <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</div>}
+              {error && (
+                <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</div>
+              )}
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Email</Label>
@@ -122,7 +123,7 @@ export default function ResetPasswordPage() {
                       ) : (
                         <Eye className="h-4 w-4 text-gray-500" />
                       )}
-                      <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                      <span className="sr-only">{showPassword ? "Hide" : "Show"} password</span>
                     </Button>
                   </div>
                 </div>
