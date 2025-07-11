@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -18,18 +17,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, CheckCircle, Eye, EyeOff } from "lucide-react"
 
-export default function ForgotPasswordPage() {
+export default function ResetPasswordPage() {
+  const searchParams = useSearchParams()
+
   const [email, setEmail] = useState("")
   const [token, setToken] = useState("")
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
   const [isReset, setIsReset] = useState(false)
   const [error, setError] = useState("")
-
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token")
@@ -37,36 +35,7 @@ export default function ForgotPasswordPage() {
 
     if (tokenFromUrl) setToken(tokenFromUrl)
     if (emailFromUrl) setEmail(emailFromUrl)
-    if (tokenFromUrl || emailFromUrl) setIsSubmitted(true)
   }, [searchParams])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsSubmitting(true)
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forgot-password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to send reset link")
-      }
-
-      setIsSubmitted(true)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "There was an error. Please try again.")
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -116,52 +85,20 @@ export default function ForgotPasswordPage() {
           </div>
           <CardTitle className="text-2xl font-bold text-[#ff961b]">Reset Password</CardTitle>
           <CardDescription>
-            {!isSubmitted
-              ? "Enter your email address and we'll send you a link to reset your password"
-              : !isReset
-              ? "Enter the token from your email and your new password"
+            {!isReset
+              ? "Enter your new password below"
               : "Your password has been reset successfully"}
           </CardDescription>
         </CardHeader>
+
         <CardContent>
-          {!isSubmitted ? (
-            <form onSubmit={handleSubmit}>
-              {error && <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</div>}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Sending..." : "Send Reset Link"}
-                </Button>
-              </div>
-            </form>
-          ) : !isReset ? (
+          {!isReset ? (
             <form onSubmit={handleResetPassword}>
               {error && <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</div>}
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="token">Reset Token</Label>
-                  <Input
-                    id="token"
-                    type="text"
-                    placeholder="Enter the token from your email"
-                    value={token}
-                    onChange={(e) => setToken(e.target.value)}
-                    required
-                  />
+                  <Label>Email</Label>
+                  <Input value={email} disabled readOnly />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">New Password</Label>
@@ -217,20 +154,14 @@ export default function ForgotPasswordPage() {
             </div>
           )}
         </CardContent>
+
         <CardFooter className="flex justify-center">
-          {!isReset && (
-            <Link href="/auth/login">
-              <Button variant="ghost" className="flex items-center text-orange-600 hover:text-teal-700">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Login
-              </Button>
-            </Link>
-          )}
-          {isReset && (
-            <Link href="/auth/login">
-              <Button className="bg-blue-500 text-white hover:bg-blue-600">Go to Login</Button>
-            </Link>
-          )}
+          <Link href="/auth/login">
+            <Button variant="ghost" className="flex items-center text-orange-600 hover:text-teal-700">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Login
+            </Button>
+          </Link>
         </CardFooter>
       </Card>
     </div>
