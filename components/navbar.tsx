@@ -123,6 +123,14 @@ export default function Navbar() {
         </DropdownMenuItem>
 
         <DropdownMenuItem
+          onClick={() => router.push("/my-bookings")}
+          className="cursor-pointer"
+        >
+          <User className="mr-2 h-4 w-4" />
+          <span>My Bookings</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
           onClick={handleLogout}
           className="cursor-pointer text-red-600"
         >
@@ -317,6 +325,18 @@ export default function Navbar() {
                   My Wellbeing
                 </Button>
 
+                <Button
+                  variant="outline"
+                  className="w-full border-indigo-500 text-indigo-600 hover:bg-indigo-500 hover:text-white"
+                  onClick={() => {
+                    router.push("/my-bookings");
+                    toggleMenu();
+                  }}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  My Bookings
+                </Button>
+                
                 <Button
                   variant="outline"
                   className="w-full border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
