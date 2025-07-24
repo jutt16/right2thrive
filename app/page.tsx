@@ -182,14 +182,11 @@ export default function Home() {
               className="w-full md:w-1/3 rounded-lg shadow-md object-cover"
             />
             <blockquote className="italic text-gray-600 md:text-left text-center">
-              “I was drowning in stress and didn't know where to turn.
-              Right2Thrive UK didn't just throw a lifeline – they taught me how to
-              swim again. Now my whole family is stronger, and I'm showing up as
-              the parent I always wanted to be.”
+              “At Right2Thrive UK we empower individuals to overcome challenges, build resistance and create brighter futures for themselves and their families.”
               <br />
-              <span className="block font-semibold text-[#ff961b] mt-2">
+              {/* <span className="block font-semibold text-[#ff961b] mt-2">
                 – Marcus, Birmingham
-              </span>
+              </span> */}
             </blockquote>
           </div>
 

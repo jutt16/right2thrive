@@ -104,7 +104,7 @@ export default function LoginPage() {
                   onChange={(e) => setUserType(e.target.value)}
                   className="w-full rounded-md border border-gray-300 p-2"
                 >
-                  <option value="patient">Patient</option>
+                  <option value="patient">Participant</option>
                   <option value="therapist">Therapist</option>
                 </select>
               </div>

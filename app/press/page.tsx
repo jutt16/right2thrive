@@ -26,10 +26,10 @@ export default function PressRelease() {
           <CardHeader>
             <div className="flex items-center space-x-2 text-sm text-gray-500">
               <Calendar className="h-4 w-4" />
-              <span>3rd June 2025</span>
+              <span>24th July 2025</span>
             </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
-              Launch of the Right2Thrive UK Wellbeing Platform on the 17th July 2025
+              Launch of the Right2Thrive UK Wellbeing Platform on the  6th September 2025.
             </CardTitle>
             <CardDescription>
               Empowering diverse communities with culturally responsive mental health support
@@ -38,7 +38,7 @@ export default function PressRelease() {
           <CardContent>
             <div className="mb-6 space-y-4">
               <p>
-                <strong>3rd June 2025</strong> - The Right2Thrive UK Wellbeing Hub will be providing culturally responsive mental health support once launched on the 17th July 2025, offering counselling, workshops, community activities, and resources designed to support wellbeing in diverse communities.
+                <strong>24th July 2025</strong> - The Right2Thrive UK Wellbeing Hub will be providing culturally responsive mental health support once launched on the 6th September 2025., offering counselling, workshops, community activities, and resources designed to support wellbeing in diverse communities.
               </p>
               <p>
                 "We recognize that cultural background significantly influences how individuals experience and express mental health challenges," said Colin Lee-Own, Founder and Clinical Director of Right2Thrive UK. "The platform is designed to bridge the gap between standardized tools and cultural understanding."
