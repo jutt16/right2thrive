@@ -1,6 +1,4 @@
-'use client';
-
-import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,168 +8,198 @@ import {
   Users,
   LifeBuoy,
   Baby,
+  ArrowRight,
   Flame,
 } from "lucide-react";
 
-const icons = [Users, ShieldCheck, Baby, Heart, LifeBuoy, Flame];
-
 export default function Home() {
-  const [content, setContent] = useState<any>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/home-content`)
-      .then((res) => res.json())
-      .then((data) => setContent(data.data || {}))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const cardData = Array.from({ length: 6 }, (_, i) => ({
-    icon: icons[i],
-    title: content[`how_card_${i + 1}_title`],
-    description: content[`how_card_${i + 1}_description`],
-  }));
-
-  const stats = Array.from({ length: 3 }, (_, i) => ({
-    number: content[`why_stat_${i + 1}_number`],
-    label: content[`why_stat_${i + 1}_label`],
-  }));
-
-  const paragraphs = Array.from({ length: 3 }, (_, i) => content[`why_paragraph_${i + 1}`]);
-
   return (
-    <>
-      {loading && (
-        <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
-        </div>
-      )}
-      <div className="flex flex-col">
-        {/* Hero Section */}
-        <section className="relative bg-[#00990d] py-20 text-white">
+    <div className="flex flex-col">
+      {/* Hero Section */}
+      <section className="relative bg-[#00990d] py-20 text-white">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center text-center md:text-left">
           <div className="md:w-1/2">
             <h1 className="text-4xl font-bold md:text-5xl mb-4">
-              {content.hero_heading}
+              Creating a Safe Space for Healing and Growth
             </h1>
             <p className="text-lg text-gray-300 max-w-xl">
-              {content.hero_paragraph}
+              We are dedicated to supporting young Black men and women, who face unique mental health challenges and are disproportionately affected by systemic barriers. At the same time, our services are open to everyone, as we believe that healing and wellbeing should be accessible to all. Our culturally sensitive approach ensures that every individual feels seen, valued, and supported.
             </p>
             <div className="mt-8 flex justify-center md:justify-start gap-4 flex-wrap">
-              <Link href={content.hero_button_1_link || "#"}>
-                <Button className="bg-blue-500 text-white hover:bg-blue-600">
-                  {content.hero_button_1_text}
-                </Button>
-              </Link>
-              <Link href={content.hero_button_2_link || "#"}>
-                <Button variant="outline" className="bg-blue-500 text-white hover:bg-blue-600">
-                  {content.hero_button_2_text}
+              <Link href="/wellbeing-hub?tab=assessments">
+                <Button
+                  variant="outline"
+                  className="bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  Explore Our Services
                 </Button>
               </Link>
             </div>
           </div>
 
+          {/* Hero Image */}
           <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
-            {content.hero_image && (
-              <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${content.hero_image}`}
-                alt="Hero"
-                className="max-w-full h-auto rounded-lg shadow-lg"
-              />
-            )}
+            <img
+              src="/img1.jpg"
+              alt="Happy Chapter Illustration"
+              className="max-w-full h-auto rounded-lg shadow-lg"
+            />
           </div>
         </div>
       </section>
 
-      {/* This Is How We Do It Section */}
+      {/* Why Right2Thrive UK Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-[#ff961b] mb-6">{content.how_heading}</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-12">{content.how_paragraph}</p>
+          <h2 className="text-3xl font-bold text-[#ff961b] mb-6">
+            Why Right2Thrive UK?
+          </h2>
+          <p className="text-gray-600 max-w-3xl mx-auto mb-6">
+            Young Black men and women in the UK face systemic barriers to mental health support, often leading to overrepresentation in mental health interventions. At Right2Thrive UK, our mission is to address these challenges by offering tailored, empathetic care and culturally relevant resources.
+          </p>
+          <p className="text-gray-600 max-w-3xl mx-auto mb-6">
+            We believe that healing and growth are rights, not privileges. By creating an inclusive and supportive environment, we empower individuals to thrive, regardless of their background.
+          </p>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {cardData.map((card, idx) =>
-              card.title && card.description ? (
-                <Card key={idx} className="border-2 border-teal-100">
-                  <CardContent className="p-6 text-center">
-                    <div className="mb-4 flex justify-center">
-                      {card.icon && <card.icon className="h-8 w-8 text-orange-600" />}
-                    </div>
-                    <h3 className="text-xl font-semibold text-[#ff961b] mb-2">{card.title}</h3>
-                    <p className="text-gray-600">{card.description}</p>
-                  </CardContent>
-                </Card>
-              ) : null
-            )}
+          <div className="grid md:grid-cols-2 gap-6 mt-10 text-left">
+            <div className="bg-gray-50 p-6 rounded shadow">
+              <h3 className="text-lg font-semibold text-[#00990d] mb-2">
+                Mental Health Statistics for Young Black Men and Women in the UK:
+              </h3>
+              <ul className="list-disc pl-5 text-gray-700">
+                <li>Black people are <strong>four times more likely</strong> to be detained under the Mental Health Act compared to white people (NHS).</li>
+                <li>Young Black men are overrepresented in secure mental health settings and face higher rates of coercive treatments.</li>
+                <li>Black children and adolescents are <strong>1.5 times more likely</strong> to be referred through social services or criminal justice rather than primary care.</li>
+                <li>Black individuals are more likely to experience physical restraint or seclusion during mental health treatment.</li>
+                <li>Stigma and cultural barriers often delay access to early support, resulting in crisis-level interventions.</li>
+              </ul>
+            </div>
+            <div className="bg-gray-50 p-6 rounded shadow">
+              <ul className="list-disc pl-5 text-gray-700 mt-10 md:mt-0">
+                <li><strong>Black women</strong> are more likely to experience common mental health disorders such as anxiety and depression (Mental Health Foundation).</li>
+                <li>They are also <strong>less likely to receive treatment</strong>, with many reporting a lack of culturally sensitive care options (Race Equality Foundation).</li>
+                <li>Black women face higher rates of <strong>domestic abuse</strong>, which has a profound impact on mental health and access to services (ONS 2020).</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Why This Matters Right Now Section */}
+      {/* Our Wellbeing Hub Section */}
+      <section className="py-16 bg-[#f8fafc]">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-[#ff961b] mb-6">Our Wellbeing Hub</h2>
+          <p className="text-gray-700 max-w-3xl mx-auto mb-6">
+            The Wellbeing Hub is a key part of our services, designed to provide the tools and support you need to thrive. It includes:
+          </p>
+          <ul className="text-gray-700 max-w-2xl mx-auto text-left list-disc pl-5 mb-10">
+            <li>Personalized one-on-one counseling</li>
+            <li>Group therapy sessions and peer support</li>
+            <li>Guided mental health check-ins</li>
+            <li>Cultural activities that promote healing and a sense of belonging</li>
+          </ul>
+          <p className="text-gray-700 max-w-3xl mx-auto">
+            Whether you’re feeling overwhelmed, anxious, or simply need a safe space to talk, our Wellbeing Hub is here for you.
+          </p>
+        </div>
+      </section>
+
+      {/* Resources Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-[#ff961b] mb-6">Resources for Your Mental Wellness</h2>
+          <p className="text-gray-700 max-w-3xl mx-auto mb-6">
+            We offer a range of practical and helpful resources to guide you on your mental health journey:
+          </p>
+          <ul className="text-gray-700 max-w-2xl mx-auto text-left list-disc pl-5">
+            <li>Simple tips for managing stress and improving emotional wellbeing</li>
+            <li>Interactive tools to help you reflect on your feelings and progress</li>
+            <li>Informative articles and blog posts on a variety of mental health topics</li>
+            <li>Links to trusted external services for additional support</li>
+          </ul>
+          <p className="text-gray-700 mt-6">
+            Explore our resources to take the first step toward improving your mental health and wellbeing.
+          </p>
+        </div>
+      </section>
+
+      {/* Original Why This Matters section & testimonial kept intact with images */}
       <section className="bg-[#f8fafc] py-16 px-4">
         <div className="container mx-auto max-w-4xl text-center">
-          {/* Image */}
-          {content.why_image && (
-            <div className="mb-10">
-              <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${content.why_image}`}
-                alt="Why This Matters"
-                className="mx-auto max-w-full h-auto rounded-lg shadow-lg"
-              />
-            </div>
-          )}
-
-          <h2 className="text-3xl font-bold text-[#ff961b] mb-6">{content.why_heading}</h2>
-          {paragraphs.map(
-            (para, idx) =>
-              para && (
-                <p key={idx} className="text-gray-700 mb-6">
-                  {para}
-                </p>
-              )
-          )}
+          <div className="mb-10">
+            <img
+              src="/img2.jpg"
+              alt="Community Healing"
+              className="mx-auto max-w-full h-auto rounded-lg shadow-lg"
+            />
+          </div>
+          <h2 className="text-3xl font-bold text-[#ff961b] mb-6">
+            Why This Matters Right Now
+          </h2>
+          <p className="text-gray-700 mb-6">
+            Let’s keep it real — our community is hurting. Too many of our
+            brothers and sisters end up in crisis, in hospitals, in systems that
+            don’t understand us. We’re here to change that story.
+          </p>
+          <p className="text-gray-700 mb-6">
+            We know that when Black communities have early access to mental
+            health support that actually gets us, everything changes. Fewer
+            breakdowns. Stronger families. More people thriving instead of just
+            surviving.
+          </p>
+          <p className="text-gray-700 mb-8">
+            This isn’t just about individual healing — it’s about community
+            healing. When we support each other, when we catch each other before
+            the fall, when we create spaces where our stories matter, that’s
+            when real change happens.
+          </p>
 
           <div className="grid md:grid-cols-3 gap-6 mb-10 text-left text-gray-700 font-medium">
-            {stats.map(
-              (stat, idx) =>
-                stat.number && stat.label && (
-                  <div key={idx} className="bg-white p-4 shadow rounded">
-                    <p>
-                      <span className="text-2xl font-bold text-orange-600">{stat.number}</span>{" "}
-                      {stat.label}
-                    </p>
-                  </div>
-                )
-            )}
+            <div className="bg-white p-4 shadow rounded">
+              <p>
+                <span className="text-2xl font-bold text-orange-600">3x</span>{" "}
+                Higher rates of detention under Mental Health Act
+              </p>
+            </div>
+            <div className="bg-white p-4 shadow rounded">
+              <p>
+                <span className="text-2xl font-bold text-orange-600">40%</span>{" "}
+                Less likely to access early support
+              </p>
+            </div>
+            <div className="bg-white p-4 shadow rounded">
+              <p>
+                <span className="text-2xl font-bold text-orange-600">1 in 4</span>{" "}
+                Will experience mental health challenges
+              </p>
+            </div>
           </div>
 
-          {/* Testimonial */}
-          {(content.why_testimonial_image || content.why_testimonial_quote) && (
-            <div className="flex flex-col md:flex-row items-center gap-6 max-w-4xl mx-auto mb-8">
-              {content.why_testimonial_image && (
-                <img
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${content.why_testimonial_image}`}
-                  alt="Testimonial"
-                  className="w-full md:w-1/3 rounded-lg shadow-md object-cover"
-                />
-              )}
-
-              <blockquote className="italic text-gray-600 md:text-left text-center">
-                {content.why_testimonial_quote}
-                <br />
-                <span className="block font-semibold text-[#ff961b] mt-2">
-                  {content.why_testimonial_name}
-                </span>
-              </blockquote>
-            </div>
-          )}
+          <div className="flex flex-col md:flex-row items-center gap-6 max-w-4xl mx-auto mb-8">
+            <img
+              src="/img3.jpg"
+              alt="Testimonial"
+              className="w-full md:w-1/3 rounded-lg shadow-md object-cover"
+            />
+            <blockquote className="italic text-gray-600 md:text-left text-center">
+              “I was drowning in stress and didn't know where to turn.
+              Right2Thrive UK didn't just throw a lifeline – they taught me how to
+              swim again. Now my whole family is stronger, and I'm showing up as
+              the parent I always wanted to be.”
+              <br />
+              <span className="block font-semibold text-[#ff961b] mt-2">
+                – Marcus, Birmingham
+              </span>
+            </blockquote>
+          </div>
 
           <Link href="/contact">
-            <Button className="bg-teal-600 text-white hover:bg-teal-700">Let’s Talk</Button>
+            <Button className="bg-teal-600 text-white hover:bg-teal-700">
+              Let’s Talk
+            </Button>
           </Link>
         </div>
       </section>
     </div>
-    </>
   );
 }
