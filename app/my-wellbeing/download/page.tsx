@@ -1,51 +1,87 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { FileDown } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { FileDown } from "lucide-react";
+
+interface Plan {
+  therapistName: string | null;
+  assignedDate: string;
+  fileUrl: string;
+}
 
 export default function Download() {
-  const [goals, setGoals] = useState([]);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No authentication token found');
+    const token = localStorage.getItem("token");
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+    const userId = user?.id;
+
+    if (!token || !userId) {
+      console.error("Missing token or user ID");
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/weekly-goals`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Accept", "application/json");
+
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/patients/${userId}/wellbeing-plan`,
+      {
+        method: "GET",
+        headers: myHeaders,
+      }
+    )
       .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setGoals(data.data);
+      .then((data: Plan[]) => {
+        setPlans(data || []);
       })
-      .catch(console.error);
+      .catch((err) => {
+        console.error("Error fetching wellbeing plans:", err);
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">My Weekly Goals</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        My Wellbeing Plans
+      </h2>
 
-      {goals.length === 0 ? (
-        <p className="text-center text-gray-500">No weekly goals uploaded yet.</p>
+      {isLoading ? (
+        <p className="text-center text-gray-500">Loading...</p>
+      ) : plans.length === 0 ? (
+        <p className="text-center text-gray-500">
+          No wellbeing plans uploaded yet.
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {goals.map((goal) => (
+          {plans.map((plan, idx) => (
             <div
-              key={goal.id}
+              key={idx}
               className="bg-white rounded-2xl shadow-lg p-5 flex flex-col justify-between transition hover:shadow-xl"
             >
               <div>
-                <p className="text-sm text-gray-500 mb-1">Uploaded on</p>
-                <p className="text-md font-semibold text-gray-800">{goal.created_at}</p>
+                <p className="text-sm text-gray-500 mb-1">Assigned Date</p>
+                <p className="text-md font-semibold text-gray-800">
+                  {plan.assignedDate}
+                </p>
+
+                {plan.therapistName && (
+                  <>
+                    <p className="text-sm text-gray-500 mt-3">Therapist</p>
+                    <p className="text-md text-gray-700">
+                      {plan.therapistName}
+                    </p>
+                  </>
+                )}
               </div>
 
               <a
-                href={goal.url}
+                href={plan.fileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center justify-center gap-2 text-blue-600 font-medium hover:underline"
