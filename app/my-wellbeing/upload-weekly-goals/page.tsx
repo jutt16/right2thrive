@@ -1,14 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { UploadCloud } from "lucide-react";
+import {
+  UploadCloud,
+  User2,
+  Mail,
+  Globe,
+  VenetianMask,
+  Phone,
+  Smartphone,
+  MapPin,
+  Landmark,
+  GraduationCap,
+  Briefcase,
+} from "lucide-react";
 
 interface Therapist {
   id: number;
-  name: string;
-  email: string;
-  gender: string;
-  cultural_background: string;
+  name?: string | null;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  gender?: string;
+  cultural_background?: string;
+  telephone?: string;
+  mobile?: string;
+  address?: string;
+  country?: string;
+  qualifications?: string;
+  experience?: string;
 }
 
 export default function UploadWeeklyGoals() {
@@ -17,6 +37,10 @@ export default function UploadWeeklyGoals() {
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [isLoadingTherapists, setIsLoadingTherapists] = useState(false);
   const [error, setError] = useState("");
+
+  const selectedTherapistObj = therapists.find(
+    (t) => t.id.toString() === selectedTherapist
+  );
 
   useEffect(() => {
     const fetchTherapists = async () => {
@@ -101,6 +125,11 @@ export default function UploadWeeklyGoals() {
     }
   };
 
+  const getTherapistDisplayName = (t: Therapist) => {
+    if (t.name && t.name.trim() !== "") return t.name;
+    return `${t.first_name || ""} ${t.last_name || ""}`.trim();
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-100 px-4">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl border border-yellow-400 p-6">
@@ -127,9 +156,9 @@ export default function UploadWeeklyGoals() {
             {isLoadingTherapists && <option>Loading...</option>}
 
             {!isLoadingTherapists &&
-              therapists.map((therapist) => (
-                <option key={therapist.id} value={therapist.id}>
-                  {therapist.name} - {therapist.cultural_background}
+              therapists.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {getTherapistDisplayName(t)} - {t.cultural_background ?? "N/A"}
                 </option>
               ))}
 
@@ -140,6 +169,72 @@ export default function UploadWeeklyGoals() {
 
           {error && <p className="mt-2 text-sm text-red-600">Error: {error}</p>}
         </div>
+
+        {/* Therapist Details */}
+        {selectedTherapistObj && (
+          <div className="mb-4 p-4 border border-blue-200 rounded-lg bg-blue-50 text-sm text-gray-700 space-y-1">
+            <div className="flex items-center gap-2">
+              <User2 className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Name:</strong> {getTherapistDisplayName(selectedTherapistObj)}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Email:</strong> {selectedTherapistObj.email ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <VenetianMask className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Gender:</strong> {selectedTherapistObj.gender ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Globe className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Culture:</strong> {selectedTherapistObj.cultural_background ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Telephone:</strong> {selectedTherapistObj.telephone ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Smartphone className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Mobile:</strong> {selectedTherapistObj.mobile ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Address:</strong> {selectedTherapistObj.address ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Landmark className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Country:</strong> {selectedTherapistObj.country ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <GraduationCap className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Qualifications:</strong> {selectedTherapistObj.qualifications ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-blue-600" />
+              <span>
+                <strong>Experience:</strong> {selectedTherapistObj.experience ?? "N/A"}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* File Upload */}
         <div className="mb-4">

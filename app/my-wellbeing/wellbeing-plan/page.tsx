@@ -140,6 +140,9 @@ export default function WellbeingPlan() {
   const renderStep = () => {
     switch (steps[currentStep]) {
       case "start":
+        const selectedTherapist =
+          therapists.find((t) => t.id === Number(formData.therapist)) || null;
+
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">
@@ -150,6 +153,7 @@ export default function WellbeingPlan() {
               designed to empower you as you transition back into your vibrant
               daily life.
             </p>
+
             <label className="block mt-4 mb-2">Select Therapist:</label>
             {loadingTherapists ? (
               <p>Loading therapists...</p>
@@ -166,6 +170,48 @@ export default function WellbeingPlan() {
                   </option>
                 ))}
               </select>
+            )}
+
+            {selectedTherapist && (
+              <div className="mt-4 bg-blue-50 p-4 rounded border border-blue-200">
+                <h4 className="font-semibold text-blue-900 mb-2">
+                  Therapist Details:
+                </h4>
+                <p>
+                  <strong>Name:</strong> {selectedTherapist.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedTherapist.email}
+                </p>
+                <p>
+                  <strong>Gender:</strong> {selectedTherapist.gender}
+                </p>
+                <p>
+                  <strong>Cultural Background:</strong>{" "}
+                  {selectedTherapist.cultural_background}
+                </p>
+                {selectedTherapist.telephone && (
+                  <p>
+                    <strong>Telephone:</strong> {selectedTherapist.telephone}
+                  </p>
+                )}
+                {selectedTherapist.mobile && (
+                  <p>
+                    <strong>Mobile:</strong> {selectedTherapist.mobile}
+                  </p>
+                )}
+                {selectedTherapist.qualifications && (
+                  <p>
+                    <strong>Qualifications:</strong>{" "}
+                    {selectedTherapist.qualifications}
+                  </p>
+                )}
+                {selectedTherapist.experience && (
+                  <p>
+                    <strong>Experience:</strong> {selectedTherapist.experience}
+                  </p>
+                )}
+              </div>
             )}
           </div>
         );

@@ -116,6 +116,7 @@ export default function WeeklyProgressForm() {
       <p className="mb-2">
         This weekly report helps track your growth and wellbeing.
       </p>
+
       <div className="mb-4">
         <label className="block font-medium mb-1">Select Therapist</label>
         {loading ? (
@@ -135,6 +136,57 @@ export default function WeeklyProgressForm() {
           </select>
         )}
       </div>
+
+      {/* ✅ Therapist Details Card */}
+      {therapists.length > 0 &&
+        data.therapist &&
+        (() => {
+          const selected = therapists.find(
+            (t) => t.id === Number(data.therapist)
+          );
+          if (!selected) return null;
+
+          return (
+            <div className="bg-blue-50 border border-blue-200 p-4 rounded mb-4">
+              <h4 className="font-semibold text-blue-900 mb-2">
+                Therapist Details:
+              </h4>
+              <p>
+                <strong>Name:</strong> {selected.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {selected.email}
+              </p>
+              <p>
+                <strong>Gender:</strong> {selected.gender}
+              </p>
+              <p>
+                <strong>Cultural Background:</strong>{" "}
+                {selected.cultural_background}
+              </p>
+              {selected.telephone && (
+                <p>
+                  <strong>Telephone:</strong> {selected.telephone}
+                </p>
+              )}
+              {selected.mobile && (
+                <p>
+                  <strong>Mobile:</strong> {selected.mobile}
+                </p>
+              )}
+              {selected.qualifications && (
+                <p>
+                  <strong>Qualifications:</strong> {selected.qualifications}
+                </p>
+              )}
+              {selected.experience && (
+                <p>
+                  <strong>Experience:</strong> {selected.experience}
+                </p>
+              )}
+            </div>
+          );
+        })()}
 
       {renderInput("Date", "date", "date")}
     </>,

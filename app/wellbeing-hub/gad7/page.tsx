@@ -508,46 +508,82 @@ export default function GAD7Assessment() {
                 )}
 
                 {selectedTherapistDetails && !isLoadingTherapistDetails && (
-                  <div className="mt-4 rounded-md border border-teal-100 bg-teal-50 p-4">
-                    <h3 className="mb-2 text-lg font-semibold text-[#ff961b]">
+                  <div className="mt-4 rounded-md border border-teal-100 bg-white p-4 shadow">
+                    <h3 className="mb-4 text-xl font-bold text-[#ff961b]">
                       {selectedTherapistDetails.first_name}{" "}
                       {selectedTherapistDetails.last_name}
                     </h3>
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-600">
-                        <span className="font-medium">Email:</span>{" "}
-                        {selectedTherapistDetails.email}
-                      </p>
-                      {/* <p className="text-sm text-gray-600">
-                        <span className="font-medium">Status:</span> {selectedTherapistDetails.is_approved ? 'Approved' : 'Pending Approval'}
-                      </p> */}
-                      {selectedTherapistDetails.profile && (
-                        <>
-                          {/* <p className="text-sm text-gray-600">
-                            <span className="font-medium">Gender:</span> {selectedTherapistDetails.profile.gender}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium">Cultural Background:</span> {selectedTherapistDetails.profile.cultural_background}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium">Contact:</span> {selectedTherapistDetails.profile.mobile}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium">Employment Status:</span> {selectedTherapistDetails.profile.employment_status}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium">Location:</span> {selectedTherapistDetails.profile.address}, {selectedTherapistDetails.profile.country}
-                          </p> */}
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium">Qualifications:</span>{" "}
-                            {selectedTherapistDetails.profile.qualifications ||
-                              "Not specified"}
-                          </p>
-                          {/* <p className="text-sm text-gray-600">
-                            <span className="font-medium">Experience:</span> {selectedTherapistDetails.profile.experience || 'Not specified'}
-                          </p> */}
-                        </>
-                      )}
+
+                    <div className="mb-4">
+                      <h4 className="text-md mb-2 font-semibold text-gray-800">
+                        Contact Details
+                      </h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li>
+                          <span className="font-medium">Email:</span>{" "}
+                          {selectedTherapistDetails.email || "N/A"}
+                        </li>
+                        <li>
+                          <span className="font-medium">Telephone:</span>{" "}
+                          {selectedTherapistDetails.profile?.telephone || "N/A"}
+                        </li>
+                        <li>
+                          <span className="font-medium">Mobile:</span>{" "}
+                          {selectedTherapistDetails.profile?.mobile || "N/A"}
+                        </li>
+                        <li>
+                          <span className="font-medium">Address:</span>{" "}
+                          {selectedTherapistDetails.profile?.address || "N/A"}
+                        </li>
+                        <li>
+                          <span className="font-medium">Country:</span>{" "}
+                          {selectedTherapistDetails.profile?.country || "N/A"}
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mb-4">
+                      <h4 className="text-md mb-2 font-semibold text-gray-800">
+                        Background
+                      </h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li>
+                          <span className="font-medium">Gender:</span>{" "}
+                          {selectedTherapistDetails.profile?.gender || "N/A"}
+                        </li>
+                        <li>
+                          <span className="font-medium">
+                            Cultural Background:
+                          </span>{" "}
+                          {selectedTherapistDetails.profile
+                            ?.cultural_background || "N/A"}
+                        </li>
+                        <li>
+                          <span className="font-medium">
+                            Employment Status:
+                          </span>{" "}
+                          {selectedTherapistDetails.profile
+                            ?.employment_status || "N/A"}
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="text-md mb-2 font-semibold text-gray-800">
+                        Professional Summary
+                      </h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li>
+                          <span className="font-medium">Qualifications:</span>{" "}
+                          {selectedTherapistDetails.profile?.qualifications ||
+                            "N/A"}
+                        </li>
+                        <li>
+                          <span className="font-medium">Experience:</span>{" "}
+                          {selectedTherapistDetails.profile?.experience ||
+                            "N/A"}
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 )}
