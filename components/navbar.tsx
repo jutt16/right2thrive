@@ -190,7 +190,7 @@ export default function Navbar() {
               href="/wellbeing-hub"
               className="text-sm font-medium transition-colors hover:text-orange-400"
             >
-              Wellbeing Hub
+              My Wellbeing Assessments
             </Link>
           ) : null}
           <Link
@@ -264,7 +264,7 @@ export default function Navbar() {
               className="text-sm font-medium transition-colors hover:text-orange-400"
               onClick={toggleMenu}
             >
-              Wellbeing Hub
+              My Wellbeing Assessments
             </Link>
           ) : null}
           <Link

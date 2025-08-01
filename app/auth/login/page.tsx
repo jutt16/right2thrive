@@ -61,7 +61,7 @@ export default function LoginPage() {
       if (data.success) {
         localStorage.setItem("token", data.token)
         localStorage.setItem("user", JSON.stringify(data.user))
-        window.location.href = "/"
+        window.location.href = "/my-wellbeing"
       } else {
         throw new Error(data.message || "Login failed")
       }
