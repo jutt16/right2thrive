@@ -5,7 +5,7 @@ import { ThumbsUp } from "lucide-react";
 
 const wellbeingOptions = [
   { label: "My Goals", href: "/my-wellbeing/my-goals" },
-  { label: "Upload My Weekly Goals", href: "/my-wellbeing/upload-weekly-goals" },
+  { label: "My Weekly Goals", href: "/my-wellbeing/upload-weekly-goals" },
   { label: "Download", href: "/my-wellbeing/download" },
   { label: "My Wellbeing Plan", href: "/my-wellbeing/wellbeing-plan" },
   { label: "My Weekly Progress", href: "/my-wellbeing/weekly-progress" },
