@@ -8,321 +8,138 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar, Users, MapPin, ArrowRight } from "lucide-react";
 
-export default function CulturalActivities() {
+export default function WellbeingWorkshops() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#ff961b]">
-          Cultural Activities
+          Right2Thrive UK Wellbeing Hub
         </h1>
-        <p className="text-gray-600">
-          Explore our culturally responsive events and activities designed to
-          support mental wellbeing
+        <p className="mt-2 text-gray-600 text-lg">
+          <strong>Exciting News:</strong> Launching Our Wellbeing Workshops!
+        </p>
+        <p className="mt-4 text-gray-700">
+          Right2Thrive UK Wellbeing Hub is thrilled to announce the launch of
+          its new series of wellbeing workshops, designed to empower
+          individuals, build emotional resilience, and promote healing through
+          connection and creativity. These workshops address various aspects of
+          mental health and personal growth, providing participants with
+          practical tools and strategies to thrive in their daily lives.
         </p>
       </div>
 
-      {/* Featured Event */}
       <section className="mb-12">
-        <div className="overflow-hidden rounded-lg bg-[#00990d] text-white shadow-lg">
-          <div className="grid md:grid-cols-2">
-            <div className="p-8 md:p-12">
-              <h2 className="mb-4 text-2xl font-bold">
-                Cultural Healing Workshop Series
-              </h2>
-              <p className="mb-6">
-                Join our monthly workshop series exploring traditional healing
-                practices from diverse cultural backgrounds. Learn how these
-                practices can complement modern mental health approaches and
-                support your wellbeing journey.
-              </p>
-              <div className="mb-6 space-y-2">
-                <div className="flex items-center">
-                  <Calendar className="mr-2 h-5 w-5 text-teal-400" />
-                  <span>Next workshop: July 26, 2025 | 14:00 - 16:00</span>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="mr-2 h-5 w-5 text-teal-400" />
-                  <span>
-                    Right2Thrive UK Wellbeing Hub<br /> 37/38 North Square, Edmonton
-                    Green Shopping Centre<br />London N9 0HY
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <Users className="mr-2 h-5 w-5 text-teal-400" />
-                  <span>15 spots remaining</span>
-                </div>
-              </div>
-              <Button className="bg-blue-500 text-white hover:bg-blue-600">
-                Register Now
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-            <div className="relative h-64 md:h-auto">
-              <Image
-                src="/placeholder.svg?height=600&width=800"
-                alt="Cultural Healing Workshop"
-                fill
-                className="object-cover"
+        <h2 className="text-2xl font-bold text-[#00990d] mb-4">
+          Upcoming Wellbeing Workshops
+        </h2>
+        <ul className="list-disc list-inside text-gray-700 space-y-2">
+          <li>
+            <strong>What is Trauma and PTSD:</strong> Explore the impact of
+            trauma on the brain and body, and learn somatic practices to address
+            PTSD.
+          </li>
+          <li>
+            <strong>Understanding Anxiety & Ways to Manage:</strong> Gain
+            insights into anxiety and discover breathwork techniques to manage
+            it effectively.
+          </li>
+          <li>
+            <strong>Mindfulness Through Art (In-Person):</strong> Experience
+            creative ways to practice mindfulness through painting and essential
+            oil crafting.
+          </li>
+          <li>
+            <strong>Anger Management:</strong> Understand anger as a "mask
+            emotion" and learn dynamic meditation and self-exploration
+            techniques.
+          </li>
+          <li>
+            <strong>
+              Cultural Implications in Mental Health & Intergenerational
+              Wellbeing:
+            </strong>{" "}
+            Discuss cultural influences on mental health and explore barriers to
+            accessing support.
+          </li>
+          <li>
+            <strong>Distress Tolerance (In-Person):</strong> Learn DBT skills
+            and grounding practices to manage heightened emotions and promote
+            emotional regulation.
+          </li>
+        </ul>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-[#00990d] mb-4">About Raveen</h2>
+        <p className="text-gray-700">
+          Raveen is a registered psychotherapist with over 10 years of
+          experience in mental health and social care, having worked in sectors
+          such as probation services, the NHS, and local authorities. With a
+          holistic approach to therapy, Raveen integrates evidence-based
+          practices and Eastern techniques like breathwork and mindfulness to
+          empower individuals to achieve emotional balance and well-being.
+        </p>
+        <p className="mt-4 text-gray-700">
+          Her workshops are designed to foster connection, healing, and personal
+          growth, addressing everything from trauma and anxiety to cultural
+          implications in mental health. Raveen’s mission is to create safe,
+          supportive spaces where participants feel seen, heard, and equipped
+          with tools to thrive.
+        </p>
+      </section>
+
+      {/* Registration Form */}
+      <section className="mb-12">
+        <div className="rounded-lg bg-gray-100 p-6 shadow-md">
+          <h2 className="text-2xl font-bold text-[#00990d] mb-4">
+            Register for a Workshop
+          </h2>
+          <form className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Your Name
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your full name"
+                className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00990d]"
               />
             </div>
-          </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Your Email
+              </label>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00990d]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Select a Workshop
+              </label>
+              <select className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00990d]">
+                <option value="">Choose a workshop...</option>
+                <option value="trauma">What is Trauma and PTSD</option>
+                <option value="anxiety">
+                  Understanding Anxiety & Ways to Manage
+                </option>
+                <option value="art">Mindfulness Through Art (In-Person)</option>
+                <option value="anger">Anger Management</option>
+                <option value="cultural">
+                  Cultural Implications in Mental Health
+                </option>
+                <option value="distress">Distress Tolerance (In-Person)</option>
+              </select>
+            </div>
+            <Button className="w-full bg-[#00990d] text-white hover:bg-green-700">
+              Register
+            </Button>
+          </form>
         </div>
       </section>
-
-      {/* Upcoming Events */}
-      <section className="mb-12">
-        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
-          Upcoming Activities
-        </h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="border-2 border-teal-100">
-            <CardHeader>
-              <CardTitle>Art Therapy Session</CardTitle>
-              <CardDescription>
-                Express yourself through culturally inspired art
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md">
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Art Therapy Session"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center">
-                  <Calendar className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>June 2, 2025 | 18:00 - 20:00</span>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>Art Studio, 45 Park Lane, London</span>
-                </div>
-                <div className="flex items-center">
-                  <Users className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>8 spots remaining</span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]">
-                Register
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card className="border-2 border-teal-100">
-            <CardHeader>
-              <CardTitle>Cultural Food & Wellbeing</CardTitle>
-              <CardDescription>
-                Explore the connection between food and mental health
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md">
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Cultural Food Workshop"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center">
-                  <Calendar className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>June 10, 2025 | 12:00 - 14:00</span>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>Community Kitchen, 78 High Street, London</span>
-                </div>
-                <div className="flex items-center">
-                  <Users className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>12 spots remaining</span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]">
-                Register
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card className="border-2 border-teal-100">
-            <CardHeader>
-              <CardTitle>Mindfulness & Meditation</CardTitle>
-              <CardDescription>
-                Traditional meditation practices from around the world
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md">
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Mindfulness Session"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center">
-                  <Calendar className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>June 15, 2025 | 09:00 - 10:30</span>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>Wellness Center, 32 Queen Street, London</span>
-                </div>
-                <div className="flex items-center">
-                  <Users className="mr-2 h-4 w-4 text-teal-500" />
-                  <span>20 spots remaining</span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]">
-                Register
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-      </section>
-
-      {/* Past Events */}
-      <section className="mb-12">
-        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
-          Past Activities
-        </h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Cultural Identity Workshop</CardTitle>
-              <CardDescription>
-                Exploring the role of cultural identity in mental health
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md">
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Cultural Identity Workshop"
-                  fill
-                  className="object-cover opacity-70"
-                />
-              </div>
-              <p className="text-sm text-gray-600">
-                This workshop explored how cultural identity influences mental
-                health and wellbeing, with discussions on navigating cultural
-                expectations and building resilience.
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">
-                View Gallery
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Storytelling for Healing</CardTitle>
-              <CardDescription>
-                Traditional storytelling as a therapeutic practice
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md">
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Storytelling Session"
-                  fill
-                  className="object-cover opacity-70"
-                />
-              </div>
-              <p className="text-sm text-gray-600">
-                Participants shared stories from their cultural backgrounds and
-                learned how storytelling can be used as a therapeutic tool for
-                processing emotions and experiences.
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">
-                View Gallery
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Music & Movement Therapy</CardTitle>
-              <CardDescription>
-                Exploring cultural rhythms and movement for wellbeing
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md">
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Music Therapy Session"
-                  fill
-                  className="object-cover opacity-70"
-                />
-              </div>
-              <p className="text-sm text-gray-600">
-                This session introduced participants to various cultural music
-                and movement practices that can help reduce stress, improve
-                mood, and promote emotional expression.
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">
-                View Gallery
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-      </section>
-
-      {/* Community Testimonials */}
-      {/* <section>
-        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
-          Community Testimonials
-        </h2>
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="bg-gray-50">
-            <CardContent className="p-6">
-              <p className="mb-4 italic text-gray-600">
-                "The cultural healing workshops have been transformative for me.
-                Learning about traditional practices from my heritage has helped
-                me connect with my roots and find new ways to manage my
-                anxiety."
-              </p>
-              <p className="font-medium text-[#ff961b]">
-                - Sarah K., Workshop Participant
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-50">
-            <CardContent className="p-6">
-              <p className="mb-4 italic text-gray-600">
-                "I've struggled to find mental health support that understands
-                my cultural background. Right2Thrive's activities have provided
-                a space where I feel seen and understood. The mindfulness
-                sessions have been particularly helpful."
-              </p>
-              <p className="font-medium text-[#ff961b]">
-                - Michael T., Regular Attendee
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section> */}
     </div>
   );
 }
