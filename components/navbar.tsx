@@ -237,7 +237,7 @@ export default function Navbar() {
                       toggleMenu();
                     }}
                   >
-                    <Heart className="mr-2 h-4 w-4" /> My Wellbeing
+                    <Heart className="mr-2 h-4 w-4" /> My Wellbeing Assessments
                   </Button>
                   <Button
                     variant="ghost"
