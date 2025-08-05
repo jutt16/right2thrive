@@ -1,3 +1,4 @@
+// IMPROVED UI NAVBAR WITH CLEANER STYLING
 "use client";
 
 import { useState, useEffect } from "react";
@@ -49,14 +50,12 @@ export default function Navbar() {
         throw new Error(data.message || "Logout failed");
       }
 
-      // Clear local storage and redirect regardless of API response
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setIsAuthenticated(false);
       setUserData(null);
       window.location.href = "/";
-    } catch (err) {
-      // Even if the API call fails, we still want to clear local storage and redirect
+    } catch {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setIsAuthenticated(false);
@@ -65,162 +64,108 @@ export default function Navbar() {
     }
   };
 
-  const handleProfileClick = () => {
-    router.push("/profile");
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const AuthButtons = () => (
-    <>
-      <Link href="/auth/login">
-        <Button
-          variant="outline"
-          className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
-        >
-          Login
-        </Button>
-      </Link>
-      <Link href="/auth/signup">
-        <Button className="bg-blue-500 text-white hover:bg-blue-600">
-          Sign Up
-        </Button>
-      </Link>
-    </>
-  );
-
-  const ProfileMenu = () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex items-center space-x-2 text-white hover:bg-[#3c362f]"
-        >
-          <User className="h-5 w-5" />
-          <span className="hidden md:inline-block">
-            {userData?.name || "Profile"}
-          </span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem
-          onClick={handleProfileClick}
-          className="cursor-pointer"
-        >
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
-
-        {/* My Wellbeing with Heart icon */}
-        <DropdownMenuItem
-          onClick={() => router.push("/my-wellbeing")}
-          className="cursor-pointer"
-        >
-          <Heart className="mr-2 h-4 w-4" />
-          <span>My Wellbeing</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => router.push("/my-bookings")}
-          className="cursor-pointer"
-        >
-          <User className="mr-2 h-4 w-4" />
-          <span>My Bookings</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={handleLogout}
-          className="cursor-pointer text-red-600"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Logout</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+  const handleProfileClick = () => router.push("/profile");
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-[#00990d] text-white">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/90 backdrop-blur-lg">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center">
-          <Link href="/" className="flex items-center space-x-2">
-            <Image
-              src="/logo.png"
-              alt="Right2Thrive UK Logo"
-              width={50}
-              height={50}
-              className="rounded-full"
-            />
-            <span className="hidden text-lg font-bold md:inline-block">
-              Right2Thrive UK
-            </span>
-          </Link>
-        </div>
+        <Link href="/" className="flex items-center space-x-2">
+          <Image
+            src="/logo.png"
+            alt="Right2Thrive UK Logo"
+            width={45}
+            height={45}
+            className="rounded-full"
+          />
+          <span className="text-lg font-bold text-[#00990d]">
+            Right2Thrive UK
+          </span>
+        </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex md:items-center md:space-x-6">
-          <Link
-            href="/"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-          >
-            Home
-          </Link>
-          <Link
-            href="/about"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/cultural-activities"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-          >
-            Cultural Activities
-          </Link>
-          <Link
-            href="/blog"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-          >
-            Blog
-          </Link>
-          {isAuthenticated ? (
+        <nav className="hidden md:flex items-center space-x-6">
+          {[
+            ["Home", "/"],
+            ["About Us", "/about"],
+            ["Cultural Activities", "/cultural-activities"],
+            ["Blog", "/blog"],
+            ["Press Release", "/press"],
+          ].map(([label, href]) => (
+            <Link
+              key={label}
+              href={href}
+              className="text-sm font-medium text-gray-700 hover:text-[#00990d] transition"
+            >
+              {label}
+            </Link>
+          ))}
+
+          {isAuthenticated && (
             <Link
               href="/wellbeing-hub"
-              className="text-sm font-medium transition-colors hover:text-orange-400"
+              className="text-sm font-medium text-gray-700 hover:text-[#00990d]"
             >
-              My Wellbeing Assessments
+              My Wellbeing
             </Link>
-          ) : null}
-          <Link
-            href="/press"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-          >
-            Press Release
-          </Link>
+          )}
         </nav>
 
-        <div className="hidden items-center space-x-4 md:flex">
-          <Link
-            href="https://instagram.com/@Right2ThriveUK"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Instagram className="h-5 w-5 text-white hover:text-orange-400" />
+        <div className="hidden md:flex items-center space-x-4">
+          <Link href="https://instagram.com/@Right2ThriveUK" target="_blank">
+            <Instagram className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
           </Link>
-          <Link
-            href="https://twitter.com/@Right2ThriveUK"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Twitter className="h-5 w-5 text-white hover:text-orange-400" />
+          <Link href="https://twitter.com/@Right2ThriveUK" target="_blank">
+            <Twitter className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
           </Link>
-          {isAuthenticated ? <ProfileMenu /> : <AuthButtons />}
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="text-[#00990d] hover:bg-green-100"
+                >
+                  <User className="h-5 w-5 mr-1" />
+                  {userData?.name || "Profile"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleProfileClick}>
+                  <User className="h-4 w-4 mr-2" /> Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/my-wellbeing")}>
+                  <Heart className="h-4 w-4 mr-2" /> My Wellbeing
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/my-bookings")}>
+                  <User className="h-4 w-4 mr-2" /> My Bookings
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-500"
+                >
+                  <LogOut className="h-4 w-4 mr-2" /> Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex space-x-2">
+              <Link href="/auth/login">
+                <Button
+                  variant="outline"
+                  className="text-orange-600 border-orange-500 hover:bg-orange-500 hover:text-white"
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button className="bg-[#00990d] text-white hover:bg-green-700">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button className="md:hidden" onClick={toggleMenu}>
+        <button className="md:hidden text-[#00990d]" onClick={toggleMenu}>
           {isMenuOpen ? (
             <X className="h-6 w-6" />
           ) : (
@@ -229,146 +174,113 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Navigation */}
-      <div
-        className={cn(
-          "absolute left-0 right-0 z-50 bg-[#00990d] px-4 py-4 shadow-lg md:hidden",
-          isMenuOpen ? "block" : "hidden"
-        )}
-      >
-        <nav className="flex flex-col space-y-4">
-          <Link
-            href="/"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-            onClick={toggleMenu}
-          >
-            Home
-          </Link>
-          <Link
-            href="/cultural-activities"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-            onClick={toggleMenu}
-          >
-            Cultural Activities
-          </Link>
-          <Link
-            href="/blog"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-            onClick={toggleMenu}
-          >
-            Blog
-          </Link>
-          {isAuthenticated ? (
-            <Link
-              href="/wellbeing-hub"
-              className="text-sm font-medium transition-colors hover:text-orange-400"
-              onClick={toggleMenu}
-            >
-              My Wellbeing Assessments
-            </Link>
-          ) : null}
-          <Link
-            href="/about"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-            onClick={toggleMenu}
-          >
-            Right2Thrive UK
-          </Link>
-          <Link
-            href="/press"
-            className="text-sm font-medium transition-colors hover:text-orange-400"
-            onClick={toggleMenu}
-          >
-            Press Release
-          </Link>
-          <div className="flex items-center space-x-4 pt-2">
-            <Link
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Instagram className="h-5 w-5 text-white hover:text-orange-400" />
-            </Link>
-            <Link
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Twitter className="h-5 w-5 text-white hover:text-orange-400" />
-            </Link>
-          </div>
-          <div className="flex flex-col space-y-2">
-            {isAuthenticated ? (
-              <>
-                <Button
-                  variant="outline"
-                  className="w-full border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
-                  onClick={() => {
-                    handleProfileClick();
-                    toggleMenu();
-                  }}
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </Button>
+      {isMenuOpen && (
+        <div className="bg-white px-4 py-4 shadow-md md:hidden">
+          <nav className="flex flex-col space-y-4 text-[#00990d]">
+            {[
+              ["Home", "/"],
+              ["About Us", "/about"],
+              ["Cultural Activities", "/cultural-activities"],
+              ["Blog", "/blog"],
+              ["Press Release", "/press"],
+            ].map(([label, href]) => (
+              <Link
+                key={label}
+                href={href}
+                onClick={toggleMenu}
+                className="text-sm font-medium hover:text-orange-500"
+              >
+                {label}
+              </Link>
+            ))}
 
-                {/* Add My Wellbeing */}
-                <Button
-                  variant="outline"
-                  className="w-full border-pink-500 text-pink-600 hover:bg-pink-500 hover:text-white"
-                  onClick={() => {
-                    router.push("/my-wellbeing");
-                    toggleMenu();
-                  }}
-                >
-                  <Heart className="mr-2 h-4 w-4" />
-                  My Wellbeing
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="w-full border-indigo-500 text-indigo-600 hover:bg-indigo-500 hover:text-white"
-                  onClick={() => {
-                    router.push("/my-bookings");
-                    toggleMenu();
-                  }}
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  My Bookings
-                </Button>
-                
-                <Button
-                  variant="outline"
-                  className="w-full border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
-                  onClick={() => {
-                    handleLogout();
-                    toggleMenu();
-                  }}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/auth/login" onClick={toggleMenu}>
-                  <Button
-                    variant="outline"
-                    className="w-full border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
-                  >
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/auth/signup" onClick={toggleMenu}>
-                  <Button className="w-full bg-blue-500 text-white hover:bg-blue-600">
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
+            {isAuthenticated && (
+              <Link
+                href="/wellbeing-hub"
+                onClick={toggleMenu}
+                className="text-sm font-medium hover:text-orange-500"
+              >
+                My Wellbeing
+              </Link>
             )}
-          </div>
-        </nav>
-      </div>
+
+            <div className="flex gap-4 mt-4">
+              <Link
+                href="https://instagram.com/@Right2ThriveUK"
+                target="_blank"
+              >
+                <Instagram className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
+              </Link>
+              <Link href="https://twitter.com/@Right2ThriveUK" target="_blank">
+                <Twitter className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
+              </Link>
+            </div>
+
+            <div className="mt-4 border-t pt-4">
+              {isAuthenticated ? (
+                <div className="flex flex-col space-y-1">
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-green-700 hover:bg-green-100"
+                    onClick={() => {
+                      handleProfileClick();
+                      toggleMenu();
+                    }}
+                  >
+                    <User className="mr-2 h-4 w-4" /> Profile
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-green-700 hover:bg-green-100"
+                    onClick={() => {
+                      router.push("/my-wellbeing");
+                      toggleMenu();
+                    }}
+                  >
+                    <Heart className="mr-2 h-4 w-4" /> My Wellbeing
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-green-700 hover:bg-green-100"
+                    onClick={() => {
+                      router.push("/my-bookings");
+                      toggleMenu();
+                    }}
+                  >
+                    <User className="mr-2 h-4 w-4" /> My Bookings
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-red-600 hover:bg-red-100"
+                    onClick={() => {
+                      handleLogout();
+                      toggleMenu();
+                    }}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-1">
+                  <Link href="/auth/login" onClick={toggleMenu}>
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-orange-600 hover:bg-orange-100"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup" onClick={toggleMenu}>
+                    <Button className="justify-start bg-[#00990d] text-white hover:bg-green-700 w-full">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
