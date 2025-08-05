@@ -105,7 +105,7 @@ export default function Navbar() {
               href="/wellbeing-hub"
               className="text-sm font-medium text-gray-700 hover:text-[#00990d]"
             >
-              My Wellbeing
+              My Wellbeing Assessments
             </Link>
           )}
         </nav>
@@ -200,7 +200,7 @@ export default function Navbar() {
                 onClick={toggleMenu}
                 className="text-sm font-medium hover:text-orange-500"
               >
-                My Wellbeing
+                My Wellbeing Assessments
               </Link>
             )}
 
@@ -237,7 +237,7 @@ export default function Navbar() {
                       toggleMenu();
                     }}
                   >
-                    <Heart className="mr-2 h-4 w-4" /> My Wellbeing Assessments
+                    <Heart className="mr-2 h-4 w-4" /> My Wellbeing
                   </Button>
                   <Button
                     variant="ghost"
