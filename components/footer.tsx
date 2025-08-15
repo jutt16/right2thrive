@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="flex flex-col items-center md:items-start">
             <Link href="/" className="mb-4 flex items-center space-x-2">
-              <Image src="/logo.png" alt="Right2Thrive UK Logo" width={60} height={60} className="rounded-full" />
+              <Image src="/right2thrive-logo.jpg" alt="Right2Thrive UK Logo" width={60} height={60} className="rounded-full" />
               <span className="text-lg font-bold">Right2Thrive UK</span>
             </Link>
             <p className="text-sm text-gray-300">Together We Thrive</p><br />

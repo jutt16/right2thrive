@@ -78,7 +78,7 @@ export default function SignupPage() {
       <Card className="mx-auto w-full max-w-md border-2 border-teal-100">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center">
-            <Image src="/logo.png" alt="Right2Thrive UK Logo" width={80} height={80} className="mb-4 rounded-full" />
+            <Image src="/right2thrive-logo.jpg" alt="Right2Thrive UK Logo" width={80} height={80} className="mb-4 rounded-full" />
           </div>
           <CardTitle className="text-2xl font-bold text-[#ff961b]">Create an Account</CardTitle>
           <CardDescription>Sign up to access the Right2Thrive UK wellbeing platform</CardDescription>

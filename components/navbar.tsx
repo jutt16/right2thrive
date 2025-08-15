@@ -72,7 +72,7 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
           <Image
-            src="/logo.png"
+            src="/right2thrive-logo.jpg"
             alt="Right2Thrive UK Logo"
             width={45}
             height={45}
@@ -90,6 +90,7 @@ export default function Navbar() {
             ["Cultural Activities", "/cultural-activities"],
             ["Blog", "/blog"],
             ["Press Release", "/press"],
+            ["Privacy Policy", "/privacy-policy"], 
           ].map(([label, href]) => (
             <Link
               key={label}
@@ -183,6 +184,7 @@ export default function Navbar() {
               ["Cultural Activities", "/cultural-activities"],
               ["Blog", "/blog"],
               ["Press Release", "/press"],
+              ["Privacy Policy", "/privacy-policy"],
             ].map(([label, href]) => (
               <Link
                 key={label}

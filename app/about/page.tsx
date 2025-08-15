@@ -20,7 +20,7 @@ export default function About() {
             </div>
             <div className="flex justify-center">
               <Image
-                src="/logo.png"
+                src="/right2thrive-logo.jpg"
                 alt="Right2Thrive UK Logo"
                 width={300}
                 height={300}

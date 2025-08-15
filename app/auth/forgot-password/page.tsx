@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center">
             <Image
-              src="/logo.png"
+              src="/right2thrive-logo.jpg"
               alt="Right2Thrive UK Logo"
               width={80}
               height={80}
