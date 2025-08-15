@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from 'react';
+import { Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -75,7 +75,7 @@ export default function WellbeingHub() {
 
   useEffect(() => {
     // Only run on client side
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       const user = localStorage.getItem("user");
       if (token && user) {
@@ -405,14 +405,20 @@ function WellbeingHubContent() {
             <Card>
               <CardHeader>
                 <CardTitle>GAD-7 Assessment</CardTitle>
-                <CardDescription>
-                  Generalized Anxiety Disorder 7-item scale
-                </CardDescription>
+                <CardDescription>How Are You Feeling Lately?</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  The GAD-7 is a self-reported questionnaire for screening and
-                  measuring the severity of generalized anxiety disorder.
+                  Your well-being coach is here to support you! These 7 simple
+                  questions are designed to help you check in with yourself and
+                  see how you’ve been feeling. It’s like a quick personal
+                  check-up to better understand what’s going on in your life and
+                  how things might be affecting you.
+                </p>
+                <br />
+                <p className="text-sm text-gray-600">
+                  1Your coach can use this to guide you and work with you to
+                  help you feel your best!
                 </p>
               </CardContent>
               <CardFooter>
@@ -430,14 +436,21 @@ function WellbeingHubContent() {
               <CardHeader>
                 <CardTitle>PHQ-9 Assessment</CardTitle>
                 <CardDescription>
-                  Patient Health Questionnaire 9-item scale
+                  How Are You Feeling? <br />
+                  Let’s Check In!
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  The PHQ-9 is a self-administered depression scale used for
-                  screening, diagnosing, and monitoring the severity of
-                  depression.
+                  Your well-being coach is here to support you! This quick set
+                  of questions is designed to help you reflect on how you’ve
+                  been feeling lately. It’s a simple way to understand your
+                  emotions, energy, and how life might be affecting you.
+                </p>
+                <br />
+                <p className="text-sm text-gray-600">
+                  By answering honestly, you’ll give your coach the insight they
+                  need to better support you and help you feel your best!
                 </p>
               </CardContent>
               <CardFooter>
