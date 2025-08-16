@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const steps = [
   "start",
@@ -17,37 +16,109 @@ const steps = [
   "reflection",
   "review",
 ];
-// [same imports]
+
+type AnyRecord = Record<string, any>;
+
+interface TherapistProfile {
+  gender?: string | null;
+  cultural_background?: string | null;
+  telephone?: string | null;
+  mobile?: string | null;
+  address?: string | null;
+  country?: string | null;
+  qualifications?: string | null;
+  experience?: string | null;
+}
+
+interface TherapistDetails {
+  id: number;
+  first_name?: string | null;
+  last_name?: string | null;
+  email?: string | null;
+  profile?: TherapistProfile | null;
+}
 
 export default function WellbeingPlan() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState({});
-  const [loadingTherapists, setLoadingTherapists] = useState(true);
-  const [therapists, setTherapists] = useState([]);
+  const [formData, setFormData] = useState<AnyRecord>({});
+  const [selectedTherapist, setSelectedTherapist] = useState<string>("");
+  const [therapistDetails, setTherapistDetails] =
+    useState<TherapistDetails | null>(null);
+  const [isLoadingTherapistDetails, setIsLoadingTherapistDetails] =
+    useState(false);
+  const [error, setError] = useState<string>("");
 
+  // Read therapist from localStorage and fetch details
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/therapists`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data?.therapists)) {
-          setTherapists(data.data.therapists);
-        } else {
-          console.error("Invalid therapist data:", data);
-          setTherapists([]);
-        }
-      })
-      .catch((err) => {
-        console.error("Error fetching therapists:", err);
-        setTherapists([]);
-      })
-      .finally(() => setLoadingTherapists(false));
+    if (typeof window === "undefined") return;
+
+    // ensure logged in (optional guard)
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (!token || !user) return;
+
+    let stored: any = null;
+
+    const tRaw = localStorage.getItem("therapist");
+    if (tRaw) {
+      try {
+        stored = JSON.parse(tRaw);
+      } catch {}
+    }
+    if (!stored) {
+      const authRaw = localStorage.getItem("auth");
+      if (authRaw) {
+        try {
+          const parsed = JSON.parse(authRaw);
+          if (parsed?.therapist) stored = parsed.therapist;
+        } catch {}
+      }
+    }
+
+    if (stored?.id) {
+      const idStr = String(stored.id);
+      setSelectedTherapist(idStr);
+      // set into form
+      setFormData((prev) => ({ ...prev, therapist: Number(idStr) }));
+      fetchTherapistDetails(idStr);
+    } else {
+      setSelectedTherapist("");
+    }
   }, []);
 
-  const updateField = (field, value) => {
+  const fetchTherapistDetails = async (id: string) => {
+    setIsLoadingTherapistDetails(true);
+    setError("");
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/therapists/${id}`
+      );
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to fetch therapist details");
+      }
+      setTherapistDetails(data.data?.therapist ?? null);
+    } catch (e) {
+      setTherapistDetails(null);
+      setError(
+        e instanceof Error ? e.message : "Failed to load therapist details"
+      );
+    } finally {
+      setIsLoadingTherapistDetails(false);
+    }
+  };
+
+  const getTherapistName = (t?: TherapistDetails | null) => {
+    if (!t) return "—";
+    const full = `${t.first_name ?? ""} ${t.last_name ?? ""}`.trim();
+    return full || "—";
+  };
+
+  const updateField = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const addToArray = (field, value) => {
+  const addToArray = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: [...(prev[field] || []), value],
@@ -58,9 +129,9 @@ export default function WellbeingPlan() {
     setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
   const handleBack = () => setCurrentStep((s) => Math.max(s - 1, 0));
 
-  const renderInputList = (field, placeholder) => (
+  const renderInputList = (field: string, placeholder: string) => (
     <>
-      {(formData[field] || []).map((val, i) => (
+      {(formData[field] || []).map((val: string, i: number) => (
         <div key={i} className="mb-1 px-2 py-1 border rounded">
           {val}
         </div>
@@ -71,10 +142,10 @@ export default function WellbeingPlan() {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
-            const val = e.target.value.trim();
+            const val = (e.target as HTMLInputElement).value.trim();
             if (val) {
               addToArray(field, val);
-              e.target.value = "";
+              (e.target as HTMLInputElement).value = "";
             }
           }
         }}
@@ -82,14 +153,18 @@ export default function WellbeingPlan() {
     </>
   );
 
-  const renderCheckboxGroup = (field, options) =>
+  const renderCheckboxGroup = (field: string, options: string[]) =>
     options.map((option) => (
       <label key={option} className="block mb-1">
         <input
           type="checkbox"
-          checked={formData[field]?.includes(option) || false}
+          checked={
+            Array.isArray(formData[field])
+              ? formData[field].includes(option)
+              : false
+          }
           onChange={(e) => {
-            const prev = formData[field] || [];
+            const prev = (formData[field] || []) as string[];
             updateField(
               field,
               e.target.checked
@@ -104,13 +179,18 @@ export default function WellbeingPlan() {
 
   const handleSubmit = async () => {
     try {
-      const token = localStorage.getItem("token"); // or however you store it
-
-      //   console.log("token:", token);
+      const token = localStorage.getItem("token");
       if (!token) {
         alert("You must be logged in to upload.");
         return;
       }
+      if (!selectedTherapist) {
+        alert("No therapist found in your account. Please contact support.");
+        return;
+      }
+
+      // ensure therapist stays in payload
+      const payload = { ...formData, therapist: Number(selectedTherapist) };
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/wellbeing-forms`,
@@ -118,9 +198,9 @@ export default function WellbeingPlan() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // ✅ Add token here
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         }
       );
 
@@ -139,10 +219,7 @@ export default function WellbeingPlan() {
 
   const renderStep = () => {
     switch (steps[currentStep]) {
-      case "start":
-        const selectedTherapist =
-          therapists.find((t) => t.id === Number(formData.therapist)) || null;
-
+      case "start": {
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">
@@ -154,67 +231,67 @@ export default function WellbeingPlan() {
               daily life.
             </p>
 
-            <label className="block mt-4 mb-2">Select Therapist:</label>
-            {loadingTherapists ? (
-              <p>Loading therapists...</p>
-            ) : (
-              <select
-                className="border p-2 w-full rounded"
-                value={formData.therapist || ""}
-                onChange={(e) => updateField("therapist", e.target.value)}
-              >
-                <option value="">Select</option>
-                {therapists.map((therapist) => (
-                  <option key={therapist.id} value={therapist.id}>
-                    {therapist.name}
-                  </option>
-                ))}
-              </select>
-            )}
+            <div className="mt-4 bg-blue-50 p-4 rounded border border-blue-200">
+              <h4 className="font-semibold text-blue-900 mb-2">
+                Your Therapist
+              </h4>
 
-            {selectedTherapist && (
-              <div className="mt-4 bg-blue-50 p-4 rounded border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2">
-                  Therapist Details:
-                </h4>
-                <p>
-                  <strong>Name:</strong> {selectedTherapist.name}
-                </p>
-                <p>
-                  <strong>Email:</strong> {selectedTherapist.email}
-                </p>
-                <p>
-                  <strong>Gender:</strong> {selectedTherapist.gender}
-                </p>
-                <p>
-                  <strong>Cultural Background:</strong>{" "}
-                  {selectedTherapist.cultural_background}
-                </p>
-                {selectedTherapist.telephone && (
+              {isLoadingTherapistDetails ? (
+                <p>Loading therapist details…</p>
+              ) : selectedTherapist ? (
+                <>
                   <p>
-                    <strong>Telephone:</strong> {selectedTherapist.telephone}
+                    <strong>Name:</strong> {getTherapistName(therapistDetails)}
                   </p>
-                )}
-                {selectedTherapist.mobile && (
                   <p>
-                    <strong>Mobile:</strong> {selectedTherapist.mobile}
+                    <strong>Email:</strong> {therapistDetails?.email ?? "N/A"}
                   </p>
-                )}
-                {selectedTherapist.qualifications && (
                   <p>
-                    <strong>Qualifications:</strong>{" "}
-                    {selectedTherapist.qualifications}
+                    <strong>Gender:</strong>{" "}
+                    {therapistDetails?.profile?.gender ?? "N/A"}
                   </p>
-                )}
-                {selectedTherapist.experience && (
                   <p>
-                    <strong>Experience:</strong> {selectedTherapist.experience}
+                    <strong>Cultural Background:</strong>{" "}
+                    {therapistDetails?.profile?.cultural_background ?? "N/A"}
                   </p>
-                )}
-              </div>
-            )}
+                  {therapistDetails?.profile?.telephone && (
+                    <p>
+                      <strong>Telephone:</strong>{" "}
+                      {therapistDetails.profile.telephone}
+                    </p>
+                  )}
+                  {therapistDetails?.profile?.mobile && (
+                    <p>
+                      <strong>Mobile:</strong> {therapistDetails.profile.mobile}
+                    </p>
+                  )}
+                  {therapistDetails?.profile?.qualifications && (
+                    <p>
+                      <strong>Qualifications:</strong>{" "}
+                      {therapistDetails.profile.qualifications}
+                    </p>
+                  )}
+                  {therapistDetails?.profile?.experience && (
+                    <p>
+                      <strong>Experience:</strong>{" "}
+                      {therapistDetails.profile.experience}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-gray-700">
+                  No therapist found in your account. Please contact support if
+                  this is unexpected.
+                </p>
+              )}
+
+              {error && (
+                <p className="mt-2 text-sm text-red-600">Error: {error}</p>
+              )}
+            </div>
           </div>
         );
+      }
 
       case "daily-checkin":
         return (
@@ -273,7 +350,7 @@ export default function WellbeingPlan() {
             {(formData.supportCircle?.length
               ? formData.supportCircle
               : [""]
-            ).map((entry, index, arr) => (
+            ).map((entry: string, index: number, arr: string[]) => (
               <div key={index} className="mb-2 flex gap-2 items-center">
                 <input
                   className="border p-2 rounded w-full"
@@ -316,7 +393,7 @@ export default function WellbeingPlan() {
             {(formData.mentalProfessionals?.length
               ? formData.mentalProfessionals
               : [""]
-            ).map((entry, index, arr) => (
+            ).map((entry: string, index: number, arr: string[]) => (
               <div key={index} className="mb-2 flex gap-2 items-center">
                 <input
                   className="border p-2 rounded w-full"
@@ -537,7 +614,16 @@ export default function WellbeingPlan() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Review Your Plan</h3>
             <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
-              {JSON.stringify(formData, null, 2)}
+              {JSON.stringify(
+                {
+                  ...formData,
+                  therapist: Number(
+                    selectedTherapist || formData.therapist || 0
+                  ),
+                },
+                null,
+                2
+              )}
             </pre>
             <button
               onClick={handleSubmit}

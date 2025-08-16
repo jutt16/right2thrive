@@ -109,6 +109,8 @@ export default function PHQ9Assessment() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [showInitialSelection, setShowInitialSelection] = useState(true);
+
+  // therapist selection (same behavior as your GAD7)
   const [selectedTherapist, setSelectedTherapist] = useState<string>("");
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [isLoadingTherapists, setIsLoadingTherapists] = useState(false);
@@ -117,23 +119,54 @@ export default function PHQ9Assessment() {
   const [isLoadingTherapistDetails, setIsLoadingTherapistDetails] =
     useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userData, setUserData] = useState<any>(null);
+  const [isTherapistLocked, setIsTherapistLocked] = useState(false);
+
   const router = useRouter();
 
+  // Auth + set locked therapist from localStorage (same as GAD7)
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user");
-      if (token && user) {
-        setIsAuthenticated(true);
-        setUserData(JSON.parse(user));
-      } else {
-        router.push("/auth/login");
+    if (typeof window === "undefined") return;
+
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (!token || !user) {
+      router.push("/auth/login");
+      return;
+    }
+    setIsAuthenticated(true);
+
+    // Try to read therapist from either `therapist` or `auth`
+    const storedTherapistRaw = localStorage.getItem("therapist");
+    let storedTherapist: any = null;
+
+    if (storedTherapistRaw) {
+      try {
+        storedTherapist = JSON.parse(storedTherapistRaw);
+      } catch {}
+    }
+
+    if (!storedTherapist) {
+      const authRaw = localStorage.getItem("auth");
+      if (authRaw) {
+        try {
+          const parsed = JSON.parse(authRaw);
+          if (parsed?.therapist) storedTherapist = parsed.therapist;
+        } catch {}
       }
+    }
+
+    if (storedTherapist?.id) {
+      setSelectedTherapist(String(storedTherapist.id));
+      setIsTherapistLocked(true);
+      // Preload therapist details
+      fetchTherapistDetails(String(storedTherapist.id));
     }
   }, [router]);
 
+  // Fetch therapist list only if NOT locked (same as GAD7)
   useEffect(() => {
+    if (isTherapistLocked) return;
+
     const fetchTherapists = async () => {
       setIsLoadingTherapists(true);
       try {
@@ -167,8 +200,9 @@ export default function PHQ9Assessment() {
     };
 
     fetchTherapists();
-  }, []);
+  }, [isTherapistLocked]);
 
+  // Fetch standard PHQ-9 questions by default (same pattern as GAD7)
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -208,74 +242,60 @@ export default function PHQ9Assessment() {
   const handleNext = async () => {
     if (currentQuestion < (assessmentData?.questions.length || 0) - 1) {
       setCurrentQuestion(currentQuestion + 1);
-    } else {
-      // Submit assessment when reaching the last question
-      setIsSubmitting(true);
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Authentication required");
-        }
+      return;
+    }
 
-        // Format answers with sequential numbers from 1 to 9
-        const formattedAnswers = assessmentData?.questions.reduce(
-          (acc, question, index) => {
-            acc[index + 1] = answers[index]; // Use index + 1 to get numbers 1-9
-            return acc;
-          },
-          {} as Record<number, number>
-        );
+    // Submit on last question
+    setIsSubmitting(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Authentication required");
 
-        // Prepare request body based on assessment type
-        const requestBody = selectedTherapist
-          ? {
-              answers: formattedAnswers,
-              therapist_id: parseInt(selectedTherapist),
-            }
-          : {
-              answers: formattedAnswers,
-            };
+      // Map answers to 1..9 keys
+      const formattedAnswers = assessmentData?.questions.reduce(
+        (acc, _q, index) => {
+          acc[index + 1] = answers[index];
+          return acc;
+        },
+        {} as Record<number, number>
+      );
 
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
+      const requestBody = selectedTherapist
+        ? {
+            answers: formattedAnswers,
+            therapist_id: parseInt(selectedTherapist),
           }
-        );
+        : { answers: formattedAnswers };
 
-        console.log("response", response);
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to submit assessment");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(requestBody),
         }
+      );
 
-        if (data.success) {
-          setShowResults(true);
-        } else {
-          throw new Error(data.message || "Failed to submit assessment");
-        }
-      } catch (error) {
-        console.error("Error submitting assessment:", error);
-        setError(
-          error instanceof Error ? error.message : "Failed to submit assessment"
-        );
-      } finally {
-        setIsSubmitting(false);
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to submit assessment");
       }
+      setShowResults(true);
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to submit assessment"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handlePrevious = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-    }
+    if (currentQuestion > 0) setCurrentQuestion(currentQuestion - 1);
   };
 
   const handleSubmit = () => {
@@ -291,12 +311,11 @@ export default function PHQ9Assessment() {
     if (!assessmentData) return { level: "", color: "bg-gray-500" };
 
     const range = assessmentData.score_ranges.find(
-      (range) => score >= range.min && score <= range.max
+      (r) => score >= r.min && score <= r.max
     );
-
     if (!range) return { level: "", color: "bg-gray-500" };
 
-    const colors = {
+    const colors: Record<string, string> = {
       "None-minimal depression": "bg-green-500",
       "Mild depression": "bg-yellow-500",
       "Moderate depression": "bg-orange-500",
@@ -306,7 +325,7 @@ export default function PHQ9Assessment() {
 
     return {
       level: range.severity,
-      color: colors[range.severity as keyof typeof colors] || "bg-gray-500",
+      color: colors[range.severity] || "bg-gray-500",
       description: range.description,
     };
   };
@@ -324,13 +343,10 @@ export default function PHQ9Assessment() {
       );
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(data.message || "Failed to fetch therapist details");
-      }
-
       if (data.success) {
         setSelectedTherapistDetails(data.data.therapist);
-        console.log("data.data", data.data);
       } else {
         throw new Error(data.message || "Failed to fetch therapist details");
       }
@@ -386,7 +402,9 @@ export default function PHQ9Assessment() {
           <h1 className="mb-8 text-center text-3xl font-bold text-[#ff961b]">
             Choose Assessment Type
           </h1>
+
           <div className="grid gap-6 md:grid-cols-2">
+            {/* General Questions (PHQ-9) */}
             <Card
               className="cursor-pointer border-2 border-teal-100 transition-all hover:border-teal-300 hover:shadow-lg"
               onClick={async () => {
@@ -396,22 +414,18 @@ export default function PHQ9Assessment() {
                     `${process.env.NEXT_PUBLIC_API_URL}/api/questions/phq9`
                   );
                   const data = await response.json();
-
-                  if (!response.ok) {
+                  if (!response.ok)
                     throw new Error(
                       data.message || "Failed to fetch questions"
                     );
-                  }
-
-                  if (data.success) {
-                    setAssessmentData(data.data);
-                    setAnswers(Array(data.data.questions.length).fill(-1));
-                    setShowInitialSelection(false);
-                  } else {
+                  if (!data.success)
                     throw new Error(
                       data.message || "Failed to fetch questions"
                     );
-                  }
+
+                  setAssessmentData(data.data);
+                  setAnswers(Array(data.data.questions.length).fill(-1));
+                  setShowInitialSelection(false);
                 } catch (err) {
                   setError(
                     err instanceof Error
@@ -445,6 +459,7 @@ export default function PHQ9Assessment() {
               </CardFooter>
             </Card>
 
+            {/* Specific Therapist Questions (PHQ-9) */}
             <Card className="border-2 border-teal-100">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-[#ff961b]">
@@ -455,49 +470,70 @@ export default function PHQ9Assessment() {
                   therapist
                 </CardDescription>
               </CardHeader>
+
               <CardContent className="space-y-4">
                 <p className="text-gray-600">
                   This version includes additional questions selected by your
                   therapist based on your specific needs.
                 </p>
+
                 <div className="space-y-2">
-                  <Label htmlFor="therapist">Select Your Therapist</Label>
-                  <Select
-                    value={selectedTherapist}
-                    onValueChange={(value) => {
-                      setSelectedTherapist(value);
-                      if (value) {
-                        fetchTherapistDetails(value);
-                      } else {
-                        setSelectedTherapistDetails(null);
-                      }
-                    }}
-                  >
-                    <SelectTrigger id="therapist" className="w-full">
-                      <SelectValue placeholder="Choose a therapist" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {isLoadingTherapists ? (
-                        <SelectItem value="loading" disabled>
-                          Loading therapists...
-                        </SelectItem>
-                      ) : !Array.isArray(therapists) ||
-                        therapists.length === 0 ? (
-                        <SelectItem value="none" disabled>
-                          No therapists available
-                        </SelectItem>
-                      ) : (
-                        therapists.map((therapist) => (
-                          <SelectItem
-                            key={therapist.id}
-                            value={therapist.id.toString()}
-                          >
-                            {therapist.name} - {therapist.cultural_background}
+                  <Label htmlFor="therapist">Your Therapist</Label>
+
+                  {/* When locked: show disabled select with single therapist; otherwise list */}
+                  {isTherapistLocked ? (
+                    <Select value={selectedTherapist} disabled>
+                      <SelectTrigger
+                        id="therapist"
+                        className="w-full opacity-80"
+                      >
+                        <SelectValue placeholder="Therapist" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selectedTherapistDetails ? (
+                          <SelectItem value={selectedTherapist}>
+                            {selectedTherapistDetails.first_name}{" "}
+                            {selectedTherapistDetails.last_name}
                           </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
+                        ) : (
+                          <SelectItem value={selectedTherapist}>
+                            Selected therapist
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Select
+                      value={selectedTherapist}
+                      onValueChange={(value) => {
+                        setSelectedTherapist(value);
+                        if (value) fetchTherapistDetails(value);
+                        else setSelectedTherapistDetails(null);
+                      }}
+                    >
+                      <SelectTrigger id="therapist" className="w-full">
+                        <SelectValue placeholder="Choose a therapist" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {isLoadingTherapists ? (
+                          <SelectItem value="loading" disabled>
+                            Loading therapists...
+                          </SelectItem>
+                        ) : !Array.isArray(therapists) ||
+                          therapists.length === 0 ? (
+                          <SelectItem value="none" disabled>
+                            No therapists available
+                          </SelectItem>
+                        ) : (
+                          therapists.map((t) => (
+                            <SelectItem key={t.id} value={t.id.toString()}>
+                              {t.name} - {t.cultural_background}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
 
                 {isLoadingTherapistDetails && (
@@ -557,6 +593,13 @@ export default function PHQ9Assessment() {
                           {selectedTherapistDetails.profile
                             ?.cultural_background || "N/A"}
                         </li>
+                        <li>
+                          <span className="font-medium">
+                            Employment Status:
+                          </span>{" "}
+                          {selectedTherapistDetails.profile
+                            ?.employment_status || "N/A"}
+                        </li>
                       </ul>
                     </div>
 
@@ -580,58 +623,50 @@ export default function PHQ9Assessment() {
                   </div>
                 )}
               </CardContent>
+
               <CardFooter>
                 <Button
                   className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]"
                   onClick={async () => {
-                    if (selectedTherapist) {
-                      try {
-                        setIsLoading(true);
-                        const response = await fetch(
-                          `${process.env.NEXT_PUBLIC_API_URL}/api/questions/phq9?therapist_id=${selectedTherapist}`
+                    if (!selectedTherapist) return;
+
+                    try {
+                      setIsLoading(true);
+                      const response = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL}/api/questions/phq9?therapist_id=${selectedTherapist}`
+                      );
+                      const data = await response.json();
+
+                      if (!response.ok)
+                        throw new Error(
+                          data.message || "Failed to fetch questions"
                         );
-                        const data = await response.json();
-
-                        if (!response.ok) {
-                          throw new Error(
-                            data.message || "Failed to fetch questions"
-                          );
-                        }
-
-                        if (data.success) {
-                          if (
-                            !data.data.questions ||
-                            data.data.questions.length === 0
-                          ) {
-                            throw new Error(
-                              "Therapist has not set up any questions for the PHQ-9 assessment. Please contact your therapist to set up the assessment questions."
-                            );
-                          }
-
-                          console.log(
-                            "Therapist specific questions:",
-                            data.data
-                          );
-                          setAssessmentData(data.data);
-                          setAnswers(
-                            Array(data.data.questions.length).fill(-1)
-                          );
-                          setShowInitialSelection(false);
-                          setIsLoading(false);
-                        } else {
-                          throw new Error(
-                            data.message || "Failed to fetch questions"
-                          );
-                        }
-                      } catch (err) {
-                        setError(
-                          err instanceof Error
-                            ? err.message
-                            : "Failed to load assessment"
+                      if (!data.success)
+                        throw new Error(
+                          data.message || "Failed to fetch questions"
                         );
-                        setIsLoading(false);
-                        setShowInitialSelection(true);
+
+                      if (
+                        !data.data.questions ||
+                        data.data.questions.length === 0
+                      ) {
+                        throw new Error(
+                          "Therapist has not set up any questions for the PHQ-9 assessment. Please contact your therapist to set up the assessment questions."
+                        );
                       }
+
+                      setAssessmentData(data.data);
+                      setAnswers(Array(data.data.questions.length).fill(-1));
+                      setShowInitialSelection(false);
+                    } catch (err) {
+                      setError(
+                        err instanceof Error
+                          ? err.message
+                          : "Failed to load assessment"
+                      );
+                      setShowInitialSelection(true);
+                    } finally {
+                      setIsLoading(false);
                     }
                   }}
                   disabled={!selectedTherapist}
@@ -647,6 +682,7 @@ export default function PHQ9Assessment() {
     );
   }
 
+  // Main assessment UI
   return (
     <div className="container mx-auto px-4 py-8">
       <Button
@@ -671,6 +707,7 @@ export default function PHQ9Assessment() {
               {assessmentData.questions.length}
             </p>
           </CardHeader>
+
           <CardContent>
             <div className="space-y-6">
               <div className="text-lg font-medium text-[#ff961b]">
@@ -700,6 +737,7 @@ export default function PHQ9Assessment() {
               </RadioGroup>
             </div>
           </CardContent>
+
           <CardFooter className="flex justify-between">
             <Button
               variant="outline"

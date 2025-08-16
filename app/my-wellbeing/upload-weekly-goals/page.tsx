@@ -1,26 +1,47 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  User2, Mail, Globe, VenetianMask, Phone, Smartphone, MapPin, Landmark,
-  GraduationCap, Briefcase, UploadCloud, CheckCircle2, AlertCircle, Plus, Minus
+  User2,
+  Mail,
+  Globe,
+  VenetianMask,
+  Phone,
+  Smartphone,
+  MapPin,
+  Landmark,
+  GraduationCap,
+  Briefcase,
+  UploadCloud,
+  CheckCircle2,
+  AlertCircle,
+  Plus,
+  Minus,
 } from "lucide-react";
 
-interface Therapist {
+interface TherapistProfile {
   id: number;
-  name?: string | null;
-  first_name?: string;
-  last_name?: string;
-  email?: string;
-  gender?: string;
-  cultural_background?: string;
-  telephone?: string;
-  mobile?: string;
-  address?: string;
-  country?: string;
-  qualifications?: string;
-  experience?: string;
+  user_id: string;
+  date_of_birth?: string | null;
+  gender?: string | null;
+  cultural_background?: string | null;
+  telephone?: string | null;
+  mobile?: string | null;
+  employment_status?: string | null;
+  country?: string | null;
+  address?: string | null;
+  qualifications?: string | null;
+  experience?: string | null;
 }
+
+interface TherapistDetails {
+  id: number;
+  first_name?: string | null;
+  last_name?: string | null;
+  email?: string | null;
+  profile?: TherapistProfile | null;
+}
+
 interface WeeklyGoalRow {
   number: number;
   goal: string;
@@ -32,45 +53,92 @@ const MAX_ROWS = 20;
 const MIN_ROWS = 1;
 
 export default function UploadWeeklyGoals() {
-  const [therapists, setTherapists] = useState<Therapist[]>([]);
-  const [isLoadingTherapists, setIsLoadingTherapists] = useState(false);
-  const [selectedTherapist, setSelectedTherapist] = useState("");
+  // assigned therapist (locked from localStorage)
+  const [selectedTherapist, setSelectedTherapist] = useState<string>("");
+  const [selectedTherapistDetails, setSelectedTherapistDetails] =
+    useState<TherapistDetails | null>(null);
+  const [isLoadingTherapistDetails, setIsLoadingTherapistDetails] =
+    useState(false);
+
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   const [rows, setRows] = useState<WeeklyGoalRow[]>(
-    Array.from({ length: 5 }, (_, i) => ({ number: i + 1, goal: "", how: "", outcome: "" }))
+    Array.from({ length: 5 }, (_, i) => ({
+      number: i + 1,
+      goal: "",
+      how: "",
+      outcome: "",
+    }))
   );
   const [reflection, setReflection] = useState("");
 
-  const selectedTherapistObj = useMemo(
-    () => therapists.find((t) => t.id.toString() === selectedTherapist),
-    [therapists, selectedTherapist]
-  );
-
+  // read therapist from localStorage (prefer "therapist", fallback "auth.therapist")
   useEffect(() => {
-    const fetchTherapists = async () => {
-      setIsLoadingTherapists(true);
+    if (typeof window === "undefined") return;
+
+    // must be logged in
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (!token || !user) {
+      setError("You must be logged in.");
+      return;
+    }
+
+    let stored: any = null;
+    const tRaw = localStorage.getItem("therapist");
+    if (tRaw) {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/therapists`);
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Failed to fetch therapists");
-        if (data.success && Array.isArray(data.data?.therapists)) setTherapists(data.data.therapists);
-        else throw new Error("No therapists available");
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load therapists");
-        setTherapists([]);
-      } finally {
-        setIsLoadingTherapists(false);
+        stored = JSON.parse(tRaw);
+      } catch {}
+    }
+    if (!stored) {
+      const authRaw = localStorage.getItem("auth");
+      if (authRaw) {
+        try {
+          const parsed = JSON.parse(authRaw);
+          if (parsed?.therapist) stored = parsed.therapist;
+        } catch {}
       }
-    };
-    fetchTherapists();
+    }
+
+    if (stored?.id) {
+      const tid = String(stored.id);
+      setSelectedTherapist(tid);
+      fetchTherapistDetails(tid);
+    } else {
+      setSelectedTherapist("");
+    }
   }, []);
 
-  const getTherapistDisplayName = (t: Therapist) =>
-    t.name?.trim() ? t.name : `${t.first_name || ""} ${t.last_name || ""}`.trim();
+  const fetchTherapistDetails = async (therapistId: string) => {
+    setIsLoadingTherapistDetails(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/therapists/${therapistId}`
+      );
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to fetch therapist details");
+      }
+      setSelectedTherapistDetails(data.data?.therapist ?? null);
+    } catch (e) {
+      setSelectedTherapistDetails(null);
+      setError(
+        e instanceof Error ? e.message : "Failed to load therapist details"
+      );
+    } finally {
+      setIsLoadingTherapistDetails(false);
+    }
+  };
+
+  const getTherapistDisplayName = (t?: TherapistDetails | null) => {
+    if (!t) return "—";
+    const full = `${t.first_name ?? ""} ${t.last_name ?? ""}`.trim();
+    return full || "—";
+  };
 
   const updateRow =
     (idx: number, key: keyof Omit<WeeklyGoalRow, "number">) =>
@@ -84,13 +152,17 @@ export default function UploadWeeklyGoals() {
 
   const addRow = () =>
     setRows((prev) =>
-      prev.length >= MAX_ROWS ? prev : [...prev, { number: prev.length + 1, goal: "", how: "", outcome: "" }]
+      prev.length >= MAX_ROWS
+        ? prev
+        : [...prev, { number: prev.length + 1, goal: "", how: "", outcome: "" }]
     );
 
   const removeRowByIndex = (idx: number) =>
     setRows((prev) => {
       if (prev.length <= MIN_ROWS) return prev;
-      const next = prev.filter((_, i) => i !== idx).map((r, i) => ({ ...r, number: i + 1 }));
+      const next = prev
+        .filter((_, i) => i !== idx)
+        .map((r, i) => ({ ...r, number: i + 1 }));
       return next;
     });
 
@@ -98,18 +170,23 @@ export default function UploadWeeklyGoals() {
   const autoResize = (el: HTMLTextAreaElement | null) => {
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 240)}px`; // cap height
+    el.style.height = `${Math.min(el.scrollHeight, 240)}px`;
   };
 
   const handleSubmit = async () => {
     setSubmitError(null);
     setSubmitSuccess(null);
+
     if (!selectedTherapist) {
-      setSubmitError("Please select a therapist.");
+      setSubmitError(
+        "We couldn’t find your assigned therapist. Please contact support."
+      );
       return;
     }
+
     const hasAnyInput =
-      rows.some((r) => r.goal.trim() || r.how.trim() || r.outcome.trim()) || reflection.trim();
+      rows.some((r) => r.goal.trim() || r.how.trim() || r.outcome.trim()) ||
+      reflection.trim();
     if (!hasAnyInput) {
       setSubmitError("Please fill at least one goal or the reflection.");
       return;
@@ -123,25 +200,42 @@ export default function UploadWeeklyGoals() {
         return;
       }
       const payload = {
-        therapist_id: selectedTherapist,
-        goals: rows.map(({ number, goal, how, outcome }) => ({ number, goal, how, outcome })),
+        therapist_id: Number(selectedTherapist),
+        goals: rows.map(({ number, goal, how, outcome }) => ({
+          number,
+          goal,
+          how,
+          outcome,
+        })),
         reflection,
       };
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/weekly-goals`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/weekly-goals`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
       const data = await response.json();
-      if (!response.ok || !data.success) throw new Error(data.message || "Failed to submit weekly goals.");
+      if (!response.ok || !data.success)
+        throw new Error(data.message || "Failed to submit weekly goals.");
 
       setSubmitSuccess("Weekly goals submitted successfully!");
-      setRows((prev) => prev.map((r) => ({ ...r, goal: "", how: "", outcome: "" })));
+      setRows((prev) =>
+        prev.map((r) => ({ ...r, goal: "", how: "", outcome: "" }))
+      );
       setReflection("");
-      // scroll to top on mobile
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "An unexpected error occurred during submission.");
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred during submission."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -153,9 +247,12 @@ export default function UploadWeeklyGoals() {
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-blue-900 mb-1">My Weekly Goals</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-blue-900 mb-1">
+              My Weekly Goals
+            </h2>
             <p className="text-xs md:text-sm text-gray-700">
-              <span className="font-semibold">Instructions:</span> Write your goals for the week and note how it went.
+              <span className="font-semibold">Instructions:</span> Write your
+              goals for the week and note how it went.
             </p>
           </div>
           <button
@@ -169,44 +266,99 @@ export default function UploadWeeklyGoals() {
           </button>
         </div>
 
-        {/* Therapist select */}
+        {/* Your Therapist (read-only, from localStorage) */}
         <div className="mt-4 md:mt-5 mb-4 md:mb-5">
-          <label className="block text-sm text-gray-700 mb-1">Select Therapist</label>
-          <select
-            className="w-full border border-blue-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-            value={selectedTherapist}
-            onChange={(e) => setSelectedTherapist(e.target.value)}
-          >
-            <option value="">-- Select --</option>
-            {isLoadingTherapists && <option>Loading...</option>}
-            {!isLoadingTherapists &&
-              therapists.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {getTherapistDisplayName(t)} - {t.cultural_background ?? "N/A"}
-                </option>
-              ))}
-            {!isLoadingTherapists && therapists.length === 0 && (
-              <option disabled>No therapists found</option>
+          <label className="block text-sm text-gray-700 mb-1">
+            Your Therapist
+          </label>
+
+          <div className="w-full border border-blue-300 rounded-md px-3 py-2 text-gray-800 text-sm bg-white">
+            {isLoadingTherapistDetails ? (
+              <p className="text-gray-500">Loading therapist details…</p>
+            ) : selectedTherapist ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="flex items-center gap-2">
+                  <User2 className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Name:</strong>{" "}
+                    {getTherapistDisplayName(selectedTherapistDetails)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Email:</strong>{" "}
+                    {selectedTherapistDetails?.email ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <VenetianMask className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Gender:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.gender ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Culture:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.cultural_background ??
+                      "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Telephone:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.telephone ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Smartphone className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Mobile:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.mobile ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Address:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.address ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Landmark className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Country:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.country ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Qualifications:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.qualifications ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Briefcase className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Experience:</strong>{" "}
+                    {selectedTherapistDetails?.profile?.experience ?? "N/A"}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500">
+                No therapist found in your account. Please contact support if
+                this is unexpected.
+              </p>
             )}
-          </select>
+          </div>
+
           {error && <p className="mt-2 text-sm text-red-600">Error: {error}</p>}
         </div>
-
-        {/* Therapist details */}
-        {selectedTherapistObj && (
-          <div className="mb-5 p-3 md:p-4 border border-blue-200 rounded-lg bg-blue-50 text-sm text-gray-700 grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div className="flex items-center gap-2"><User2 className="w-4 h-4 text-blue-600" /><span><strong>Name:</strong> {getTherapistDisplayName(selectedTherapistObj)}</span></div>
-            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-blue-600" /><span><strong>Email:</strong> {selectedTherapistObj.email ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><VenetianMask className="w-4 h-4 text-blue-600" /><span><strong>Gender:</strong> {selectedTherapistObj.gender ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><Globe className="w-4 h-4 text-blue-600" /><span><strong>Culture:</strong> {selectedTherapistObj.cultural_background ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-blue-600" /><span><strong>Telephone:</strong> {selectedTherapistObj.telephone ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><Smartphone className="w-4 h-4 text-blue-600" /><span><strong>Mobile:</strong> {selectedTherapistObj.mobile ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-blue-600" /><span><strong>Address:</strong> {selectedTherapistObj.address ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><Landmark className="w-4 h-4 text-blue-600" /><span><strong>Country:</strong> {selectedTherapistObj.country ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><GraduationCap className="w-4 h-4 text-blue-600" /><span><strong>Qualifications:</strong> {selectedTherapistObj.qualifications ?? "N/A"}</span></div>
-            <div className="flex items-center gap-2"><Briefcase className="w-4 h-4 text-blue-600" /><span><strong>Experience:</strong> {selectedTherapistObj.experience ?? "N/A"}</span></div>
-          </div>
-        )}
 
         {/* MOBILE layout (cards) */}
         <div className="space-y-3 md:hidden">
@@ -215,7 +367,9 @@ export default function UploadWeeklyGoals() {
             return (
               <div key={row.number} className="border rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-gray-700">Goal {row.number}</span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    Goal {row.number}
+                  </span>
                   <button
                     type="button"
                     onClick={() => removeRowByIndex(idx)}
@@ -228,7 +382,9 @@ export default function UploadWeeklyGoals() {
                   </button>
                 </div>
 
-                <label className="block text-xs text-gray-600 mb-1">My Goal for This Week</label>
+                <label className="block text-xs text-gray-600 mb-1">
+                  My Goal for This Week
+                </label>
                 <textarea
                   rows={2}
                   ref={autoResize as any}
@@ -239,7 +395,9 @@ export default function UploadWeeklyGoals() {
                   onChange={(e) => updateRow(idx, "goal")(e.target.value)}
                 />
 
-                <label className="block text-xs text-gray-600 mt-3 mb-1">How Will I Do It?</label>
+                <label className="block text-xs text-gray-600 mt-3 mb-1">
+                  How Will I Do It?
+                </label>
                 <textarea
                   rows={2}
                   ref={autoResize as any}
@@ -250,7 +408,9 @@ export default function UploadWeeklyGoals() {
                   onChange={(e) => updateRow(idx, "how")(e.target.value)}
                 />
 
-                <label className="block text-xs text-gray-600 mt-3 mb-1">How Did It Go? (What I learned, tried, or enjoyed)</label>
+                <label className="block text-xs text-gray-600 mt-3 mb-1">
+                  How Did It Go? (What I learned, tried, or enjoyed)
+                </label>
                 <textarea
                   rows={2}
                   ref={autoResize as any}
@@ -264,7 +424,10 @@ export default function UploadWeeklyGoals() {
             );
           })}
 
-          <div className="text-right text-sm text-gray-600">Rows: <strong>{rows.length}</strong> (min {MIN_ROWS}, max {MAX_ROWS})</div>
+          <div className="text-right text-sm text-gray-600">
+            Rows: <strong>{rows.length}</strong> (min {MIN_ROWS}, max {MAX_ROWS}
+            )
+          </div>
         </div>
 
         {/* DESKTOP layout (table) */}
@@ -272,10 +435,21 @@ export default function UploadWeeklyGoals() {
           <table className="min-w-full border border-gray-200 rounded-md">
             <thead className="bg-gray-50">
               <tr>
-                <th className="w-24 border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">Goal No.</th>
-                <th className="border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">My Goal for This Week</th>
-                <th className="border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">How Will I Do It?</th>
-                <th className="border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">How Did It Go? <span className="font-normal">(What I learned, tried, or enjoyed)</span></th>
+                <th className="w-24 border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">
+                  Goal No.
+                </th>
+                <th className="border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">
+                  My Goal for This Week
+                </th>
+                <th className="border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">
+                  How Will I Do It?
+                </th>
+                <th className="border-b border-gray-200 px-3 py-2 text-left text-sm font-semibold text-gray-700">
+                  How Did It Go?{" "}
+                  <span className="font-normal">
+                    (What I learned, tried, or enjoyed)
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -285,7 +459,9 @@ export default function UploadWeeklyGoals() {
                   <tr key={row.number} className="align-top">
                     <td className="border-t border-gray-200 px-3 py-3 text-sm text-gray-700">
                       <div className="flex items-center gap-2">
-                        <span className="inline-block min-w-[1.25rem]">{row.number}</span>
+                        <span className="inline-block min-w-[1.25rem]">
+                          {row.number}
+                        </span>
                         <button
                           type="button"
                           onClick={() => removeRowByIndex(idx)}
@@ -325,7 +501,9 @@ export default function UploadWeeklyGoals() {
                         placeholder="Write your answer…"
                         className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                         value={row.outcome}
-                        onChange={(e) => updateRow(idx, "outcome")(e.target.value)}
+                        onChange={(e) =>
+                          updateRow(idx, "outcome")(e.target.value)
+                        }
                       />
                     </td>
                   </tr>
@@ -335,15 +513,22 @@ export default function UploadWeeklyGoals() {
           </table>
 
           <div className="flex items-center justify-end gap-2 mt-3 text-sm text-gray-600">
-            <span>Rows: <strong>{rows.length}</strong> (min {MIN_ROWS}, max {MAX_ROWS})</span>
+            <span>
+              Rows: <strong>{rows.length}</strong> (min {MIN_ROWS}, max{" "}
+              {MAX_ROWS})
+            </span>
           </div>
         </div>
 
         {/* Weekly Reflection */}
         <div className="mb-20 md:mb-6">
-          <h3 className="text-base md:text-lg font-semibold text-blue-900 mb-2">Weekly Reflection</h3>
+          <h3 className="text-base md:text-lg font-semibold text-blue-900 mb-2">
+            Weekly Reflection
+          </h3>
           <ul className="list-disc ml-5 text-gray-800 mb-2">
-            <li className="font-medium text-sm md:text-base">What was the best part of my week?</li>
+            <li className="font-medium text-sm md:text-base">
+              What was the best part of my week?
+            </li>
           </ul>
           <textarea
             rows={3}
@@ -369,7 +554,7 @@ export default function UploadWeeklyGoals() {
           </div>
         )}
 
-        {/* Sticky submit on mobile */}
+        {/* Sticky submit on mobile / normal on desktop */}
         <div className="fixed md:static bottom-3 left-0 right-0 px-3">
           <div className="md:hidden mx-auto max-w-3xl">
             <button
@@ -387,7 +572,9 @@ export default function UploadWeeklyGoals() {
             className="hidden md:flex w-full bg-blue-500 hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium py-2 rounded justify-center items-center space-x-2 transition"
           >
             <UploadCloud className="h-5 w-5" />
-            <span>{isSubmitting ? "Submitting..." : "Submit Weekly Goals"}</span>
+            <span>
+              {isSubmitting ? "Submitting..." : "Submit Weekly Goals"}
+            </span>
           </button>
         </div>
       </div>

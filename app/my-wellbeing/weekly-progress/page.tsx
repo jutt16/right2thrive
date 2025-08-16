@@ -4,32 +4,77 @@ import { useState, useEffect } from "react";
 
 export default function WeeklyProgressForm() {
   const [step, setStep] = useState(0);
-  const [data, setData] = useState({});
+  const [data, setData] = useState<any>({});
 
-  const [therapists, setTherapists] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // therapist-from-localStorage (read-only)
+  const [therapistId, setTherapistId] = useState<string>("");
+  const [therapistDetails, setTherapistDetails] = useState<any>(null);
+  const [loadingTherapist, setLoadingTherapist] = useState(true);
+  const [therapistError, setTherapistError] = useState<string>("");
 
+  // read therapist from localStorage and fetch details
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/therapists`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data?.therapists)) {
-          setTherapists(data.data.therapists);
-        } else {
-          console.error("Invalid therapist data:", data);
-        }
-      })
-      .catch((err) => {
-        console.error("Error fetching therapists:", err);
-      })
-      .finally(() => setLoading(false));
+    if (typeof window === "undefined") return;
+
+    let stored: any = null;
+
+    // prefer "therapist"
+    const tRaw = localStorage.getItem("therapist");
+    if (tRaw) {
+      try {
+        stored = JSON.parse(tRaw);
+      } catch {}
+    }
+
+    // fallback "auth.therapist"
+    if (!stored) {
+      const authRaw = localStorage.getItem("auth");
+      if (authRaw) {
+        try {
+          const parsed = JSON.parse(authRaw);
+          if (parsed?.therapist) stored = parsed.therapist;
+        } catch {}
+      }
+    }
+
+    if (stored?.id) {
+      const idStr = String(stored.id);
+      setTherapistId(idStr);
+      setData((p: any) => ({ ...p, therapist: Number(idStr) }));
+      fetchTherapistDetails(idStr);
+    } else {
+      setLoadingTherapist(false);
+    }
   }, []);
 
-  const update = (field, value) => setData((p) => ({ ...p, [field]: value }));
+  const fetchTherapistDetails = async (id: string) => {
+    setLoadingTherapist(true);
+    setTherapistError("");
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/therapists/${id}`
+      );
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Failed to fetch therapist details");
+      }
+      setTherapistDetails(json.data?.therapist ?? null);
+    } catch (e) {
+      setTherapistDetails(null);
+      setTherapistError(
+        e instanceof Error ? e.message : "Failed to load therapist details"
+      );
+    } finally {
+      setLoadingTherapist(false);
+    }
+  };
+
+  const update = (field: string, value: any) =>
+    setData((p: any) => ({ ...p, [field]: value }));
   const next = () => setStep((s) => Math.min(s + 1, 4));
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
-  const renderInput = (label, field, type = "text") => (
+  const renderInput = (label: string, field: string, type: string = "text") => (
     <div className="mb-4">
       <label className="block font-medium mb-1">{label}</label>
       <input
@@ -41,7 +86,7 @@ export default function WeeklyProgressForm() {
     </div>
   );
 
-  const renderTextArea = (label, field) => (
+  const renderTextArea = (label: string, field: string) => (
     <div className="mb-4">
       <label className="block font-medium mb-1">{label}</label>
       <textarea
@@ -72,7 +117,6 @@ export default function WeeklyProgressForm() {
     </div>
   );
 
-  // ✅ define this before steps array
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -80,6 +124,12 @@ export default function WeeklyProgressForm() {
         alert("You must be logged in to submit.");
         return;
       }
+
+      // ensure therapist id stays in payload
+      const payload = {
+        ...data,
+        therapist: Number(therapistId || data.therapist || 0),
+      };
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/weekly-progress`,
@@ -89,7 +139,7 @@ export default function WeeklyProgressForm() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload),
         }
       );
 
@@ -117,76 +167,68 @@ export default function WeeklyProgressForm() {
         This weekly report helps track your growth and wellbeing.
       </p>
 
+      {/* Read-only: Your Therapist */}
       <div className="mb-4">
-        <label className="block font-medium mb-1">Select Therapist</label>
-        {loading ? (
-          <p>Loading therapists...</p>
-        ) : (
-          <select
-            value={data.therapist || ""}
-            onChange={(e) => update("therapist", e.target.value)}
-            className="w-full border p-2 rounded"
-          >
-            <option value="">Select</option>
-            {therapists.map((therapist) => (
-              <option key={therapist.id} value={therapist.id}>
-                {therapist.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-
-      {/* ✅ Therapist Details Card */}
-      {therapists.length > 0 &&
-        data.therapist &&
-        (() => {
-          const selected = therapists.find(
-            (t) => t.id === Number(data.therapist)
-          );
-          if (!selected) return null;
-
-          return (
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded mb-4">
-              <h4 className="font-semibold text-blue-900 mb-2">
-                Therapist Details:
-              </h4>
+        <label className="block font-medium mb-1">Your Therapist</label>
+        <div className="bg-blue-50 border border-blue-200 p-4 rounded">
+          {loadingTherapist ? (
+            <p>Loading therapist details...</p>
+          ) : therapistId ? (
+            <>
               <p>
-                <strong>Name:</strong> {selected.name}
+                <strong>Name:</strong>{" "}
+                {`${therapistDetails?.first_name ?? ""} ${
+                  therapistDetails?.last_name ?? ""
+                }`.trim() || "—"}
               </p>
               <p>
-                <strong>Email:</strong> {selected.email}
+                <strong>Email:</strong> {therapistDetails?.email ?? "N/A"}
               </p>
               <p>
-                <strong>Gender:</strong> {selected.gender}
+                <strong>Gender:</strong>{" "}
+                {therapistDetails?.profile?.gender ?? "N/A"}
               </p>
               <p>
                 <strong>Cultural Background:</strong>{" "}
-                {selected.cultural_background}
+                {therapistDetails?.profile?.cultural_background ?? "N/A"}
               </p>
-              {selected.telephone && (
+              {therapistDetails?.profile?.telephone && (
                 <p>
-                  <strong>Telephone:</strong> {selected.telephone}
+                  <strong>Telephone:</strong>{" "}
+                  {therapistDetails.profile.telephone}
                 </p>
               )}
-              {selected.mobile && (
+              {therapistDetails?.profile?.mobile && (
                 <p>
-                  <strong>Mobile:</strong> {selected.mobile}
+                  <strong>Mobile:</strong> {therapistDetails.profile.mobile}
                 </p>
               )}
-              {selected.qualifications && (
+              {therapistDetails?.profile?.qualifications && (
                 <p>
-                  <strong>Qualifications:</strong> {selected.qualifications}
+                  <strong>Qualifications:</strong>{" "}
+                  {therapistDetails.profile.qualifications}
                 </p>
               )}
-              {selected.experience && (
+              {therapistDetails?.profile?.experience && (
                 <p>
-                  <strong>Experience:</strong> {selected.experience}
+                  <strong>Experience:</strong>{" "}
+                  {therapistDetails.profile.experience}
                 </p>
               )}
-            </div>
-          );
-        })()}
+              {therapistError && (
+                <p className="mt-2 text-sm text-red-600">
+                  Error: {therapistError}
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="text-gray-700">
+              No therapist found in your account. Please contact support if this
+              is unexpected.
+            </p>
+          )}
+        </div>
+      </div>
 
       {renderInput("Date", "date", "date")}
     </>,

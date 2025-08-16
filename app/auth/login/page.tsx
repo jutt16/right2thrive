@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { Eye, EyeOff } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,65 +15,87 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [userType, setUserType] = useState("patient")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState("patient");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (userType === "therapist") {
-      window.location.href = "https://admin.right2thriveuk.com/therapist/login"
+      window.location.href = "https://admin.right2thriveuk.com/therapist/login";
     }
-  }, [userType])
+  }, [userType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed")
+        throw new Error(data.message || "Login failed");
       }
 
       if (data.success) {
-        localStorage.setItem("token", data.token)
-        localStorage.setItem("user", JSON.stringify(data.user))
-        window.location.href = "/my-wellbeing"
+        // store everything in localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        if (data.therapist) {
+          localStorage.setItem("therapist", JSON.stringify(data.therapist));
+        } else {
+          localStorage.removeItem("therapist"); // cleanup if no therapist linked
+        }
+
+        // optional: keep everything in one place
+        localStorage.setItem(
+          "auth",
+          JSON.stringify({
+            token: data.token,
+            user: data.user,
+            therapist: data.therapist || null,
+          })
+        );
+
+        window.location.href = "/my-wellbeing";
       } else {
-        throw new Error(data.message || "Login failed")
+        throw new Error(data.message || "Login failed");
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Invalid email or password. Please try again."
-      )
+        err instanceof Error
+          ? err.message
+          : "Invalid email or password. Please try again."
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-
+  };
+  
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-16rem)] items-center justify-center px-4 py-12">
       <Card className="mx-auto w-full max-w-md border-2 border-teal-100">
@@ -87,13 +109,19 @@ export default function LoginPage() {
               className="mb-4 rounded-full"
             />
           </div>
-          <CardTitle className="text-2xl font-bold text-[#ff961b]">Welcome Back</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-2xl font-bold text-[#ff961b]">
+            Welcome Back
+          </CardTitle>
+          <CardDescription>
+            Enter your credentials to access your account
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             {error && (
-              <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</div>
+              <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">
+                {error}
+              </div>
             )}
             <div className="space-y-4">
               <div className="space-y-2">
@@ -184,5 +212,5 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
