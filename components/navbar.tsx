@@ -72,11 +72,11 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
           <Image
-            src="/right2thrive-logo.jpg"
+            src="/right2thrive-logo-no.jpg"
             alt="Right2Thrive UK Logo"
             width={45}
             height={45}
-            className="rounded-full"
+            // className="rounded-full"
           />
           <span className="text-lg font-bold text-[#00990d]">
             Right2Thrive UK
