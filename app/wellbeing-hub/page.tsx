@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -38,21 +37,6 @@ interface AssessmentAnswer {
   answer_text: string;
 }
 
-interface AssessmentData {
-  id: number;
-  user_id: number;
-  therapist_id: number;
-  total_score: number;
-  severity_level: string;
-  answers: AssessmentAnswer[];
-  created_at: string;
-  therapist: {
-    id: number;
-    first_name: string;
-    last_name: string;
-  };
-}
-
 interface Assessment {
   id: number;
   user_id: number;
@@ -68,13 +52,41 @@ interface Assessment {
   };
 }
 
+interface SessionNote {
+  id: number;
+  patient_id: number;
+  therapist_id: number;
+  notes: string;
+  date: string;
+  created_at: string;
+}
+
+interface Medication {
+  id: number;
+  condition: string;
+  medications: string;
+  notes: string;
+  last_updated: string;
+  patient: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+  therapist: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+}
+
 export default function WellbeingHub() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
-    // Only run on client side
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       const user = localStorage.getItem("user");
@@ -85,47 +97,47 @@ export default function WellbeingHub() {
         router.push("/auth/login");
       }
     }
-  }, [router]); // Add router to dependencies
+  }, [router]);
 
-  if (!isAuthenticated) {
-    return null; // or a loading spinner while redirect happens
-  }
+  if (!isAuthenticated) return null;
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <WellbeingHubContent />
+      <WellbeingHubContent userData={userData} />
     </Suspense>
   );
 }
 
-function WellbeingHubContent() {
-  // const [activeTab, setActiveTab] = useState("dashboard");
-  // Inside your WellbeingHub component, replace the useState for activeTab with:
+function WellbeingHubContent({ userData }: { userData: any }) {
   const searchParams = useSearchParams();
+  const [medications, setMedications] = useState<Medication[]>([]);
   const [activeTab, setActiveTab] = useState(
     searchParams.get("tab") || "assessments"
   );
   const [selectedAssessment, setSelectedAssessment] =
     useState<Assessment | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
   const [gad7Assessments, setGad7Assessments] = useState<Assessment[]>([]);
   const [phq9Assessments, setPhq9Assessments] = useState<Assessment[]>([]);
+  const [sessionNotes, setSessionNotes] = useState<SessionNote[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => setIsClient(true), []);
 
   useEffect(() => {
     if (isClient) {
       fetchAssessments();
+      fetchSessionNotes();
+      fetchMedications();
     }
   }, [isClient]);
 
   useEffect(() => {
     if (isClient) {
-      // Update the URL when activeTab changes
       const newUrl = `${window.location.pathname}?tab=${activeTab}`;
       window.history.pushState({}, "", newUrl);
     }
@@ -133,66 +145,91 @@ function WellbeingHubContent() {
 
   const fetchAssessments = async () => {
     if (!isClient) return;
-
     setIsLoading(true);
+
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No authentication token found");
-        return;
-      }
+      if (!token) return;
 
-      const [gad7Response, phq9Response] = await Promise.all([
+      const [gad7Res, phq9Res] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }),
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
 
       const [gad7Data, phq9Data] = await Promise.all([
-        gad7Response.json(),
-        phq9Response.json(),
+        gad7Res.json(),
+        phq9Res.json(),
       ]);
 
-      console.log("GAD-7 Assessments:", gad7Data);
-      console.log("PHQ-9 Assessments:", phq9Data);
-
-      if (gad7Data.success && phq9Data.success) {
-        setGad7Assessments(gad7Data.assessments);
-        setPhq9Assessments(phq9Data.assessments);
-      }
-    } catch (error) {
-      console.error("Error fetching assessments:", error);
+      if (gad7Data.success) setGad7Assessments(gad7Data.assessments);
+      if (phq9Data.success) setPhq9Assessments(phq9Data.assessments);
+    } catch (err) {
+      console.error("Error fetching assessments:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-GB", {
+  const fetchSessionNotes = async () => {
+    if (!isClient) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/session-notes`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await res.json();
+      if (data.status) setSessionNotes(data.session_notes);
+    } catch (err) {
+      console.error("Error fetching session notes:", err);
+    }
+  };
+
+  const fetchMedications = async () => {
+    if (!isClient) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/medications`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await res.json();
+      if (data.status === "success") {
+        setMedications(data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching medications:", err);
+    }
+  };
+
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "long",
       year: "numeric",
     });
-  };
 
-  // Handler for Take Assessment buttons
-  const handleTakeAssessment = (assessmentPath: string) => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user");
-      if (token && user) {
-        router.push(assessmentPath);
-      } else {
-        router.push("/auth/login");
-      }
-    }
+  const handleTakeAssessment = (path: string) => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) router.push(path);
+    else router.push("/auth/login");
   };
 
   return (
@@ -202,33 +239,98 @@ function WellbeingHubContent() {
         className="space-y-4"
         onValueChange={setActiveTab}
       >
-        <TabsList className="gflex w-full overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-4">
-          <TabsTrigger
-            value="dashboard"
-            className="text-xs md:text-sm data-[state=active]:bg-red-500 data-[state=active]:text-white hover:bg-red-100"
-          >
-            Dashboard
-          </TabsTrigger>
-          <TabsTrigger
-            value="assessments"
-            className="text-xs md:text-sm data-[state=active]:bg-orange-500 data-[state=active]:text-white hover:bg-orange-100"
-          >
-            Assessments
-          </TabsTrigger>
-          <TabsTrigger
-            value="resources"
-            className="text-xs md:text-sm data-[state=active]:bg-green-500 data-[state=active]:text-white hover:bg-green-100"
-          >
-            Resources
-          </TabsTrigger>
-          <TabsTrigger
-            value="wellbeing-update"
-            className="text-xs md:text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white hover:bg-blue-100"
-          >
-            Wellbeing
-          </TabsTrigger>
+        <TabsList className="gflex w-full overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-5">
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="assessments">Assessments</TabsTrigger>
+          <TabsTrigger value="resources">Resources</TabsTrigger>
+          <TabsTrigger value="session-notes">Session Notes</TabsTrigger>
+          <TabsTrigger value="medications">Medications</TabsTrigger>
+          <TabsTrigger value="wellbeing-update">Wellbeing</TabsTrigger>
         </TabsList>
 
+        {/* Session Notes Tab */}
+        <TabsContent value="session-notes" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Session Notes</CardTitle>
+              <CardDescription>Notes shared by your therapist</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {sessionNotes.length === 0 ? (
+                <p className="text-center text-gray-500">
+                  No session notes available
+                </p>
+              ) : (
+                <div className="rounded-md border">
+                  <div className="grid grid-cols-3 gap-4 bg-muted p-4 font-medium">
+                    <div>Date</div>
+                    <div>Therapist</div>
+                    <div>Notes</div>
+                  </div>
+                  <div className="divide-y">
+                    {sessionNotes.map((note) => (
+                      <div key={note.id} className="grid grid-cols-3 gap-4 p-4">
+                        {/* Date */}
+                        <div>{formatDate(note.date || note.created_at)}</div>
+
+                        {/* Therapist name */}
+                        <div>
+                          {note.therapist
+                            ? `${note.therapist.first_name} ${note.therapist.last_name}`
+                            : "Unknown Therapist"}
+                        </div>
+
+                        {/* Notes */}
+                        <div>{note.notes}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="medications" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Medications</CardTitle>
+              <CardDescription>Your recorded medical history</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {medications.length === 0 ? (
+                <p className="text-center text-gray-500">
+                  No medical history added yet
+                </p>
+              ) : (
+                <div className="rounded-md border">
+                  <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
+                    <div>Date</div>
+                    <div>Condition</div>
+                    <div>Medications</div>
+                    <div>Therapist</div>
+                  </div>
+                  <div className="divide-y">
+                    {medications.map((med) => (
+                      <div key={med.id} className="grid grid-cols-4 gap-4 p-4">
+                        <div>{formatDate(med.last_updated)}</div>
+                        <div>{med.condition}</div>
+                        <div>{med.medications || "—"}</div>
+                        <div>
+                          {med.therapist
+                            ? `${med.therapist.first_name} ${med.therapist.last_name}`
+                            : "Unknown"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Keep your existing Dashboard, Assessments, Resources, Wellbeing tabs here... */}
         <TabsContent value="dashboard" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
@@ -777,35 +879,7 @@ function WellbeingHubContent() {
         </TabsContent>
       </Tabs>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#ff961b]">
-          Right2Thrive UK Wellbeing Hub
-        </h1>
-        <br />
-        <p className="text-gray-600">
-          Welcome To Right2ThriveUK Wellbeing Hub <br />
-          <br />
-          <span className="font-bold">
-            • Culturally responsive mental health assessments <br />
-            • A rich library of resources and self-help tools <br />
-            • Access to in-person support activities and workshops <br />
-            • Creative and cultural engagement opportunities <br />
-          </span>
-          <br />
-          The Digital Wellbeing Hub ensures support is available anytime,
-          anywhere, in ways that feel safe and empowering.
-        </p>
-        <h2 className="text-2xl font-bold text-[#ff961b]">
-          Professional & Peer Support
-        </h2>
-        <p className="text-gray-600">
-          Our model combines the expertise of qualified mental health
-          practitioners with the empathy of peer mentors who share lived
-          experience. This dual approach ensures young people and families
-          receive both professional guidance and relatable support.
-        </p>
-      </div>
-
+      {/* Assessment Details Modal */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
@@ -837,27 +911,17 @@ function WellbeingHubContent() {
                   </p>
                 </div>
               </div>
-              {selectedAssessment.answers &&
-                selectedAssessment.answers.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Question Responses</p>
-                    <div className="space-y-2">
-                      {selectedAssessment.answers.map((answer) => (
-                        <div
-                          key={answer.question_id}
-                          className="rounded-md border p-3"
-                        >
-                          <p className="text-sm font-medium">
-                            {answer.question_text}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {answer.answer_text} (Score: {answer.answer_value})
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              <div>
+                <p className="text-sm font-medium mb-2">Answers</p>
+                <ul className="list-disc pl-6 text-sm text-gray-600">
+                  {selectedAssessment.answers.map((ans, idx) => (
+                    <li key={idx}>
+                      {ans.question_text}:{" "}
+                      <span className="font-semibold">{ans.answer_text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
         </DialogContent>
