@@ -47,7 +47,7 @@ export default function QuestionnairesPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Questionnaires</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Strength and Difficulties Questionnaire (SDQ)</h2>
 
       {loading && <p className="text-center text-gray-500">Loading...</p>}
 

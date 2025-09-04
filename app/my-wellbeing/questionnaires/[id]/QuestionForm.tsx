@@ -125,7 +125,8 @@ export default function QuestionForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h1 className="text-2xl font-bold mb-2">{questionnaire.title}</h1>
+      <h1 className="text-2xl font-bold mb-2">Strength and Difficulties Questionnaire (SDQ)</h1>
+      <h2 className="text-xl font-semibold mb-2">{questionnaire.title}</h2>
       {questionnaire.description && (
         <p className="text-gray-600 mb-6">{questionnaire.description}</p>
       )}

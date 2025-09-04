@@ -11,7 +11,7 @@ const wellbeingOptions = [
   { label: "My Weekly Progress", href: "/my-wellbeing/weekly-progress" },
   { label: "Generalized Anxiety Disorder 7 (GAD-7)", href: "/wellbeing-hub/gad7" },
   { label: "Nine Symptom Checklist (PHQ-9)", href: "/wellbeing-hub/phq9" },
-  { label: "Questionnaires", href: "/my-wellbeing/questionnaires" },
+  { label: "Strength and Difficulties Questionnaire (SDQ)", href: "/my-wellbeing/questionnaires" },
 ];
 
 export default function WellbeingHub() {

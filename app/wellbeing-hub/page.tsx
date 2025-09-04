@@ -565,6 +565,42 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </Button>
               </CardFooter>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  Strengths & Difficulties Questionnaire (SDQ)
+                </CardTitle>
+                <CardDescription>
+                  Understanding Your Strengths and Challenges
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  This short questionnaire helps you and your coach explore both
+                  the positive strengths you bring to your life and any
+                  difficulties you might be experiencing. It looks at areas like
+                  emotions, behavior, relationships, and focus.
+                </p>
+                <br />
+                <p className="text-sm text-gray-600">
+                  By completing it, you’ll provide a fuller picture of your
+                  well-being so your coach can better support you on your
+                  journey.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="bg-[#00990d] text-white hover:bg-[#3c362f]"
+                  onClick={() =>
+                    handleTakeAssessment("../my-wellbeing/questionnaires")
+                  }
+                >
+                  Take Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
 
           <Card>
