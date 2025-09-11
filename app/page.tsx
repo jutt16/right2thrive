@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import MagazineSection from "@/components/ui/magazinesection";
 
 export default function Home() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -166,34 +167,31 @@ export default function Home() {
         </div>
       </section>
 
+      <MagazineSection />
+
       {/* Testimonial Section */}
       <section className="bg-[#f8fafc] py-20">
         <div className="container mx-auto px-4 text-center max-w-5xl">
           <div className="mb-12">
-            <img
-              src="/img2.jpg"
-              alt="Community Healing"
-              className="rounded-xl shadow-lg w-full max-w-3xl mx-auto"
-            />
-          </div>
-          <div className="flex flex-col md:flex-row items-center gap-6 text-left">
-            <img
-              src="/img3.jpg"
-              alt="Testimonial"
-              className="w-full md:w-1/3 rounded-lg shadow-md object-cover"
-            />
-            <blockquote className="italic text-lg text-gray-700">
-              “At Right2Thrive UK, we empower individuals to overcome
-              challenges, build resilience, and create brighter futures for
-              themselves and their families.”
-            </blockquote>
-          </div>
-          <div className="mt-10">
-            <Link href="/contact">
-              <Button className="bg-teal-600 text-white hover:bg-teal-700 transition duration-300">
-                Let’s Talk
-              </Button>
-            </Link>
+            <div className="flex flex-col md:flex-row items-center gap-6 text-left">
+              <img
+                src="/img3.jpg"
+                alt="Testimonial"
+                className="w-full md:w-1/3 rounded-lg shadow-md object-cover"
+              />
+              <blockquote className="italic text-lg text-gray-700">
+                “At Right2Thrive UK, we empower individuals to overcome
+                challenges, build resilience, and create brighter futures for
+                themselves and their families.”
+              </blockquote>
+            </div>
+            <div className="mt-10">
+              <Link href="/contact">
+                <Button className="bg-teal-600 text-white hover:bg-teal-700 transition duration-300">
+                  Let’s Talk
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
