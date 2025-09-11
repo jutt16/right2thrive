@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import {
   Calendar,
-  Download,
   ExternalLink,
   ArrowLeftCircle,
   ArrowRightCircle,
@@ -23,6 +22,7 @@ import { Navigation, Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import DownloadPressRelease from "@/components/ui/download-press-release";
 
 export default function PressRelease() {
   const photos = [
@@ -31,6 +31,8 @@ export default function PressRelease() {
     "/press3.jpg",
     "/press4.jpg",
     "/press5.jpg",
+    "/press6.jpg",
+    "/press7.jpg",
   ];
 
   return (
@@ -68,7 +70,7 @@ export default function PressRelease() {
             ))}
           </Swiper>
 
-          {/* 🔹 Navigation Buttons (smaller + sharp) */}
+          {/* 🔹 Navigation Buttons */}
           <button className="swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white transition">
             <ArrowLeftCircle className="h-6 w-6 text-teal-700 hover:text-teal-900" />
           </button>
@@ -98,8 +100,8 @@ export default function PressRelease() {
               <span>6th September 2025</span>
             </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
-              A pioneering space adopting a public health approach to address
-              the root causes of violence and trauma
+              A Pioneering Space Adopting a Public Health Approach to Address
+              the Root Causes of Violence and Trauma
             </CardTitle>
             <CardDescription>
               Right2Thrive UK has officially launched the nation’s first
@@ -109,147 +111,154 @@ export default function PressRelease() {
           </CardHeader>
 
           <CardContent>
-            <div className="prose max-w-none space-y-4">
+            {/* 🔹 Wrap content with ID for PDF export */}
+            <div id="press-release-content" className="prose max-w-none space-y-4">
+              {/* 🔹 Add "FOR IMMEDIATE RELEASE" */}
               <p>
-                <strong>FOR IMMEDIATE RELEASE</strong> — In one of London’s most
-                deprived areas, where community crime has persisted for decades,
-                a bold new initiative is offering hope. Right2Thrive UK has
-                officially opened the nation’s first Wellbeing Hub, a pioneering
-                space adopting a public health approach to address the root
-                causes of violence and trauma.
+                <strong>FOR IMMEDIATE RELEASE — 6th September 2025</strong>
               </p>
+
+              {/* 🔹 Full Press Release Text */}
               <p>
-                Located at{" "}
-                <strong>
-                  37/38 North Square, Edmonton Green Shopping Centre
-                </strong>
-                , the Hub was launched on Saturday, 6 September 2025, drawing
-                overwhelming support from residents, local leaders, and
-                organisations. Distinguished guests included:
+                In a borough grappling with decades of persistent violence and a
+                recent surge in crime, Right2Thrive UK has opened a transformative
+                community space in Edmonton Green, Enfield. The nation’s first
+                Wellbeing Hub adopts a bold public health approach to tackling
+                violence and trauma by addressing their root causes through
+                therapy, mentoring, and community healing.
               </p>
+
+              <h3>The Need for Change in Enfield</h3>
+              <p>
+                Enfield continues to struggle with high levels of violent crime,
+                leaving residents fearful and anxious about their safety. This
+                year alone, incidents such as the murder of an 18-year-old on
+                the A10 Great Cambridge Road on June 26th have shaken the local
+                community. The young man was shot dead between Bush Hill Park
+                and Southbury, prompting a police investigation but no arrests
+                to date.
+              </p>
+              <blockquote>
+                “We are living in fear and anxiety in Enfield due to the constant
+                violence in our neighbourhood, and they expect us to live a normal
+                life.” — Sarah, Enfield Resident
+              </blockquote>
               <ul>
                 <li>
-                  Beryl Little — Former Head of Enfield Council Education &
-                  Regeneration
+                  Violent crimes in Enfield have risen by 18% this year, according
+                  to the Metropolitan Police.
                 </li>
                 <li>
-                  Rasheed Sadegh-Zadeh — Chair, Enfield Independent Advisory
-                  Group
+                  The borough has also seen over 430 knife crime incidents, many
+                  involving young people.
                 </li>
+                <li>
+                  Domestic violence cases have surged by 12%, with 1,150 incidents
+                  reported so far in 2025.
+                </li>
+              </ul>
+
+              <h3>Born from Community-Led Consultations</h3>
+              <p>
+                The Right2Thrive UK Wellbeing Hub was conceived after extensive
+                community-led consultations, where residents, experts, and
+                activists shared their experiences and research.
+              </p>
+              <p>
+                Among the key contributors was Dr. Ron Dodzo, who presented his
+                groundbreaking research <em>The Life of a Top Boy</em>, which
+                explores the realities of young people caught in cycles of violence
+                and gang culture.
+              </p>
+              <p>
+                Another pivotal voice was Vanessa Boachie, a BABCP-accredited
+                Cognitive Behavioural Psychotherapist who specializes in culturally
+                sensitive and trauma-informed approaches to therapy.
+              </p>
+
+              <h3>The Wellbeing Hub: A Community-Led Solution</h3>
+              <p>
+                Located at <strong>37/38 North Square, Edmonton Green Shopping Centre</strong>, 
+                the Hub was officially launched on Saturday, 6 September 2025, with overwhelming support.
+              </p>
+              <ul>
+                <li>Beryl Little — Former Head of Enfield Council Education & Regeneration</li>
+                <li>Rasheed Sadegh-Zadeh — Chair, Enfield Independent Advisory Group</li>
                 <li>Paul Everret — Enfield Coordinator, Local Motion Enfield</li>
+                <li>Indra Nauth — Deputy Chief Executive, Action For Race Equality</li>
                 <li>
-                  Indra Nauth — Deputy Chief Executive, Action For Race Equality
-                </li>
-                <li>
-                  Pearls Loren — Founder, WISDOM (Say No! To Joint Enterprise)
+                  Pearls Loren — Founder, <strong>WISDOM (Say No! To Joint Enterprise)</strong>
                 </li>
                 <li>Courtney Brown — Founder, Father 2Father</li>
                 <li>Colin Denton — CEO, North London Garages</li>
               </ul>
 
-              <h3>A Groundbreaking Community-Led Solution</h3>
-              <p>
-                The Right2Thrive UK Wellbeing Hub is the first of its kind in
-                the UK: a safe and inclusive space built by the community, for
-                the community. It provides:
-              </p>
+              <h3>Services Offered</h3>
               <ul>
-                <li>
-                  Trauma-informed mental health support delivered by culturally
-                  competent practitioners
-                </li>
-                <li>
-                  Career and training pathways to tackle unemployment and
-                  inequality
-                </li>
-                <li>
-                  Social and cultural workshops that strengthen identity,
-                  resilience, and pride
-                </li>
-                <li>
-                  A 12-week wellbeing programme combining therapy, mentoring,
-                  and family healing
-                </li>
-                <li>
-                  Safe spaces where families and young people can rebuild trust
-                  and overcome fear
-                </li>
+                <li>Trauma-informed mental health support delivered by culturally competent practitioners</li>
+                <li>Career and training pathways aimed at reducing unemployment and inequality</li>
+                <li>12-week Wellbeing Programmes combining therapy, mentoring, and family healing</li>
+                <li>Social and cultural workshops to strengthen identity, pride, and resilience</li>
+                <li>Safe spaces where families and young people can rebuild trust and overcome fear</li>
               </ul>
 
-              <h3>The Professional Team</h3>
-              <p>
-                The Hub is powered by a highly skilled team of Black and
-                culturally competent professionals, bringing decades of expertise
-                in mental health, education, and trauma recovery:
-              </p>
+              <h3>Professional Team</h3>
               <ul>
-                <li>Evette Bailey — BABCP-accredited CBT Psychotherapist …</li>
-                <li>
-                  Mauva Johnson-Jones — Founder of Precious Moments & Health Ltd
-                  …
-                </li>
-                <li>
-                  Kevin Bachan-Singh — Educator and psychodynamic therapist …
-                </li>
-                <li>Raveen Charles — Registered psychotherapist …</li>
-                <li>
-                  Angela Williams — Registered MBACP with 15+ years’ experience
-                  …
-                </li>
-                <li>
-                  Vanessa Boachie — Founding Director of Inside Out Well-being …
-                </li>
+                <li>Evette Bailey — BABCP-accredited CBT Psychotherapist</li>
+                <li>Mauva Johnson-Jones — Founder of Precious Moments & Health Ltd</li>
+                <li>Kevin Bachan-Singh — Educator and psychodynamic therapist</li>
+                <li>Raveen Charles — Registered psychotherapist</li>
+                <li>Angela Williams — Registered MBACP with 15+ years’ experience</li>
+                <li>Vanessa Boachie — BABCP-accredited CBT Psychotherapist</li>
               </ul>
+
+              <h3>Made Possible by the Awards For All Community Fund</h3>
+              <p>
+                The creation of the Wellbeing Hub was made possible thanks to
+                funding from the Awards For All Community Fund (The National Lottery
+                Community Fund).
+              </p>
 
               <h3>A Legacy of Action</h3>
               <p>
-                The Hub was founded by <strong>Colin Lee-Own</strong>, who has
-                dedicated more than 30 years to community-led change in some of
-                London’s hardest-hit neighbourhoods.
-              </p>
-              <p>
-                In 1994, he launched AD2000 Productions in Edmonton Green
-                Shopping Centre, helping over 300 young people into education,
-                training, and employment.
-              </p>
-              <p>
-                Following the tragic 2019 murder of market trader Julio Gomes,
-                Colin personally funded the transformation of a derelict
-                building into the Right2Thrive Wellbeing Hub. (Source:{" "}
-                <a
-                  href="https://www.standard.co.uk/news/crime/julio-gomes-murder-edmonton-lukasz-siemienowicz-london-b971703.html"
-                  className="text-blue-600 underline"
-                  target="_blank"
-                >
-                  Evening Standard
-                </a>
-                )
-              </p>
-              <p>
-                This vision became a reality thanks to the crucial support of
-                National Lottery Awards for All (The National Lottery Community
-                Fund).
+                The Hub’s founder, <strong>Colin Lee-Own</strong>, has spent over
+                30 years championing community-led change in London’s most deprived
+                areas.
               </p>
 
-              <blockquote className="italic border-l-4 border-teal-500 pl-4">
+              <blockquote>
                 “Persistent violence cannot be solved with enforcement alone. It
                 must be tackled from the ground up — by healing trauma, creating
-                opportunities, and restoring hope. Everyone has the right not
-                just to survive, but to thrive.”
-                <br />— Colin Lee-Own
+                opportunities, and restoring hope. Everyone has the right not just
+                to survive, but to thrive.” <br />— Colin Lee-Own
               </blockquote>
+
+              <h3>Contact</h3>
+              <p>
+                Colin Lee-Own <br />
+                Email: info@right2thriveuk.com <br />
+                Tel: 07415 771394
+              </p>
             </div>
 
             {/* 🔹 Buttons */}
             <div className="mt-8 flex flex-wrap gap-4">
-              <Button className="flex items-center bg-[#00990d] text-white hover:bg-[#3c362f]">
-                <Download className="mr-2 h-4 w-4" />
-                Download Press Release
-              </Button>
+              <DownloadPressRelease />
               <Button variant="outline">
                 <ExternalLink className="mr-2 h-4 w-4" />
                 Media Kit
               </Button>
+            </div>
+
+            {/* 🔹 Funding Logo at Bottom */}
+            <div className="mt-12 text-center">
+              <Image
+                src="/funding_logo.jpg"
+                alt="Funding Logo"
+                width={220}
+                height={80}
+                className="mx-auto"
+              />
             </div>
           </CardContent>
         </Card>
