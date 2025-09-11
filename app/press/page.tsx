@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,31 +9,76 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar, Download, ExternalLink } from "lucide-react";
+import {
+  Calendar,
+  Download,
+  ExternalLink,
+  ArrowLeftCircle,
+  ArrowRightCircle,
+} from "lucide-react";
+
+// Swiper imports
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 export default function PressRelease() {
+  const photos = [
+    "/press1.jpg",
+    "/press2.jpg",
+    "/press3.jpg",
+    "/press4.jpg",
+    "/press5.jpg",
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Top Photo Gallery */}
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      {/* 🔹 Top Photo Slider */}
       <section className="mb-12">
-        <div className="grid gap-6 md:grid-cols-3">
-          {["/press1.jpg", "/press2.jpg", "/press3.jpg"].map((src, idx) => (
-            <div
-              key={idx}
-              className="relative h-64 rounded-xl overflow-hidden shadow-lg group"
-            >
-              <Image
-                src={src}
-                alt={`Press Release Photo ${idx + 1}`}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-          ))}
+        <div className="relative">
+          <Swiper
+            modules={[Navigation, Autoplay, Pagination]}
+            navigation={{
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            }}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            spaceBetween={20}
+            slidesPerView={1}
+            breakpoints={{
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+            className="rounded-xl"
+          >
+            {photos.map((src, idx) => (
+              <SwiperSlide key={idx}>
+                <div className="relative h-72 rounded-xl overflow-hidden shadow-lg group">
+                  <Image
+                    src={src}
+                    alt={`Press Release Photo ${idx + 1}`}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {/* 🔹 Navigation Buttons (smaller + sharp) */}
+          <button className="swiper-button-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white transition">
+            <ArrowLeftCircle className="h-6 w-6 text-teal-700 hover:text-teal-900" />
+          </button>
+          <button className="swiper-button-next absolute right-2 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white transition">
+            <ArrowRightCircle className="h-6 w-6 text-teal-700 hover:text-teal-900" />
+          </button>
         </div>
       </section>
 
-      {/* Page Header */}
+      {/* 🔹 Page Header */}
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold text-[#ff961b] mb-2">
           UK’s First Wellbeing Hub to Tackle Community Violence Opens in
@@ -42,7 +89,7 @@ export default function PressRelease() {
         </p>
       </div>
 
-      {/* Main Press Release */}
+      {/* 🔹 Main Press Release */}
       <section className="mb-12">
         <Card className="border-2 border-teal-100">
           <CardHeader>
@@ -56,20 +103,20 @@ export default function PressRelease() {
             </CardTitle>
             <CardDescription>
               Right2Thrive UK has officially launched the nation’s first
-              Wellbeing Hub, bringing together therapy, mentoring, and
-              community healing under one roof.
+              Wellbeing Hub, bringing together therapy, mentoring, and community
+              healing under one roof.
             </CardDescription>
           </CardHeader>
 
           <CardContent>
             <div className="prose max-w-none space-y-4">
               <p>
-                <strong>FOR IMMEDIATE RELEASE</strong> — In one of London’s
-                most deprived areas, where community crime has persisted for
-                decades, a bold new initiative is offering hope. Right2Thrive
-                UK has officially opened the nation’s first Wellbeing Hub, a
-                pioneering space adopting a public health approach to address
-                the root causes of violence and trauma.
+                <strong>FOR IMMEDIATE RELEASE</strong> — In one of London’s most
+                deprived areas, where community crime has persisted for decades,
+                a bold new initiative is offering hope. Right2Thrive UK has
+                officially opened the nation’s first Wellbeing Hub, a pioneering
+                space adopting a public health approach to address the root
+                causes of violence and trauma.
               </p>
               <p>
                 Located at{" "}
@@ -89,12 +136,9 @@ export default function PressRelease() {
                   Rasheed Sadegh-Zadeh — Chair, Enfield Independent Advisory
                   Group
                 </li>
+                <li>Paul Everret — Enfield Coordinator, Local Motion Enfield</li>
                 <li>
-                  Paul Everret — Enfield Coordinator, Local Motion Enfield
-                </li>
-                <li>
-                  Indra Nauth — Deputy Chief Executive, Action For Race
-                  Equality
+                  Indra Nauth — Deputy Chief Executive, Action For Race Equality
                 </li>
                 <li>
                   Pearls Loren — Founder, WISDOM (Say No! To Joint Enterprise)
@@ -135,8 +179,8 @@ export default function PressRelease() {
               <h3>The Professional Team</h3>
               <p>
                 The Hub is powered by a highly skilled team of Black and
-                culturally competent professionals, bringing decades of
-                expertise in mental health, education, and trauma recovery:
+                culturally competent professionals, bringing decades of expertise
+                in mental health, education, and trauma recovery:
               </p>
               <ul>
                 <li>Evette Bailey — BABCP-accredited CBT Psychotherapist …</li>
@@ -144,7 +188,9 @@ export default function PressRelease() {
                   Mauva Johnson-Jones — Founder of Precious Moments & Health Ltd
                   …
                 </li>
-                <li>Kevin Bachan-Singh — Educator and psychodynamic therapist …</li>
+                <li>
+                  Kevin Bachan-Singh — Educator and psychodynamic therapist …
+                </li>
                 <li>Raveen Charles — Registered psychotherapist …</li>
                 <li>
                   Angela Williams — Registered MBACP with 15+ years’ experience
@@ -186,14 +232,15 @@ export default function PressRelease() {
               </p>
 
               <blockquote className="italic border-l-4 border-teal-500 pl-4">
-                “Persistent violence cannot be solved with enforcement alone.
-                It must be tackled from the ground up — by healing trauma,
-                creating opportunities, and restoring hope. Everyone has the
-                right not just to survive, but to thrive.”
+                “Persistent violence cannot be solved with enforcement alone. It
+                must be tackled from the ground up — by healing trauma, creating
+                opportunities, and restoring hope. Everyone has the right not
+                just to survive, but to thrive.”
                 <br />— Colin Lee-Own
               </blockquote>
             </div>
 
+            {/* 🔹 Buttons */}
             <div className="mt-8 flex flex-wrap gap-4">
               <Button className="flex items-center bg-[#00990d] text-white hover:bg-[#3c362f]">
                 <Download className="mr-2 h-4 w-4" />
