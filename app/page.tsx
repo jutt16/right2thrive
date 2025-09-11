@@ -131,6 +131,8 @@ export default function Home() {
         </div>
       </section>
 
+      <MagazineSection />
+
       {/* Services Section */}
       <section id="services" className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -166,8 +168,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <MagazineSection />
 
       {/* Testimonial Section */}
       <section className="bg-[#f8fafc] py-20">
