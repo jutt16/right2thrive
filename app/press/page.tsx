@@ -13,6 +13,7 @@ import { Calendar, Download, ExternalLink } from "lucide-react";
 export default function PressRelease() {
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#ff961b]">Press Release</h1>
         <p className="text-gray-600">
@@ -20,38 +21,111 @@ export default function PressRelease() {
         </p>
       </div>
 
-      {/* Latest Press Release */}
+      {/* Main Press Release */}
       <section className="mb-12">
         <Card className="border-2 border-teal-100">
           <CardHeader>
             <div className="flex items-center space-x-2 text-sm text-gray-500">
               <Calendar className="h-4 w-4" />
-              <span>24th July 2025</span>
+              <span>6th September 2025</span>
             </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
-              Launch of the Right2Thrive UK Wellbeing Platform on the  6th September 2025.
+              UK’s First Wellbeing Hub to Tackle Community Violence Opens in Edmonton Green
             </CardTitle>
             <CardDescription>
-              Empowering diverse communities with culturally responsive mental health support
+              A pioneering space adopting a public health approach to address the root causes of
+              violence and trauma.
             </CardDescription>
           </CardHeader>
+
           <CardContent>
-            <div className="mb-6 space-y-4">
+            <div className="prose max-w-none space-y-4">
               <p>
-                <strong>24th July 2025</strong> - The Right2Thrive UK Wellbeing Hub will be providing culturally responsive mental health support once launched on the 6th September 2025., offering counselling, workshops, community activities, and resources designed to support wellbeing in diverse communities.
+                <strong>FOR IMMEDIATE RELEASE</strong> — In one of London’s most deprived areas,
+                where community crime has persisted for decades, a bold new initiative is offering
+                hope. Right2Thrive UK has officially opened the nation’s first Wellbeing Hub, a
+                pioneering space adopting a public health approach to address the root causes of
+                violence and trauma.
               </p>
               <p>
-                "We recognize that cultural background significantly influences how individuals experience and express mental health challenges," said Colin Lee-Own, Founder and Clinical Director of Right2Thrive UK. "The platform is designed to bridge the gap between standardized tools and cultural understanding."
+                Located at <strong>37/38 North Square, Edmonton Green Shopping Centre</strong>, the
+                Hub was launched on Saturday, 6 September 2025, drawing overwhelming support from
+                residents, local leaders, and organisations. Distinguished guests included:
+              </p>
+              <ul>
+                <li>Beryl Little — Former Head of Enfield Council Education & Regeneration</li>
+                <li>Rasheed Sadegh-Zadeh — Chair, Enfield Independent Advisory Group</li>
+                <li>Paul Everret — Enfield Coordinator, Local Motion Enfield</li>
+                <li>Indra Nauth — Deputy Chief Executive, Action For Race Equality</li>
+                <li>Pearls Loren — Founder, WISDOM (Say No! To Joint Enterprise)</li>
+                <li>Courtney Brown — Founder, Father 2Father</li>
+                <li>Colin Denton — CEO, North London Garages</li>
+              </ul>
+
+              <h3>A Groundbreaking Community-Led Solution</h3>
+              <p>
+                The Right2Thrive UK Wellbeing Hub is the first of its kind in the UK: a safe and
+                inclusive space built by the community, for the community. It provides:
+              </p>
+              <ul>
+                <li>Trauma-informed mental health support delivered by culturally competent practitioners</li>
+                <li>Career and training pathways to tackle unemployment and inequality</li>
+                <li>Social and cultural workshops that strengthen identity, resilience, and pride</li>
+                <li>A 12-week wellbeing programme combining therapy, mentoring, and family healing</li>
+                <li>Safe spaces where families and young people can rebuild trust and overcome fear</li>
+              </ul>
+
+              <h3>The Professional Team</h3>
+              <p>
+                The Hub is powered by a highly skilled team of Black and culturally competent
+                professionals, bringing decades of expertise in mental health, education, and trauma
+                recovery:
+              </p>
+              <ul>
+                <li>Evette Bailey — BABCP-accredited CBT Psychotherapist …</li>
+                <li>Mauva Johnson-Jones — Founder of Precious Moments & Health Ltd …</li>
+                <li>Kevin Bachan-Singh — Educator and psychodynamic therapist …</li>
+                <li>Raveen Charles — Registered psychotherapist …</li>
+                <li>Angela Williams — Registered MBACP with 15+ years’ experience …</li>
+                <li>Vanessa Boachie — Founding Director of Inside Out Well-being …</li>
+              </ul>
+
+              <h3>A Legacy of Action</h3>
+              <p>
+                The Hub was founded by <strong>Colin Lee-Own</strong>, who has dedicated more than
+                30 years to community-led change in some of London’s hardest-hit neighbourhoods.
               </p>
               <p>
-                The new Wellbeing Hub is a major step in providing inclusive support, connecting users to mental health resources that reflect their lived experiences and cultural identities.
+                In 1994, he launched AD2000 Productions in Edmonton Green Shopping Centre, helping
+                over 300 young people into education, training, and employment.
               </p>
               <p>
-                For further information please contact Colin: 07415771394. Email: hello@right2thriveuk.com
+                Following the tragic 2019 murder of market trader Julio Gomes, Colin personally
+                funded the transformation of a derelict building into the Right2Thrive Wellbeing
+                Hub. (Source:{" "}
+                <a
+                  href="https://www.standard.co.uk/news/crime/julio-gomes-murder-edmonton-lukasz-siemienowicz-london-b971703.html"
+                  className="text-blue-600 underline"
+                  target="_blank"
+                >
+                  Evening Standard
+                </a>
+                )
               </p>
+              <p>
+                This vision became a reality thanks to the crucial support of National Lottery
+                Awards for All (The National Lottery Community Fund).
+              </p>
+
+              <blockquote className="italic border-l-4 border-teal-500 pl-4">
+                “Persistent violence cannot be solved with enforcement alone. It must be tackled
+                from the ground up — by healing trauma, creating opportunities, and restoring hope.
+                Everyone has the right not just to survive, but to thrive.”  
+                <br />— Colin Lee-Own
+              </blockquote>
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap gap-4">
               <Button className="flex items-center bg-[#00990d] text-white hover:bg-[#3c362f]">
                 <Download className="mr-2 h-4 w-4" />
                 Download Press Release
@@ -65,25 +139,22 @@ export default function PressRelease() {
         </Card>
       </section>
 
-      {/* Resources for Media */}
-      <section>
-        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">
-          Resources for Media
-        </h2>
+      {/* Photo Gallery */}
+      <section className="mb-12">
+        <h2 className="mb-6 text-2xl font-bold text-[#ff961b]">Event Photos</h2>
         <div className="grid gap-6 md:grid-cols-3">
-          <Card>
-            <div className="relative h-48">
-              <Image
-                src="/placeholder.svg?height=300&width=400"
-                alt="Logo Pack"
-                fill
-                className="rounded-t-lg object-cover"
-              />
-            </div>
-            <CardHeader>
-              <CardTitle>Logo Pack</CardTitle>
-            </CardHeader>
-          </Card>
+          {["/press1.jpg", "/press2.jpg", "/press3.jpg"].map((src, idx) => (
+            <Card key={idx} className="overflow-hidden">
+              <div className="relative h-56">
+                <Image
+                  src={src}
+                  alt={`Press Release Photo ${idx + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </Card>
+          ))}
         </div>
       </section>
     </div>
