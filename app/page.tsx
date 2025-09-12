@@ -123,7 +123,7 @@ export default function Home() {
           </div>
           <div className="md:w-1/2">
             <img
-              src="/img1.jpg"
+              src="/banner.jpg"
               alt="Happy Chapter"
               className="w-full max-w-md mx-auto rounded-xl shadow-xl"
             />
