@@ -1,9 +1,11 @@
 "use client";
-import Image from "next/image";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import MagazineSection from "@/components/ui/magazinesection";
+import { motion } from "framer-motion";
+import { FaHandshake, FaUsers, FaRocket } from "react-icons/fa";
 
 export default function Home() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -13,9 +15,7 @@ export default function Home() {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,18 +28,13 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/contact/message`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
         }
       );
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong.");
-      }
+      if (!response.ok) throw new Error(data.message || "Something went wrong.");
 
       setSuccess(true);
       setForm({ name: "", email: "", message: "" });
@@ -51,81 +46,71 @@ export default function Home() {
   };
 
   const services = [
-    {
-      title: "12-Week Wellbeing Programme",
-      description:
-        "Structured weekly sessions including individual therapy, group discussions, and cultural and creative activities for lasting mental health improvement.",
-    },
-    {
-      title: "Individual Therapy Sessions",
-      description:
-        "One-on-one therapy tailored to your personal goals and challenges, provided with culturally responsive care.",
-    },
-    {
-      title: "Anxiety & Trauma Workshops",
-      description:
-        "Learn techniques like breathwork and psychoeducation to better manage anxiety and trauma on your healing journey.",
-    },
-    {
-      title: "Career Development Support",
-      description:
-        "Professional development guidance including CV writing, interview prep, mentorship, and AI tools.",
-    },
-    {
-      title: "Group Support Sessions",
-      description:
-        "Safe peer spaces to share experiences and develop resilience through shared coping strategies.",
-    },
-    {
-      title: "Mind & Body Wellness",
-      description:
-        "Tai Chi and mindfulness practices for better stress management and emotional balance.",
-    },
-    {
-      title: "Weekly Check-ins",
-      description:
-        "Regular check-ins to track emotional wellbeing, offer support, and adjust your growth plan as needed.",
-    },
-    {
-      title: "Extended Support",
-      description:
-        "Six months of continued 1-on-1 mentoring after completing the 12-week programme to maintain progress.",
-    },
-    {
-      title: "Online Wellbeing Portal",
-      description:
-        "Secure platform offering virtual sessions, progress tracking, and wellbeing resources while you wait for specialist care.",
-      isFeatured: true,
-    },
+    { title: "12-Week Wellbeing Programme", description: "Structured weekly sessions including individual therapy, group discussions, and cultural and creative activities for lasting mental health improvement." },
+    { title: "Individual Therapy Sessions", description: "One-on-one therapy tailored to your personal goals and challenges, provided with culturally responsive care." },
+    { title: "Anxiety & Trauma Workshops", description: "Learn techniques like breathwork and psychoeducation to better manage anxiety and trauma on your healing journey." },
+    { title: "Career Development Support", description: "Professional development guidance including CV writing, interview prep, mentorship, and AI tools." },
+    { title: "Group Support Sessions", description: "Safe peer spaces to share experiences and develop resilience through shared coping strategies." },
+    { title: "Mind & Body Wellness", description: "Tai Chi and mindfulness practices for better stress management and emotional balance." },
+    { title: "Weekly Check-ins", description: "Regular check-ins to track emotional wellbeing, offer support, and adjust your growth plan as needed." },
+    { title: "Extended Support", description: "Six months of continued 1-on-1 mentoring after completing the 12-week programme to maintain progress." },
+    { title: "Online Wellbeing Portal", description: "Secure platform offering virtual sessions, progress tracking, and wellbeing resources while you wait for specialist care.", isFeatured: true },
   ];
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative bg-[#00990d] py-20 text-white">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center text-center md:text-left gap-8">
-          <div className="md:w-1/2">
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
-              Healing Through Connection, Culture, and Care
-            </h1>
-            <p className="text-lg text-gray-200 max-w-xl leading-relaxed">
-              At Right2Thrive UK, we empower young people and families with
-              inclusive, culturally responsive wellbeing services to help
-              overcome trauma, anxiety, and systemic challenges.
-            </p>
-            <div className="mt-8 flex justify-center md:justify-start gap-4 flex-wrap">
-              <Link href="#services">
-                <Button className="bg-blue-500 text-white hover:bg-blue-600 transition duration-300">
-                  Explore Our Services
-                </Button>
-              </Link>
-            </div>
-          </div>
-          <div className="md:w-1/2">
-            <img
-              src="/banner.jpg"
-              alt="Happy Chapter"
-              className="w-full max-w-md mx-auto rounded-xl shadow-xl"
+      {/* ===== Hero Section ===== */}
+      <section
+        className="relative bg-cover bg-center bg-no-repeat text-white"
+        style={{ backgroundImage: `url('/banner.jpg')` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+
+        <div className="relative container mx-auto px-4 py-28 text-center md:text-left flex flex-col items-center md:items-start max-w-3xl">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight drop-shadow-xl mb-6">
+            Healing Through Connection, Culture, and Care
+          </h1>
+          <p className="text-lg md:text-xl text-gray-100 leading-relaxed mb-8 drop-shadow">
+            At Right2Thrive UK, we empower young people and families with
+            inclusive, culturally responsive wellbeing services to help
+            overcome trauma, anxiety, and systemic challenges.
+          </p>
+          <Link href="#services">
+            <Button className="bg-yellow-400 text-green-900 hover:bg-yellow-300 font-semibold px-8 py-4 rounded-full shadow-md transition duration-300">
+              Explore Our Services
+            </Button>
+          </Link>
+        </div>
+
+        {/* ===== 3-Step Flow BELOW the hero content ===== */}
+        <div className="relative container mx-auto mt-16 pb-16 px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative">
+            <motion.div
+              className="hidden md:block absolute top-12 left-0 right-0 h-[4px] bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              style={{ transformOrigin: "left center" }}
+            />
+
+            <FlowStep
+              icon={<FaHandshake size={36} />}
+              title="Reach Out"
+              desc="Start your journey with a safe chat and wellbeing check."
+              delay={0}
+            />
+            <FlowStep
+              icon={<FaUsers size={36} />}
+              title="Get Support"
+              desc="Join therapy, peer groups, or cultural activities."
+              delay={0.3}
+            />
+            <FlowStep
+              icon={<FaRocket size={36} />}
+              title="Thrive Forward"
+              desc="Build confidence with skills, career coaching, and mentoring."
+              delay={0.6}
             />
           </div>
         </div>
@@ -133,7 +118,7 @@ export default function Home() {
 
       <MagazineSection />
 
-      {/* Services Section */}
+      {/* ===== Services Section ===== */}
       <section id="services" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-[#ff961b] mb-12">
@@ -169,7 +154,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonial Section */}
+      {/* ===== Testimonial ===== */}
       <section className="bg-[#f8fafc] py-20">
         <div className="container mx-auto px-4 text-center max-w-5xl">
           <div className="mb-12">
@@ -196,7 +181,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Form Section */}
+      {/* ===== Contact Form ===== */}
       <section className="py-20 bg-white">
         <div className="container mx-auto max-w-3xl px-4">
           <h2 className="text-3xl font-bold text-[#00990d] mb-6 text-center">
@@ -207,45 +192,27 @@ export default function Home() {
             safe space to talk, reach out to us today.
           </p>
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Your Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00990d]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Your Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00990d]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Your Message
-              </label>
-              <textarea
-                name="message"
-                rows={5}
-                value={form.message}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00990d]"
-              ></textarea>
-            </div>
+            <FormField
+              label="Your Name"
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+            />
+            <FormField
+              label="Your Email"
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+            <FormField
+              label="Your Message"
+              type="textarea"
+              name="message"
+              value={form.message}
+              onChange={handleChange}
+            />
 
             {error && <p className="text-red-600 text-sm">{error}</p>}
             {success && (
@@ -267,5 +234,86 @@ export default function Home() {
         </div>
       </section>
     </div>
+  );
+}
+
+/* ---------- Sub Components ---------- */
+function FormField({
+  label,
+  type,
+  name,
+  value,
+  onChange,
+}: {
+  label: string;
+  type: string;
+  name: string;
+  value: string;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+}) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+      </label>
+      {type === "textarea" ? (
+        <textarea
+          name={name}
+          rows={5}
+          value={value}
+          onChange={onChange}
+          required
+          className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00990d]"
+        />
+      ) : (
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          required
+          className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00990d]"
+        />
+      )}
+    </div>
+  );
+}
+
+function FlowStep({
+  icon,
+  title,
+  desc,
+  delay,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      className="relative z-10 flex flex-col items-center text-center px-6"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.6, ease: "easeOut" }}
+    >
+      <motion.div
+        whileHover={{ scale: 1.15 }}
+        className="flex items-center justify-center w-28 h-28 rounded-full 
+                   bg-gradient-to-tr from-purple-500 via-pink-500 to-indigo-500 
+                   shadow-2xl cursor-pointer hover:shadow-purple-400/70"
+      >
+        {icon}
+      </motion.div>
+      <h3 className="mt-4 text-xl font-semibold uppercase tracking-wide">
+        {title}
+      </h3>
+      <p className="mt-2 text-sm md:text-base max-w-[220px] text-white">
+        {desc}
+      </p>
+    </motion.div>
   );
 }
