@@ -1,21 +1,20 @@
-// app/contact/ContactInner.tsx
 "use client";
-
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export default function ContactInner() {
-  const params = useSearchParams();
-  const prefilledSubject = params.get("subject") || "";
+export default function Contact() {
+  const [prefilledSubject, setPrefilledSubject] = useState("");
+  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
 
-  const [formStatus, setFormStatus] =
-    useState<"idle" | "loading" | "sent" | "error">("idle");
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    setPrefilledSubject(url.searchParams.get("subject") || "");
+  }, []);
 
   useEffect(() => {
     if (formStatus === "sent") {
-      const timer = setTimeout(() => setFormStatus("idle"), 5000);
-      return () => clearTimeout(timer);
+      const t = setTimeout(() => setFormStatus("idle"), 5000);
+      return () => clearTimeout(t);
     }
   }, [formStatus]);
 
@@ -24,33 +23,20 @@ export default function ContactInner() {
     setFormStatus("loading");
 
     const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      telephone: formData.get("telephone"),
-      subject: formData.get("subject"),
-    };
+    const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/contact`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
         setFormStatus("sent");
         form.reset();
-      } else {
-        setFormStatus("error");
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
+      } else setFormStatus("error");
+    } catch (err) {
+      console.error(err);
       setFormStatus("error");
     }
   };
@@ -66,61 +52,39 @@ export default function ContactInner() {
         <form onSubmit={handleSubmit} className="space-y-6 text-left">
           <div>
             <label className="block text-sm font-medium mb-1">Name</label>
-            <input
-              type="text"
-              name="name"
-              required
-              className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
-            />
+            <input name="name" required className="w-full border p-3 rounded-md" />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              required
-              className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
-            />
+            <input type="email" name="email" required className="w-full border p-3 rounded-md" />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">Telephone</label>
-            <input
-              type="tel"
-              name="telephone"
-              className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
-            />
+            <input type="tel" name="telephone" className="w-full border p-3 rounded-md" />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">Subject</label>
             <input
-              type="text"
               name="subject"
               defaultValue={prefilledSubject}
-              className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
+              className="w-full border p-3 rounded-md"
               placeholder="Subject"
             />
           </div>
 
-          <Button
-            type="submit"
-            className="bg-[#00990d] text-white hover:bg-[#007a0a]"
-          >
+          <Button type="submit" className="bg-[#00990d] text-white hover:bg-[#007a0a]">
             {formStatus === "loading" ? "Sending..." : "Send Message"}
           </Button>
         </form>
 
         {formStatus === "sent" && (
-          <p className="mt-4 text-green-600 font-medium">
-            Message sent successfully!
-          </p>
+          <p className="mt-4 text-green-600 font-medium">Message sent successfully!</p>
         )}
         {formStatus === "error" && (
-          <p className="mt-4 text-red-600 font-medium">
-            Something went wrong. Try again later.
-          </p>
+          <p className="mt-4 text-red-600 font-medium">Something went wrong. Try again later.</p>
         )}
       </div>
     </div>
