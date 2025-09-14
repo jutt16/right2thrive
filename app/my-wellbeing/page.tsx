@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ThumbsUp } from "lucide-react";
 
@@ -15,6 +17,19 @@ const wellbeingOptions = [
 ];
 
 export default function WellbeingHub() {
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // make sure we’re on the client before using localStorage
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace("/auth/login"); // redirect if not logged in
+    }
+  }, [router]);
+
+  if (!isClient) return null; // avoid SSR hydration issues
+
   return (
     <div className="max-w-3xl mx-auto mt-10 mb-10 px-4">
       <div className="rounded-xl shadow-xl border border-cyan-400 overflow-hidden">

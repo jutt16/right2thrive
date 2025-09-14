@@ -1,11 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default function Contact() {
-  const [formStatus, setFormStatus] = useState<
-    "idle" | "loading" | "sent" | "error"
-  >("idle");
+  const params = useSearchParams();
+  const prefilledSubject = params.get("subject") || "";
+
+  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
 
   useEffect(() => {
     if (formStatus === "sent") {
@@ -18,13 +20,14 @@ export default function Contact() {
     e.preventDefault();
     setFormStatus("loading");
 
-    const form = e.currentTarget; // 👈 Save form reference before async call
+    const form = e.currentTarget;
     const formData = new FormData(form);
 
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
       telephone: formData.get("telephone"),
+      subject: formData.get("subject"),
     };
 
     try {
@@ -32,18 +35,14 @@ export default function Contact() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/contact`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // Uncomment below if using token auth
-            // Authorization: "Bearer YOUR_TOKEN"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         }
       );
 
       if (response.ok) {
         setFormStatus("sent");
-        form.reset(); // 👈 Safe to call
+        form.reset();
       } else {
         setFormStatus("error");
       }
@@ -61,7 +60,6 @@ export default function Contact() {
           Have questions or want to connect? We're just a message away.
         </p>
 
-        {/* Contact Form */}
         <form onSubmit={handleSubmit} className="space-y-6 text-left">
           <div>
             <label className="block text-sm font-medium mb-1">Name</label>
@@ -70,9 +68,9 @@ export default function Contact() {
               name="name"
               required
               className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
-              placeholder="Your Full Name"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
@@ -80,16 +78,27 @@ export default function Contact() {
               name="email"
               required
               className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
-              placeholder="you@example.com"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Telephone</label>
             <input
               type="tel"
               name="telephone"
               className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
-              placeholder="Your Phone Number"
+            />
+          </div>
+
+          {/* Subject prefilled from query */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Subject</label>
+            <input
+              type="text"
+              name="subject"
+              defaultValue={prefilledSubject}
+              className="w-full border p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff961b]"
+              placeholder="Subject"
             />
           </div>
 
@@ -101,7 +110,6 @@ export default function Contact() {
           </Button>
         </form>
 
-        {/* Success Message */}
         {formStatus === "sent" && (
           <p className="mt-4 text-green-600 font-medium">
             Message sent successfully!

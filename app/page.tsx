@@ -6,12 +6,14 @@ import { useState } from "react";
 import MagazineSection from "@/components/ui/magazinesection";
 import { motion } from "framer-motion";
 import { FaHandshake, FaUsers, FaRocket } from "react-icons/fa";
+import useAuthStatus from "@/hooks/useAuthStatus";
 
 export default function Home() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const isAuthenticated = useAuthStatus();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -32,7 +34,6 @@ export default function Home() {
           body: JSON.stringify(form),
         }
       );
-
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Something went wrong.");
 
@@ -45,24 +46,77 @@ export default function Home() {
     }
   };
 
-  const services = [
-    { title: "12-Week Wellbeing Programme", description: "Structured weekly sessions including individual therapy, group discussions, and cultural and creative activities for lasting mental health improvement." },
-    { title: "Individual Therapy Sessions", description: "One-on-one therapy tailored to your personal goals and challenges, provided with culturally responsive care." },
-    { title: "Anxiety & Trauma Workshops", description: "Learn techniques like breathwork and psychoeducation to better manage anxiety and trauma on your healing journey." },
-    { title: "Career Development Support", description: "Professional development guidance including CV writing, interview prep, mentorship, and AI tools." },
-    { title: "Group Support Sessions", description: "Safe peer spaces to share experiences and develop resilience through shared coping strategies." },
-    { title: "Mind & Body Wellness", description: "Tai Chi and mindfulness practices for better stress management and emotional balance." },
-    { title: "Weekly Check-ins", description: "Regular check-ins to track emotional wellbeing, offer support, and adjust your growth plan as needed." },
-    { title: "Extended Support", description: "Six months of continued 1-on-1 mentoring after completing the 12-week programme to maintain progress." },
-    { title: "Online Wellbeing Portal", description: "Secure platform offering virtual sessions, progress tracking, and wellbeing resources while you wait for specialist care.", isFeatured: true },
-  ];
+  /** ---------- Updated Services ---------- **/
+  // inside Home()
+const contactLink = (subject: string) =>
+  `/contact?subject=${encodeURIComponent(subject)}`;
+
+const services = [
+  {
+    title: "12-Week Wellbeing Programme",
+    description:
+      "Structured weekly sessions including individual therapy, group discussions, and creative activities for lasting mental health improvement.",
+    link: contactLink("12-Week Wellbeing Programme"),
+  },
+  {
+    title: "Individual Therapy Sessions",
+    description:
+      "One-on-one therapy tailored to your personal goals and challenges, provided with culturally responsive care.",
+    link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
+  },
+  {
+    title: "Anxiety & Trauma Workshops",
+    description:
+      "Learn techniques like breathwork and psychoeducation to better manage anxiety and trauma on your healing journey.",
+    link: contactLink("Anxiety & Trauma Workshops"),
+  },
+  {
+    title: "Career Development Support",
+    description:
+      "Professional development guidance including CV writing, interview prep, mentorship, and AI tools.",
+    link: contactLink("Career Development Support"),
+  },
+  {
+    title: "Group Support Sessions",
+    description:
+      "Safe peer spaces to share experiences and develop resilience through shared coping strategies.",
+    link: contactLink("Group Support Sessions"),
+  },
+  {
+    title: "Mind & Body Wellness",
+    description:
+      "Tai Chi and mindfulness practices for better stress management and emotional balance.",
+    link: contactLink("Mind & Body Wellness"),
+  },
+  {
+    title: "Weekly Check-ins",
+    description:
+      "Regular check-ins to track emotional wellbeing, offer support, and adjust your growth plan as needed.",
+    link: isAuthenticated
+      ? "/wellbeing-hub?tab=assessments"
+      : "/auth/login",
+  },
+  {
+    title: "Extended Support",
+    description:
+      "Six months of continued 1-on-1 mentoring after completing the 12-week programme to maintain progress.",
+    link: contactLink("Extended Support"),
+  },
+  {
+    title: "Online Wellbeing Portal",
+    description:
+      "Secure platform offering virtual sessions, progress tracking, and wellbeing resources while you wait for specialist care.",
+    isFeatured: true,
+    link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
+  },
+];
 
   return (
     <div className="flex flex-col">
       {/* ===== Hero Section ===== */}
       <section
         className="relative bg-cover bg-center bg-no-repeat text-white"
-        style={{ backgroundImage: `url('/banner.jpg')` }}
+        style={{ backgroundImage: `url('/banner.png')` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
 
@@ -72,8 +126,8 @@ export default function Home() {
           </h1>
           <p className="text-lg md:text-xl text-gray-100 leading-relaxed mb-8 drop-shadow">
             At Right2Thrive UK, we empower young people and families with
-            inclusive, culturally responsive wellbeing services to help
-            overcome trauma, anxiety, and systemic challenges.
+            inclusive, culturally responsive wellbeing services to help overcome
+            trauma, anxiety, and systemic challenges.
           </p>
           <Link href="#services">
             <Button className="bg-yellow-400 text-green-900 hover:bg-yellow-300 font-semibold px-8 py-4 rounded-full shadow-md transition duration-300">
@@ -82,7 +136,7 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* ===== 3-Step Flow BELOW the hero content ===== */}
+        {/* ===== 3-Step Flow ===== */}
         <div className="relative container mx-auto mt-16 pb-16 px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative">
             <motion.div
@@ -99,18 +153,21 @@ export default function Home() {
               title="Reach Out"
               desc="Start your journey with a safe chat and wellbeing check."
               delay={0}
+              href="#services"
             />
             <FlowStep
               icon={<FaUsers size={36} />}
               title="Get Support"
               desc="Join therapy, peer groups, or cultural activities."
               delay={0.3}
+              href="#contact"
             />
             <FlowStep
               icon={<FaRocket size={36} />}
               title="Thrive Forward"
               desc="Build confidence with skills, career coaching, and mentoring."
               delay={0.6}
+              href={isAuthenticated ? "/my-wellbeing" : "/auth/login"}
             />
           </div>
         </div>
@@ -126,29 +183,30 @@ export default function Home() {
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service, index) => (
-              <div
-                key={index}
-                className={`rounded-2xl p-6 shadow-md transition duration-300 hover:shadow-xl ${
-                  service.isFeatured
-                    ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white border-2 border-yellow-300"
-                    : "bg-gray-50"
-                }`}
-              >
-                <h3
-                  className={`text-xl font-semibold mb-3 ${
-                    service.isFeatured ? "text-yellow-300" : "text-blue-700"
+              <Link href={service.link} key={index}>
+                <div
+                  className={`rounded-2xl p-6 shadow-md transition duration-300 hover:shadow-xl cursor-pointer ${
+                    service.isFeatured
+                      ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white border-2 border-yellow-300"
+                      : "bg-gray-50"
                   }`}
                 >
-                  {service.title}
-                </h3>
-                <p
-                  className={`leading-relaxed ${
-                    service.isFeatured ? "text-white" : "text-gray-700"
-                  }`}
-                >
-                  {service.description}
-                </p>
-              </div>
+                  <h3
+                    className={`text-xl font-semibold mb-3 ${
+                      service.isFeatured ? "text-yellow-300" : "text-blue-700"
+                    }`}
+                  >
+                    {service.title}
+                  </h3>
+                  <p
+                    className={`leading-relaxed ${
+                      service.isFeatured ? "text-white" : "text-gray-700"
+                    }`}
+                  >
+                    {service.description}
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -182,7 +240,7 @@ export default function Home() {
       </section>
 
       {/* ===== Contact Form ===== */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white" id="contact">
         <div className="container mx-auto max-w-3xl px-4">
           <h2 className="text-3xl font-bold text-[#00990d] mb-6 text-center">
             Let's Talk
@@ -286,13 +344,15 @@ function FlowStep({
   title,
   desc,
   delay,
+  href,
 }: {
   icon: React.ReactNode;
   title: string;
   desc: string;
   delay: number;
+  href?: string;
 }) {
-  return (
+  const content = (
     <motion.div
       className="relative z-10 flex flex-col items-center text-center px-6"
       initial={{ opacity: 0, y: 40 }}
@@ -316,4 +376,6 @@ function FlowStep({
       </p>
     </motion.div>
   );
+
+  return href ? <Link href={href}>{content}</Link> : content;
 }
