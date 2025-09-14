@@ -1,13 +1,16 @@
+// app/contact/ContactInner.tsx
 "use client";
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export default function Contact() {
+export default function ContactInner() {
   const params = useSearchParams();
   const prefilledSubject = params.get("subject") || "";
 
-  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
+  const [formStatus, setFormStatus] =
+    useState<"idle" | "loading" | "sent" | "error">("idle");
 
   useEffect(() => {
     if (formStatus === "sent") {
@@ -90,7 +93,6 @@ export default function Contact() {
             />
           </div>
 
-          {/* Subject prefilled from query */}
           <div>
             <label className="block text-sm font-medium mb-1">Subject</label>
             <input
