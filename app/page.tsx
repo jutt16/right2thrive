@@ -5,7 +5,19 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import MagazineSection from "@/components/ui/magazinesection";
 import { motion } from "framer-motion";
-import { FaHandshake, FaUsers, FaRocket } from "react-icons/fa";
+import {
+  FaHandshake,
+  FaUsers,
+  FaRocket,
+  FaCalendarAlt,
+  FaComments,
+  FaBrain,
+  FaBriefcase,
+  FaSpa,
+  FaClock,
+  FaHandsHelping,
+  FaLaptop,
+} from "react-icons/fa";
 import useAuthStatus from "@/hooks/useAuthStatus";
 
 export default function Home() {
@@ -46,70 +58,84 @@ export default function Home() {
     }
   };
 
-  /** ---------- Updated Services ---------- **/
-  // inside Home()
-const contactLink = (subject: string) =>
-  `/contact?subject=${encodeURIComponent(subject)}`;
-
-const services = [
-  {
-    title: "12-Week Wellbeing Programme",
-    description:
-      "Structured weekly sessions including individual therapy, group discussions, and creative activities for lasting mental health improvement.",
-    link: contactLink("12-Week Wellbeing Programme"),
-  },
-  {
-    title: "Individual Therapy Sessions",
-    description:
-      "One-on-one therapy tailored to your personal goals and challenges, provided with culturally responsive care.",
-    link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
-  },
-  {
-    title: "Anxiety & Trauma Workshops",
-    description:
-      "Learn techniques like breathwork and psychoeducation to better manage anxiety and trauma on your healing journey.",
-    link: contactLink("Anxiety & Trauma Workshops"),
-  },
-  {
-    title: "Career Development Support",
-    description:
-      "Professional development guidance including CV writing, interview prep, mentorship, and AI tools.",
-    link: contactLink("Career Development Support"),
-  },
-  {
-    title: "Group Support Sessions",
-    description:
-      "Safe peer spaces to share experiences and develop resilience through shared coping strategies.",
-    link: contactLink("Group Support Sessions"),
-  },
-  {
-    title: "Mind & Body Wellness",
-    description:
-      "Tai Chi and mindfulness practices for better stress management and emotional balance.",
-    link: contactLink("Mind & Body Wellness"),
-  },
-  {
-    title: "Weekly Check-ins",
-    description:
-      "Regular check-ins to track emotional wellbeing, offer support, and adjust your growth plan as needed.",
-    link: isAuthenticated
-      ? "/wellbeing-hub?tab=assessments"
-      : "/auth/login",
-  },
-  {
-    title: "Extended Support",
-    description:
-      "Six months of continued 1-on-1 mentoring after completing the 12-week programme to maintain progress.",
-    link: contactLink("Extended Support"),
-  },
-  {
-    title: "Online Wellbeing Portal",
-    description:
-      "Secure platform offering virtual sessions, progress tracking, and wellbeing resources while you wait for specialist care.",
-    isFeatured: true,
-    link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
-  },
-];
+  /** ---------- Updated Services with Youth-Friendly Copy & Icons ---------- **/
+  const services = [
+    {
+      title: "12-Week Wellbeing Journey",
+      description:
+        "A step-by-step programme with therapy, group chats, and creative activities that help you heal, grow, and stay strong long after the 12 weeks are done.",
+      short: "A 12-week programme with therapy, groups & creative healing.",
+      icon: <FaCalendarAlt size={28} />,
+      link: "/contact?subject=12-Week Wellbeing Programme",
+    },
+    {
+      title: "1:1 Therapy Sessions",
+      description:
+        "Your space, your pace. Private sessions with someone who listens and gets it — no judgement, just support that’s tailored to you.",
+      short: "Private sessions at your pace with no judgement.",
+      icon: <FaComments size={28} />,
+      link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
+    },
+    {
+      title: "Anxiety & Trauma Workshops",
+      description:
+        "Stress? Overthinking? Sleepless nights? We get it. Learn simple tools like breathing hacks and mindset shifts to calm your mind and take back control. 💚",
+      short: "Learn breathing hacks & mindset shifts to reduce stress.",
+      icon: <FaBrain size={28} />,
+      link: "/contact?subject=Anxiety & Trauma Workshops",
+    },
+    {
+      title: "Career & Future Support",
+      description:
+        "Need help with CVs, interviews, or finding your path? We’ll coach you, connect you with mentors, and give you the skills to shine in your next step. 🚀",
+      short: "CV help, interview prep & mentorship for your next step.",
+      icon: <FaBriefcase size={28} />,
+      link: "/contact?subject=Career Development Support",
+    },
+    {
+      title: "Peer Support Groups",
+      description:
+        "Real talk with people who understand. Safe spaces to share stories, swap coping tips, and remind each other you’re not alone.",
+      short: "Safe peer spaces to share & support each other.",
+      icon: <FaUsers size={28} />,
+      link: "/contact?subject=Group Support Sessions",
+    },
+    {
+      title: "Mind & Body Wellness",
+      description:
+        "From Tai Chi to mindfulness, these sessions help you de-stress, recharge, and keep your head and body in sync. 🧘🏾‍♀",
+      short: "Tai Chi & mindfulness to de-stress & recharge.",
+      icon: <FaSpa size={28} />,
+      link: "/contact?subject=Mind & Body Wellness",
+    },
+    {
+      title: "Weekly Check-Ins",
+      description:
+        "Quick catch-ups to see how you’re doing, give you a boost, and keep your wellbeing on track week by week.",
+      short: "Quick weekly check-ins to stay on track.",
+      icon: <FaClock size={28} />,
+      link: isAuthenticated
+        ? "/wellbeing-hub?tab=assessments"
+        : "/auth/login",
+    },
+    {
+      title: "Extended Support",
+      description:
+        "Finished your 12 weeks? We’ve still got you. Six months of mentoring and check-ins so the progress sticks. ✨",
+      short: "6 months of mentoring after the 12-week journey.",
+      icon: <FaHandsHelping size={28} />,
+      link: "/contact?subject=Extended Support",
+    },
+    {
+      title: "Online Wellbeing Portal",
+      description:
+        "Your digital safe space. Access resources, track your growth, and join virtual sessions while you wait for specialist care.",
+      short: "Access resources, track growth & join virtual sessions.",
+      icon: <FaLaptop size={28} />,
+      isFeatured: true,
+      link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
+    },
+  ];
 
   return (
     <div className="flex flex-col">
@@ -183,30 +209,7 @@ const services = [
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service, index) => (
-              <Link href={service.link} key={index}>
-                <div
-                  className={`rounded-2xl p-6 shadow-md transition duration-300 hover:shadow-xl cursor-pointer ${
-                    service.isFeatured
-                      ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white border-2 border-yellow-300"
-                      : "bg-gray-50"
-                  }`}
-                >
-                  <h3
-                    className={`text-xl font-semibold mb-3 ${
-                      service.isFeatured ? "text-yellow-300" : "text-blue-700"
-                    }`}
-                  >
-                    {service.title}
-                  </h3>
-                  <p
-                    className={`leading-relaxed ${
-                      service.isFeatured ? "text-white" : "text-gray-700"
-                    }`}
-                  >
-                    {service.description}
-                  </p>
-                </div>
-              </Link>
+              <ServiceCard key={index} service={service} />
             ))}
           </div>
         </div>
@@ -378,4 +381,50 @@ function FlowStep({
   );
 
   return href ? <Link href={href}>{content}</Link> : content;
+}
+
+/* ---------- Service Card with Expand/Collapse ---------- */
+function ServiceCard({ service }: { service: any }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <Link href={service.link}>
+      <div
+        className={`rounded-2xl p-6 shadow-md hover:shadow-xl transition cursor-pointer ${
+          service.isFeatured
+            ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white border-2 border-yellow-300"
+            : "bg-gray-50"
+        }`}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          {service.icon}
+          <h3
+            className={`text-xl font-semibold ${
+              service.isFeatured ? "text-yellow-300" : "text-blue-700"
+            }`}
+          >
+            {service.title}
+          </h3>
+        </div>
+
+        <p
+          className={`leading-relaxed mb-4 ${
+            service.isFeatured ? "text-white" : "text-gray-700"
+          }`}
+        >
+          {expanded ? service.description : service.short}
+        </p>
+
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            setExpanded(!expanded);
+          }}
+          className="bg-green-600 hover:bg-green-700 text-white text-sm"
+        >
+          {expanded ? "Show Less" : "Learn More"}
+        </Button>
+      </div>
+    </Link>
+  );
 }

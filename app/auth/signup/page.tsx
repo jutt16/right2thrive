@@ -1,14 +1,20 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -36,65 +42,98 @@ export default function SignupPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          password_confirmation: formData.password,
-        }),
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+            password_confirmation: formData.password,
+          }),
+        }
+      )
 
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed')
+        throw new Error(data.message || "Registration failed")
       }
 
       if (data.success) {
-        // Store the token in localStorage or a secure cookie
-        localStorage.setItem('token', data.token)
-        // Store user data if needed
-        localStorage.setItem('user', JSON.stringify(data.user))
-        // Redirect to login page
+        localStorage.setItem("token", data.token)
+        localStorage.setItem("user", JSON.stringify(data.user))
         router.push("/auth/login")
       } else {
-        throw new Error(data.message || 'Registration failed')
+        throw new Error(data.message || "Registration failed")
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'There was an error creating your account. Please try again.')
+      setError(
+        err instanceof Error
+          ? err.message
+          : "There was an error creating your account. Please try again."
+      )
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-16rem)] items-center justify-center px-4 py-12">
-      <Card className="mx-auto w-full max-w-md border-2 border-teal-100">
-        <CardHeader className="space-y-1 text-center">
+    <div className="container mx-auto flex min-h-[calc(100vh-16rem)] items-center justify-center px-4 py-12 bg-gradient-to-br from-teal-50 to-white">
+      <Card className="mx-auto w-full max-w-md border-2 border-teal-100 shadow-md rounded-2xl">
+        <CardHeader className="space-y-3 text-center">
           <div className="flex justify-center">
-            <Image src="/right2thrive-logo.jpg" alt="Right2Thrive UK Logo" width={80} height={80} className="mb-4 rounded-full" />
+            <Image
+              src="/right2thrive-logo.jpg"
+              alt="Right2Thrive UK Logo"
+              width={120}
+              height={120}
+              className="mb-2 rounded-full"
+            />
           </div>
-          <CardTitle className="text-2xl font-bold text-[#ff961b]">Create an Account</CardTitle>
-          <CardDescription>Sign up to access the Right2Thrive UK wellbeing platform</CardDescription>
+          <CardTitle className="text-2xl font-bold text-[#ff961b]">
+            Join the Movement 🌱
+          </CardTitle>
+          <CardDescription className="px-4 text-gray-600 leading-relaxed">
+            Be part of a safe and supportive community. <br />
+            Sign up today to access your personal wellbeing space, find hope,
+            and take the first step towards healing.
+          </CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit}>
-            {error && <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</div>}
+            {error && (
+              <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} required />
+                  <Input
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} required />
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
               </div>
 
@@ -134,11 +173,14 @@ export default function SignupPage() {
                     ) : (
                       <Eye className="h-4 w-4 text-gray-500" />
                     )}
-                    <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                    <span className="sr-only">
+                      {showPassword ? "Hide password" : "Show password"}
+                    </span>
                   </Button>
                 </div>
                 <p className="text-xs text-gray-500">
-                  Password must be at least 8 characters long with a mix of letters, numbers, and symbols.
+                  Password must be at least 8 characters long with a mix of
+                  letters, numbers, and symbols.
                 </p>
               </div>
 
@@ -146,22 +188,33 @@ export default function SignupPage() {
                 <Checkbox id="terms" className="mt-1" required />
                 <Label htmlFor="terms" className="text-sm font-normal">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-orange-600 hover:text-teal-700">
+                  <Link
+                    href="/terms"
+                    className="text-orange-600 hover:text-teal-700"
+                  >
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-orange-600 hover:text-teal-700">
+                  <Link
+                    href="/privacy"
+                    className="text-orange-600 hover:text-teal-700"
+                  >
                     Privacy Policy
                   </Link>
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full bg-[#00990d] text-white hover:bg-[#007a0b] rounded-lg shadow-md"
+                disabled={isLoading}
+              >
                 {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </div>
           </form>
         </CardContent>
+
         <CardFooter className="flex flex-col space-y-4">
           <div className="relative flex items-center">
             <div className="flex-grow border-t border-gray-300"></div>
@@ -178,9 +231,12 @@ export default function SignupPage() {
             />
             Sign up with Google
           </Button>
-          <div className="text-center text-sm">
+          <div className="text-center text-sm text-gray-600">
             Already have an account?{" "}
-            <Link href="/auth/login" className="font-medium text-orange-600 hover:text-teal-700">
+            <Link
+              href="/auth/login"
+              className="font-medium text-orange-600 hover:text-teal-700"
+            >
               Sign in
             </Link>
           </div>
