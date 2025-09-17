@@ -161,43 +161,43 @@ export default function Home() {
             </Button>
           </Link>
         </div>
-
-        {/* ===== 3-Step Flow ===== */}
-        <div className="relative container mx-auto mt-16 pb-16 px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative">
-            <motion.div
-              className="hidden md:block absolute top-12 left-0 right-0 h-[4px] bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full"
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              style={{ transformOrigin: "left center" }}
-            />
-
-            <FlowStep
-              icon={<FaHandshake size={36} />}
-              title="Reach Out"
-              desc="Start your journey with a safe chat and wellbeing check."
-              delay={0}
-              href="#services"
-            />
-            <FlowStep
-              icon={<FaUsers size={36} />}
-              title="Get Support"
-              desc="Join therapy, peer groups, or cultural activities."
-              delay={0.3}
-              href="#contact"
-            />
-            <FlowStep
-              icon={<FaRocket size={36} />}
-              title="Thrive Forward"
-              desc="Build confidence with skills, career coaching, and mentoring."
-              delay={0.6}
-              href={isAuthenticated ? "/my-wellbeing" : "/auth/login"}
-            />
-          </div>
-        </div>
       </section>
+
+      {/* ===== 3-Step Flow ===== */}
+      <div className="relative container mx-auto mt-12 md:mt-20 pb-16 px-6 z-20">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative">
+          <motion.div
+            className="hidden md:block absolute top-12 left-0 right-0 h-[4px] bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            style={{ transformOrigin: "left center" }}
+          />
+
+          <FlowStep
+            icon={<FaHandshake size={36} />}
+            title="Reach Out"
+            desc="Start your journey with a safe chat and wellbeing check."
+            delay={0}
+            href="#services"
+          />
+          <FlowStep
+            icon={<FaUsers size={36} />}
+            title="Get Support"
+            desc="Join therapy, peer groups, or cultural activities."
+            delay={0.3}
+            href="#contact"
+          />
+          <FlowStep
+            icon={<FaRocket size={36} />}
+            title="Thrive Forward"
+            desc="Build confidence with skills, career coaching, and mentoring."
+            delay={0.6}
+            href={isAuthenticated ? "/my-wellbeing" : "/auth/login"}
+          />
+        </div>
+      </div>
 
       <MagazineSection />
 
@@ -374,7 +374,7 @@ function FlowStep({
       <h3 className="mt-4 text-xl font-semibold uppercase tracking-wide">
         {title}
       </h3>
-      <p className="mt-2 text-sm md:text-base max-w-[220px] text-white">
+      <p className="mt-2 text-sm md:text-base max-w-[220px] text-white md:text-gray-800">
         {desc}
       </p>
     </motion.div>
