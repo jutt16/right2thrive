@@ -47,7 +47,8 @@ export default function Home() {
         }
       );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Something went wrong.");
+      if (!response.ok)
+        throw new Error(data.message || "Something went wrong.");
 
       setSuccess(true);
       setForm({ name: "", email: "", message: "" });
@@ -114,9 +115,7 @@ export default function Home() {
         "Quick catch-ups to see how you’re doing, give you a boost, and keep your wellbeing on track week by week.",
       short: "Quick weekly check-ins to stay on track.",
       icon: <FaClock size={28} />,
-      link: isAuthenticated
-        ? "/wellbeing-hub?tab=assessments"
-        : "/auth/login",
+      link: isAuthenticated ? "/wellbeing-hub?tab=assessments" : "/auth/login",
     },
     {
       title: "Extended Support",
@@ -199,7 +198,33 @@ export default function Home() {
         </div>
       </div>
 
-      <MagazineSection />
+      {isAuthenticated ? (
+        <MagazineSection />
+      ) : (
+        <section className="py-20 bg-gray-50 text-center">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <h2 className="text-3xl font-bold mb-6 text-gray-800">
+              Unlock Our Wellbeing Magazine
+            </h2>
+            <p className="text-gray-600 mb-8">
+              Access inspiring stories, tips, and resources to support your
+              wellbeing. Sign up or log in to get full access.
+            </p>
+            <div className="flex justify-center gap-4 flex-wrap">
+              <Link href="/auth/login">
+                <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button className="bg-yellow-400 hover:bg-yellow-300 text-green-900 px-6 py-3">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ===== Services Section ===== */}
       <section id="services" className="py-20 bg-white">
