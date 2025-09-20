@@ -202,22 +202,33 @@ export default function Home() {
         <MagazineSection />
       ) : (
         <section className="py-20 bg-gray-50 text-center">
-          <div className="container mx-auto px-4 max-w-2xl">
+          <div className="container mx-auto px-4 max-w-4xl">
             <h2 className="text-3xl font-bold mb-6 text-gray-800">
               Unlock Our Wellbeing Magazine
             </h2>
-            <p className="text-gray-600 mb-8">
+            <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
               Access inspiring stories, tips, and resources to support your
               wellbeing. Sign up or log in to get full access.
             </p>
+
+            {/* Image Preview */}
+            <div className="flex justify-center mb-8">
+              <img
+                src="/magazine-cover.jpeg"
+                alt="Wellbeing Magazine Cover"
+                className="rounded-2xl shadow-lg w-full max-w-md hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+
+            {/* Buttons */}
             <div className="flex justify-center gap-4 flex-wrap">
               <Link href="/auth/login">
-                <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3">
+                <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl">
                   Login
                 </Button>
               </Link>
               <Link href="/auth/signup">
-                <Button className="bg-yellow-400 hover:bg-yellow-300 text-green-900 px-6 py-3">
+                <Button className="bg-yellow-400 hover:bg-yellow-300 text-green-900 px-6 py-3 rounded-xl">
                   Sign Up
                 </Button>
               </Link>
