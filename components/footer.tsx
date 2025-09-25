@@ -1,7 +1,7 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Instagram, Twitter, Mail, Phone } from "lucide-react"
-import { SiTiktok } from "react-icons/si" // TikTok icon
+import Link from "next/link";
+import Image from "next/image";
+import { Instagram, Twitter, Mail, Phone } from "lucide-react";
+import { SiTiktok } from "react-icons/si"; // TikTok icon
 
 export default function Footer() {
   return (
@@ -87,6 +87,22 @@ export default function Footer() {
                   About Us
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/policies/data-retention-policy"
+                  className="hover:text-orange-400"
+                >
+                  Data Retention & Deletion Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/policies/sar-policy"
+                  className="hover:text-orange-400"
+                >
+                  Subject Access Requests Policy
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -154,5 +170,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

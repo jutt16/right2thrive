@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Instagram, Twitter, User, Heart, LogOut } from "lucide-react";
+import { Menu, X, Instagram, Twitter, User, Heart, LogOut, MessageSquareWarning } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -136,6 +136,9 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => router.push("/my-wellbeing")}>
                   <Heart className="h-4 w-4 mr-2" /> My Wellbeing
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/complaints")}>
+                  <MessageSquareWarning className="mr-2 h-4 w-4" /> Complaints
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/my-bookings")}>
                   <User className="h-4 w-4 mr-2" /> My Bookings
                 </DropdownMenuItem>
@@ -240,6 +243,16 @@ export default function Navbar() {
                     }}
                   >
                     <Heart className="mr-2 h-4 w-4" /> My Wellbeing
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-green-700 hover:bg-green-100"
+                    onClick={() => {
+                      router.push("/complaints");
+                      toggleMenu();
+                    }}
+                  >
+                    <MessageSquareWarning className="mr-2 h-4 w-4" /> complaints
                   </Button>
                   <Button
                     variant="ghost"
