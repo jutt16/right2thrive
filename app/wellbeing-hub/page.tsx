@@ -143,36 +143,75 @@ function WellbeingHubContent({ userData }: { userData: any }) {
     }
   }, [activeTab, isClient]);
 
+  // --- Add a new state for PCL-5 assessments ---
+  const [pcl5Assessments, setPcl5Assessments] = useState<Assessment[]>([]);
+
+  // --- Update fetchAssessments to include PCL-5 ---
   const fetchAssessments = async () => {
     if (!isClient) return;
     setIsLoading(true);
-
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const [gad7Res, phq9Res] = await Promise.all([
+      const [gad7Res, phq9Res, pcl5Res] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/pcl5`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
 
-      const [gad7Data, phq9Data] = await Promise.all([
+      const [gad7Data, phq9Data, pcl5Data] = await Promise.all([
         gad7Res.json(),
         phq9Res.json(),
+        pcl5Res.json(),
       ]);
 
       if (gad7Data.success) setGad7Assessments(gad7Data.assessments);
       if (phq9Data.success) setPhq9Assessments(phq9Data.assessments);
+      if (pcl5Data.success) setPcl5Assessments(pcl5Data.assessments);
     } catch (err) {
       console.error("Error fetching assessments:", err);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // const fetchAssessments = async () => {
+  //   if (!isClient) return;
+  //   setIsLoading(true);
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) return;
+
+  //     const [gad7Res, phq9Res] = await Promise.all([
+  //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }),
+  //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }),
+  //     ]);
+
+  //     const [gad7Data, phq9Data] = await Promise.all([
+  //       gad7Res.json(),
+  //       phq9Res.json(),
+  //     ]);
+
+  //     if (gad7Data.success) setGad7Assessments(gad7Data.assessments);
+  //     if (phq9Data.success) setPhq9Assessments(phq9Data.assessments);
+  //   } catch (err) {
+  //     console.error("Error fetching assessments:", err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const fetchSessionNotes = async () => {
     if (!isClient) return;
@@ -601,6 +640,39 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </Button>
               </CardFooter>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>PCL-5 Assessment</CardTitle>
+                <CardDescription>
+                  Post-Traumatic Stress Check-In
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  This 20-item questionnaire screens for symptoms of
+                  post-traumatic stress. Answering honestly helps your coach
+                  understand how past experiences may be affecting you today and
+                  tailor support to your needs.
+                </p>
+                <br />
+                <p className="text-sm text-gray-600">
+                  Your responses will remain private and are used only to guide
+                  your wellbeing plan.
+                </p>
+              </CardContent>
+
+              <CardFooter>
+                <Button
+                  className="bg-[#00990d] text-white hover:bg-[#3c362f]"
+                  onClick={() => handleTakeAssessment("/wellbeing-hub/pcl5")}
+                >
+                  Take Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
 
           <Card>
@@ -612,10 +684,58 @@ function WellbeingHubContent({ userData }: { userData: any }) {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="gad7" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="gad7">GAD-7 Assessments</TabsTrigger>
-                  <TabsTrigger value="phq9">PHQ-9 Assessments</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="gad7">GAD-7</TabsTrigger>
+                  <TabsTrigger value="phq9">PHQ-9</TabsTrigger>
+                  <TabsTrigger value="pcl5">PCL-5</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="pcl5" className="space-y-4">
+                  <div className="rounded-md border">
+                    <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
+                      <div>Date</div>
+                      <div>Score</div>
+                      <div>Severity</div>
+                      <div>Actions</div>
+                    </div>
+                    <div className="divide-y">
+                      {isLoading ? (
+                        <div className="p-4 text-center">
+                          Loading assessments...
+                        </div>
+                      ) : pcl5Assessments.length === 0 ? (
+                        <div className="p-4 text-center">
+                          No PCL-5 assessments found
+                        </div>
+                      ) : (
+                        pcl5Assessments.map((assessment) => (
+                          <div
+                            key={assessment.id}
+                            className="grid grid-cols-4 gap-4 p-4"
+                          >
+                            <div>{formatDate(assessment.created_at)}</div>
+                            <div>{assessment.total_score}/80</div>
+                            <div className="capitalize">
+                              {assessment.severity_level}
+                            </div>
+                            <div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedAssessment(assessment);
+                                  setIsDetailsOpen(true);
+                                }}
+                              >
+                                View Details
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </TabsContent>
 
                 <TabsContent value="gad7" className="space-y-4">
                   <div className="rounded-md border">
