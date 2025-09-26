@@ -14,6 +14,7 @@ const wellbeingOptions = [
   { label: "Generalized Anxiety Disorder 7 (GAD-7)", href: "/wellbeing-hub/gad7" },
   { label: "Nine Symptom Checklist (PHQ-9)", href: "/wellbeing-hub/phq9" },
   { label: "Strength and Difficulties Questionnaire (SDQ)", href: "/my-wellbeing/questionnaires" },
+  { label: "PCL-5 Questionnaire", href: "/wellbeing-hub/pcl5" },
 ];
 
 export default function WellbeingHub() {
