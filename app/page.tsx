@@ -83,7 +83,7 @@ export default function Home() {
         "Stress? Overthinking? Sleepless nights? We get it. Learn simple tools like breathing hacks and mindset shifts to calm your mind and take back control. 💚",
       short: "Learn breathing hacks & mindset shifts to reduce stress.",
       icon: <FaBrain size={28} />,
-      link: "/contact?subject=Anxiety & Trauma Workshops",
+      link: "/anxiety-and-trauma-workshops",
     },
     {
       title: "Career & Future Support",

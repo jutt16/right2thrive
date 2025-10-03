@@ -112,7 +112,7 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="https://instagram.com/@Right2ThriveUK" target="_blank">
+          <Link href="https://www.instagram.com/right2thriveuk/" target="_blank">
             <Instagram className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
           </Link>
           <Link href="https://twitter.com/@Right2ThriveUK" target="_blank">
@@ -211,7 +211,7 @@ export default function Navbar() {
 
             <div className="flex gap-4 mt-4">
               <Link
-                href="https://instagram.com/@Right2ThriveUK"
+                href="https://www.instagram.com/right2thriveuk/"
                 target="_blank"
               >
                 <Instagram className="h-5 w-5 text-[#00990d] hover:text-orange-500" />

@@ -29,7 +29,7 @@ export default function Footer() {
             </p>
             <div className="mt-4 flex space-x-4">
               <Link
-                href="https://instagram.com/@Right2ThriveUK"
+                href="https://www.instagram.com/right2thriveuk/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
