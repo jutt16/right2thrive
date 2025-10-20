@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const steps = [
   "start",
@@ -639,9 +640,30 @@ export default function WellbeingPlan() {
     }
   };
 
+  const router = useRouter();
+
   return (
     <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow">
       <h1 className="text-2xl font-bold mb-4 text-center">My Wellbeing Plan</h1>
+      <button
+        type="button"
+        onClick={() => router.push("/my-wellbeing/download")}
+        title="View documents assigned by your therapist"
+        aria-label="View therapists assigned documents"
+        className="inline-flex items-center gap-3 px-4 py-2 mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg shadow-md hover:shadow-lg transition-colors transition-shadow duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-5 h-5 flex-shrink-0"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M8 2a2 2 0 00-2 2v3H4a2 2 0 00-2 2v5a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H8zM7 9V4h6v5H7z" />
+          <path d="M9 12a1 1 0 112 0v3h-2v-3z" />
+        </svg>
+        <span className="font-medium">View Therapists Assigned Docs</span>
+      </button>
       {renderStep()}
       <div className="flex justify-between mt-6">
         <button

@@ -166,7 +166,8 @@ export default function Home() {
       <div className="relative container mx-auto mt-12 md:mt-20 pb-16 px-6 z-20">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative">
           <motion.div
-            className="hidden md:block absolute top-12 left-0 right-0 h-[4px] bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full"
+            className="hidden md:block absolute top-12 left-0 right-0 h-[4px] 
+                      bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 rounded-full"
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
@@ -399,18 +400,23 @@ function FlowStep({
       viewport={{ once: true }}
       transition={{ delay, duration: 0.6, ease: "easeOut" }}
     >
+      {/* Icon */}
       <motion.div
         whileHover={{ scale: 1.15 }}
         className="flex items-center justify-center w-28 h-28 rounded-full 
-                   bg-gradient-to-tr from-purple-500 via-pink-500 to-indigo-500 
-                   shadow-2xl cursor-pointer hover:shadow-purple-400/70"
+                   bg-gradient-to-tr from-green-500 via-teal-500 to-blue-500 
+                   shadow-2xl cursor-pointer hover:shadow-teal-400/70"
       >
         {icon}
       </motion.div>
-      <h3 className="mt-4 text-xl font-semibold uppercase tracking-wide">
+
+      {/* Title */}
+      <h3 className="mt-4 text-xl font-semibold uppercase tracking-wide text-gray-800">
         {title}
       </h3>
-      <p className="mt-2 text-sm md:text-base max-w-[220px] text-white md:text-gray-800">
+
+      {/* Description */}
+      <p className="mt-2 text-sm md:text-base max-w-[220px] text-gray-700">
         {desc}
       </p>
     </motion.div>
@@ -418,6 +424,7 @@ function FlowStep({
 
   return href ? <Link href={href}>{content}</Link> : content;
 }
+
 
 /* ---------- Service Card with Expand/Collapse ---------- */
 function ServiceCard({ service }: { service: any }) {
