@@ -38,7 +38,7 @@ export default function Blog() {
         <Card className="overflow-hidden border-2 border-teal-100">
           <div className="grid md:grid-cols-2">
             <div className="relative h-64 md:h-auto">
-              <Image src="/placeholder.svg?height=600&width=800" alt="Featured Article" fill className="object-cover" />
+              <Image src="/blog.png?height=600&width=800" alt="Featured Article" fill className="object-cover" />
             </div>
             <div className="p-6 md:p-8">
               <div className="mb-2 flex items-center space-x-4 text-sm text-gray-500">
@@ -76,7 +76,7 @@ export default function Blog() {
           <Card className="border-2 border-teal-100">
             <div className="relative h-48 w-full">
               <Image
-                src="/placeholder.svg?height=400&width=600"
+                src="/blog.png?height=400&width=600"
                 alt="Understanding GAD-7 and PHQ-9"
                 fill
                 className="rounded-t-lg object-cover"
@@ -112,7 +112,7 @@ export default function Blog() {
           <Card className="border-2 border-teal-100">
             <div className="relative h-48 w-full">
               <Image
-                src="/placeholder.svg?height=400&width=600"
+                src="/blog.png?height=400&width=600"
                 alt="Traditional Healing Practices"
                 fill
                 className="rounded-t-lg object-cover"
@@ -148,7 +148,7 @@ export default function Blog() {
           <Card className="border-2 border-teal-100">
             <div className="relative h-48 w-full">
               <Image
-                src="/placeholder.svg?height=400&width=600"
+                src="/blog.png?height=400&width=600"
                 alt="Supporting Young People"
                 fill
                 className="rounded-t-lg object-cover"
@@ -191,7 +191,7 @@ export default function Blog() {
             <div className="grid md:grid-cols-4">
               <div className="relative h-48 md:h-full">
                 <Image
-                  src="/placeholder.svg?height=300&width=400"
+                  src="/blog.png?height=300&width=400"
                   alt="Mindfulness Techniques"
                   fill
                   className="rounded-t-lg object-cover md:rounded-l-lg md:rounded-tr-none"
@@ -229,7 +229,7 @@ export default function Blog() {
             <div className="grid md:grid-cols-4">
               <div className="relative h-48 md:h-full">
                 <Image
-                  src="/placeholder.svg?height=300&width=400"
+                  src="/blog.png?height=300&width=400"
                   alt="Community Support"
                   fill
                   className="rounded-t-lg object-cover md:rounded-l-lg md:rounded-tr-none"
@@ -267,7 +267,7 @@ export default function Blog() {
             <div className="grid md:grid-cols-4">
               <div className="relative h-48 md:h-full">
                 <Image
-                  src="/placeholder.svg?height=300&width=400"
+                  src="/blog.png?height=300&width=400"
                   alt="Digital Mental Health"
                   fill
                   className="rounded-t-lg object-cover md:rounded-l-lg md:rounded-tr-none"
