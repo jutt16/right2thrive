@@ -163,7 +163,7 @@ export default function ComplaintsPage() {
                     {c.status}
                   </span>
                 </div>
-                <p className="text-gray-700">{c.description}</p>
+                <ComplaintDescription description={c.description} />
                 <p className="text-xs text-gray-500 mt-1">
                   {new Date(c.created_at).toLocaleString()}
                 </p>
@@ -172,6 +172,32 @@ export default function ComplaintsPage() {
           </ul>
         )}
       </div>
+    </div>
+  );
+}
+
+function ComplaintDescription({ description }: { description: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const maxChars = 150; // adjust how many chars to show before "Show more"
+
+  const isLong = description.length > maxChars;
+  const visibleText = expanded ? description : description.slice(0, maxChars);
+
+  return (
+    <div className="text-gray-700 break-words whitespace-pre-wrap">
+      {visibleText}
+      {isLong && (
+        <>
+          {!expanded && "... "}
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            className="text-green-600 font-medium hover:underline ml-1"
+          >
+            {expanded ? "Show less" : "Show more"}
+          </button>
+        </>
+      )}
     </div>
   );
 }

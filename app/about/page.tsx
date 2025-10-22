@@ -94,7 +94,7 @@ export default function About() {
             <Link href="/contact">
               <Button
                 variant="outline"
-                className="border-orange-500 text-white hover:bg-orange-500 hover:text-white"
+                className="hover:border-orange-500 bg-green-500 hover:bg-orange-500 hover:text-white"
               >
                 Contact Us
               </Button>
