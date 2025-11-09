@@ -8,10 +8,65 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { generateMetadata as generateSEOMetadata } from "@/lib/seo-utils";
+import StructuredData from "@/components/structured-data";
+import { generateServiceStructuredData } from "@/lib/seo-utils";
+
+export const metadata = generateSEOMetadata({
+  title: "Cultural Activities & Wellbeing Workshops | Right2Thrive UK",
+  description: "Join our cultural activities and wellbeing workshops designed to empower individuals, build emotional resilience, and promote healing through connection and creativity in North London.",
+  keywords: [
+    "cultural activities",
+    "wellbeing workshops",
+    "cultural wellbeing",
+    "emotional resilience",
+    "healing through connection",
+    "creative therapy",
+    "North London cultural activities",
+    "community workshops"
+  ],
+  path: "/cultural-activities",
+  image: "/right2thrive-logo.jpg"
+});
+
+const culturalServices = [
+  {
+    name: "Cultural Wellbeing Workshops",
+    description: "Workshops designed to empower individuals, build emotional resilience, and promote healing through connection and creativity.",
+    provider: "Right2Thrive UK",
+    areaServed: "North London",
+    serviceType: "Cultural Activity",
+    offers: {
+      price: "0",
+      priceCurrency: "GBP",
+      availability: "InStock"
+    }
+  },
+  {
+    name: "Creative Therapy Sessions",
+    description: "Creative therapy sessions that combine cultural activities with therapeutic support to promote healing and personal growth.",
+    provider: "Right2Thrive UK",
+    areaServed: "North London",
+    serviceType: "Therapeutic Service",
+    offers: {
+      price: "0",
+      priceCurrency: "GBP",
+      availability: "InStock"
+    }
+  }
+];
 
 export default function WellbeingWorkshops() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      {culturalServices.map((service, index) => (
+        <StructuredData 
+          key={index}
+          data={generateServiceStructuredData(service)} 
+          id={`cultural-service-schema-${index}`} 
+        />
+      ))}
+      <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#ff961b]">
           Right2Thrive UK Wellbeing Hub
@@ -140,6 +195,7 @@ export default function WellbeingWorkshops() {
           </form>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

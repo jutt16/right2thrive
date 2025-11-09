@@ -1,9 +1,63 @@
-"use client";
+// Page is a server component (no client hooks). Metadata moved to app/anxiety-and-trauma-workshops/head.tsx
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import StructuredData from "@/components/structured-data";
+import { generateEventStructuredData, generateServiceStructuredData } from "@/lib/seo-utils";
+
+const workshopEvents = [
+  {
+    name: "Understanding Anxiety: Practical Tools for Young People",
+    description: "A comprehensive workshop covering anxiety management techniques, breathing exercises, and practical coping strategies for young people aged 16-24.",
+    startDate: "2024-02-15T18:00:00+00:00",
+    endDate: "2024-02-15T19:30:00+00:00",
+    location: "Online Workshop",
+    organizer: "Right2Thrive UK",
+    offers: {
+      price: "0",
+      priceCurrency: "GBP",
+      availability: "InStock"
+    }
+  },
+  {
+    name: "Trauma Recovery: Building Resilience and Healing",
+    description: "Learn about trauma responses, healing processes, and building resilience. This workshop provides safe, culturally responsive support for trauma recovery.",
+    startDate: "2024-02-22T18:00:00+00:00",
+    endDate: "2024-02-22T19:30:00+00:00",
+    location: "Online Workshop",
+    organizer: "Right2Thrive UK",
+    offers: {
+      price: "0",
+      priceCurrency: "GBP",
+      availability: "InStock"
+    }
+  }
+];
+
+const workshopService = {
+  name: "Anxiety & Trauma Workshops",
+  description: "Free online wellbeing workshops for young people aged 16-24, focusing on anxiety management, trauma recovery, and building emotional resilience.",
+  provider: "Right2Thrive UK",
+  areaServed: "North London",
+  serviceType: "Mental Health Workshop",
+  offers: {
+    price: "0",
+    priceCurrency: "GBP",
+    availability: "InStock"
+  }
+};
 
 export default function WellbeingWorkshops() {
   return (
-    <div className="min-h-screen bg-white text-gray-800 py-16 px-4">
+    <>
+      {workshopEvents.map((event, index) => (
+        <StructuredData 
+          key={index}
+          data={generateEventStructuredData(event)} 
+          id={`event-schema-${index}`} 
+        />
+      ))}
+      <StructuredData data={generateServiceStructuredData(workshopService)} id="workshop-service-schema" />
+      <div className="min-h-screen bg-white text-gray-800 py-16 px-4">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-4xl font-bold text-[#ff961b] mb-4">
           Free Online Wellbeing Workshops for Young Minds
@@ -124,6 +178,7 @@ export default function WellbeingWorkshops() {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

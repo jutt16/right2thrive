@@ -16,11 +16,7 @@ async function getQuestionnaire(id: string, token: string) {
   return res.json();
 }
 
-export default async function QuestionnairePage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function QuestionnairePage({ params }: { params: any }) {
   // We can’t access localStorage here, so we'll fetch client-side
   // Instead pass id down to client form
   return (

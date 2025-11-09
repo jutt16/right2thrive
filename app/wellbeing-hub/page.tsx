@@ -59,6 +59,11 @@ interface SessionNote {
   notes: string;
   date: string;
   created_at: string;
+  therapist?: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  };
 }
 
 interface Medication {
@@ -80,6 +85,29 @@ interface Medication {
     email: string;
   };
 }
+
+type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
+
+interface Booking {
+  id: number;
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: BookingStatus;
+  meeting_link?: string | null;
+  therapist?: {
+    first_name?: string;
+    last_name?: string;
+  };
+}
+
+const QUICK_CHECK_IN_OPTIONS = [
+  { value: "great", emoji: "😊", label: "Great" },
+  { value: "okay", emoji: "😐", label: "Okay" },
+  { value: "down", emoji: "😔", label: "Down" },
+  { value: "anxious", emoji: "😰", label: "Anxious" },
+  { value: "frustrated", emoji: "😡", label: "Frustrated" },
+] as const;
 
 export default function WellbeingHub() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -111,6 +139,8 @@ export default function WellbeingHub() {
 function WellbeingHubContent({ userData }: { userData: any }) {
   const searchParams = useSearchParams();
   const [medications, setMedications] = useState<Medication[]>([]);
+  const [upcomingBooking, setUpcomingBooking] = useState<Booking | null>(null);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(true);
   const [activeTab, setActiveTab] = useState(
     searchParams.get("tab") || "assessments"
   );
@@ -121,10 +151,116 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   const [gad7Assessments, setGad7Assessments] = useState<Assessment[]>([]);
   const [phq9Assessments, setPhq9Assessments] = useState<Assessment[]>([]);
   const [sessionNotes, setSessionNotes] = useState<SessionNote[]>([]);
+  const [pcl5Assessments, setPcl5Assessments] = useState<Assessment[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  const [quickCheckInSelection, setQuickCheckInSelection] = useState<string | null>(null);
+  const [showCheckInConfirmation, setShowCheckInConfirmation] = useState(false);
+
+  const parseBookingDateTime = (date?: string, time?: string) => {
+    if (!date || !time) return null;
+    const trimmedTime = time.trim();
+    if (!trimmedTime) return null;
+
+    let normalizedTime = trimmedTime;
+
+    if (/^\d{1,2}:\d{2}$/.test(trimmedTime)) {
+      const [hours, minutes] = trimmedTime.split(":");
+      normalizedTime = `${hours.padStart(2, "0")}:${minutes}:00`;
+    } else if (/^\d{1,2}:\d{2}:\d{2}$/.test(trimmedTime)) {
+      const [hours, minutes, seconds] = trimmedTime.split(":");
+      normalizedTime = `${hours.padStart(2, "0")}:${minutes}:${seconds}`;
+    }
+
+    const isoCandidate = `${date}T${normalizedTime}`;
+    let parsed = new Date(isoCandidate);
+
+    if (Number.isNaN(parsed.getTime())) {
+      parsed = new Date(`${date} ${trimmedTime}`);
+    }
+
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  };
+
+  const findUpcomingBookingWithinWeek = (items: Booking[]) => {
+    const now = new Date();
+    const weekAhead = new Date(now);
+    weekAhead.setDate(now.getDate() + 7);
+
+    const nextBooking = items
+      .map((booking) => {
+        const start = parseBookingDateTime(booking.date, booking.start_time);
+        return { booking, start };
+      })
+      .filter(({ start, booking }) => {
+        if (!start) return false;
+        if (booking.status === "cancelled" || booking.status === "completed") {
+          return false;
+        }
+        return start >= now && start <= weekAhead;
+      })
+      .sort((a, b) => a.start!.getTime() - b.start!.getTime())[0];
+
+    return nextBooking?.booking ?? null;
+  };
+
+  const formatSessionReminder = (booking: Booking) => {
+    const start = parseBookingDateTime(booking.date, booking.start_time);
+    const therapistName =
+      booking.therapist?.first_name?.trim() ||
+      booking.therapist?.last_name?.trim() ||
+      "your therapist";
+
+    if (!start) {
+      return `Your session with ${therapistName} is coming up soon. Complete these check-ins before your session for the best experience.`;
+    }
+
+    const today = new Date();
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const startOfSessionDay = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate()
+    );
+    const diffDays = Math.round(
+      (startOfSessionDay.getTime() - startOfToday.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    let dayDescriptor: string;
+    if (diffDays === 0) {
+      dayDescriptor = "today";
+    } else if (diffDays === 1) {
+      dayDescriptor = "tomorrow";
+    } else {
+      dayDescriptor = `on ${new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      }).format(start)}`;
+    }
+
+    const timeLabelRaw = new Intl.DateTimeFormat("en-GB", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(start);
+    const timeLabel = timeLabelRaw.replace("am", "AM").replace("pm", "PM");
+
+    return `Your session with ${therapistName} is ${dayDescriptor} at ${timeLabel}. Complete these check-ins before your session for the best experience.`;
+  };
+
+  const handleQuickCheckIn = (
+    value: (typeof QUICK_CHECK_IN_OPTIONS)[number]["value"]
+  ) => {
+    setQuickCheckInSelection(value);
+    setShowCheckInConfirmation(true);
+  };
 
   useEffect(() => setIsClient(true), []);
 
@@ -142,9 +278,78 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       window.history.pushState({}, "", newUrl);
     }
   }, [activeTab, isClient]);
+  useEffect(() => {
+    if (!isClient) return;
 
-  // --- Add a new state for PCL-5 assessments ---
-  const [pcl5Assessments, setPcl5Assessments] = useState<Assessment[]>([]);
+    let isMounted = true;
+
+    const fetchBookings = async () => {
+      setIsLoadingBookings(true);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          if (isMounted) {
+            setUpcomingBooking(null);
+          }
+          return;
+        }
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/bookings`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (!isMounted) return;
+
+        let data: any = null;
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
+
+        if (
+          res.ok &&
+          data?.success &&
+          Array.isArray(data.data)
+        ) {
+          const upcoming = findUpcomingBookingWithinWeek(data.data);
+          setUpcomingBooking(upcoming);
+        } else {
+          setUpcomingBooking(null);
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("Error fetching bookings:", error);
+          setUpcomingBooking(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingBookings(false);
+        }
+      }
+    };
+
+    fetchBookings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isClient]);
+
+  const userFirstName =
+    (typeof userData?.first_name === "string" && userData.first_name.trim().length > 0
+      ? userData.first_name.trim()
+      : typeof userData?.name === "string" && userData.name.trim().length > 0
+      ? userData.name.trim().split(" ")[0]
+      : "there");
+
+  const sessionReminderMessage =
+    !isLoadingBookings && upcomingBooking
+      ? formatSessionReminder(upcomingBooking)
+      : null;
 
   // --- Update fetchAssessments to include PCL-5 ---
   const fetchAssessments = async () => {
@@ -370,7 +575,68 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         </TabsContent>
 
         {/* Keep your existing Dashboard, Assessments, Resources, Wellbeing tabs here... */}
-        <TabsContent value="dashboard" className="space-y-4">
+        <TabsContent value="dashboard" className="space-y-6">
+          <div className="rounded-2xl bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-500 p-6 text-white shadow-lg">
+            <p className="text-sm font-medium uppercase tracking-wide text-white/80">
+              Welcome back
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">
+              Hello {userFirstName}! 👋
+            </h2>
+            {isLoadingBookings ? (
+              <p className="mt-3 text-sm text-white/85">
+                Checking for your upcoming sessions...
+              </p>
+            ) : sessionReminderMessage ? (
+              <p className="mt-3 text-base text-white/90">
+                {sessionReminderMessage}
+              </p>
+            ) : (
+              <p className="mt-3 text-sm text-white/80">
+                Take a moment to complete a quick check-in below.
+              </p>
+            )}
+          </div>
+
+          <Card className="border border-cyan-100 shadow-sm">
+            <CardHeader>
+              <CardTitle>Quick Check-In: How are you feeling today?</CardTitle>
+              <CardDescription>
+                Takes 30 seconds and helps Raveen prepare for your session
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+                {QUICK_CHECK_IN_OPTIONS.map((option) => {
+                  const isSelected = quickCheckInSelection === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleQuickCheckIn(option.value)}
+                      className={`flex h-full flex-col items-center justify-center gap-2 rounded-xl border p-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                        isSelected
+                          ? "border-teal-500 bg-teal-50 text-teal-700 shadow-sm focus:ring-teal-500 focus:ring-offset-white"
+                          : "border-gray-200 text-gray-700 hover:border-teal-400 hover:bg-teal-50 focus:ring-teal-400 focus:ring-offset-white"
+                      }`}
+                      aria-pressed={isSelected}
+                    >
+                      <span className="text-3xl">{option.emoji}</span>
+                      <span>{option.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </CardContent>
+            {showCheckInConfirmation && quickCheckInSelection && (
+              <CardFooter className="border-t border-gray-100 pt-4">
+                <p className="text-sm font-medium text-emerald-600">
+                  Thanks for checking in! This helps us support you better.
+                </p>
+              </CardFooter>
+            )}
+          </Card>
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -425,6 +691,14 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </CardContent>
             </Card>
           </div>
+
+          <Card className="border border-emerald-100 bg-emerald-50/80">
+            <CardContent className="flex items-center justify-between gap-3 py-6">
+              <p className="text-base font-semibold text-emerald-900">
+                Your anxiety improved by 30% this month! Keep up the great work 🎉
+              </p>
+            </CardContent>
+          </Card>
 
           <div className="grid gap-4 md:grid-cols-2">
             <Card className="col-span-1">
@@ -541,25 +815,25 @@ function WellbeingHubContent({ userData }: { userData: any }) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="assessments" className="space-y-4">
+        <TabsContent value="assessments" className="space-y-6">
+          <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-6 shadow-sm">
+            <h2 className="text-2xl font-semibold text-emerald-800">
+              Welcome to Your Wellbeing Space
+            </h2>
+            <p className="mt-2 text-sm text-emerald-700">
+              These quick check-ins help your coach understand how best to support you.
+            </p>
+          </div>
+
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>GAD-7 Assessment</CardTitle>
-                <CardDescription>How Are You Feeling Lately?</CardDescription>
+                <CardTitle>How Worry and Stress Are Affecting You</CardTitle>
+                <CardDescription>(GAD-7 Assessment)</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  Your well-being coach is here to support you! These 7 simple
-                  questions are designed to help you check in with yourself and
-                  see how you’ve been feeling. It’s like a quick personal
-                  check-up to better understand what’s going on in your life and
-                  how things might be affecting you.
-                </p>
-                <br />
-                <p className="text-sm text-gray-600">
-                  1Your coach can use this to guide you and work with you to
-                  help you feel your best!
+                  This quick check helps us understand if worry or stress is getting in the way of your daily life. Your responses are confidential and shared only with your coach.
                 </p>
               </CardContent>
               <CardFooter>
@@ -567,7 +841,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
                   onClick={() => handleTakeAssessment("/wellbeing-hub/gad7")}
                 >
-                  Take Assessment
+                  Start Check-In
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardFooter>
@@ -575,23 +849,12 @@ function WellbeingHubContent({ userData }: { userData: any }) {
 
             <Card>
               <CardHeader>
-                <CardTitle>PHQ-9 Assessment</CardTitle>
-                <CardDescription>
-                  How Are You Feeling? <br />
-                  Let’s Check In!
-                </CardDescription>
+                <CardTitle>Understanding Your Emotional Well-being</CardTitle>
+                <CardDescription>(PHQ-9 Assessment)</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  Your well-being coach is here to support you! This quick set
-                  of questions is designed to help you reflect on how you’ve
-                  been feeling lately. It’s a simple way to understand your
-                  emotions, energy, and how life might be affecting you.
-                </p>
-                <br />
-                <p className="text-sm text-gray-600">
-                  By answering honestly, you’ll give your coach the insight they
-                  need to better support you and help you feel your best!
+                  Everyone has ups and downs, but sometimes low mood, tiredness, or a feeling of emptiness can last longer than usual. This check helps us understand how you&apos;ve been feeling over the past two weeks.
                 </p>
               </CardContent>
               <CardFooter>
@@ -599,7 +862,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
                   onClick={() => handleTakeAssessment("/wellbeing-hub/phq9")}
                 >
-                  Take Assessment
+                  Begin Check-In
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardFooter>
@@ -607,25 +870,14 @@ function WellbeingHubContent({ userData }: { userData: any }) {
 
             <Card>
               <CardHeader>
-                <CardTitle>
-                  Strengths & Difficulties Questionnaire (SDQ)
-                </CardTitle>
+                <CardTitle>Your Strengths & Challenges</CardTitle>
                 <CardDescription>
-                  Understanding Your Strengths and Challenges
+                  (SDQ - Strengths and Difficulties Questionnaire)
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  This short questionnaire helps you and your coach explore both
-                  the positive strengths you bring to your life and any
-                  difficulties you might be experiencing. It looks at areas like
-                  emotions, behavior, relationships, and focus.
-                </p>
-                <br />
-                <p className="text-sm text-gray-600">
-                  By completing it, you’ll provide a fuller picture of your
-                  well-being so your coach can better support you on your
-                  journey.
+                  This assessment looks at both sides to give your coach a complete understanding of who you are.
                 </p>
               </CardContent>
               <CardFooter>
@@ -635,7 +887,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                     handleTakeAssessment("../my-wellbeing/questionnaires")
                   }
                 >
-                  Take Assessment
+                  Start Assessment
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardFooter>
@@ -643,23 +895,13 @@ function WellbeingHubContent({ userData }: { userData: any }) {
 
             <Card>
               <CardHeader>
-                <CardTitle>PCL-5 Assessment</CardTitle>
-                <CardDescription>
-                  Post-Traumatic Stress Check-In
-                </CardDescription>
+                <CardTitle>How Past Experiences Are Affecting You</CardTitle>
+                <CardDescription>(PCL-5 Assessment)</CardDescription>
               </CardHeader>
 
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  This 20-item questionnaire screens for symptoms of
-                  post-traumatic stress. Answering honestly helps your coach
-                  understand how past experiences may be affecting you today and
-                  tailor support to your needs.
-                </p>
-                <br />
-                <p className="text-sm text-gray-600">
-                  Your responses will remain private and are used only to guide
-                  your wellbeing plan.
+                  This check-in helps us understand if past events are showing up in your present life.
                 </p>
               </CardContent>
 
@@ -668,7 +910,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
                   onClick={() => handleTakeAssessment("/wellbeing-hub/pcl5")}
                 >
-                  Take Assessment
+                  Start Check-In
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardFooter>

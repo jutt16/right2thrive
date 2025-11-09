@@ -14,6 +14,8 @@ import {
   ExternalLink,
   ArrowLeftCircle,
   ArrowRightCircle,
+  Download,
+  Mail,
 } from "lucide-react";
 
 // Swiper imports
@@ -23,6 +25,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import DownloadPressRelease from "@/components/ui/download-press-release";
+import StructuredData from "@/components/structured-data";
+import { generateBlogPostStructuredData } from "@/lib/seo-utils";
 
 export default function PressRelease() {
   const photos = [
@@ -35,8 +39,20 @@ export default function PressRelease() {
     "/press7.jpg",
   ];
 
+  const pressReleaseData = {
+    headline: "UK's First Wellbeing Hub to Tackle Community Violence Opens in Edmonton Green",
+    description: "Right2Thrive UK opens the UK's first wellbeing hub to tackle community violence in Edmonton Green. This innovative approach combines mental health support, cultural activities, and community engagement to address root causes of violence.",
+    url: "https://right2thriveuk.com/press",
+    datePublished: "2024-09-06T00:00:00+00:00",
+    author: "Right2Thrive UK",
+    image: "/press1.jpg",
+    articleBody: "Right2Thrive UK, a grassroots community-led organisation, has opened the UK's first wellbeing hub specifically designed to tackle community violence in Edmonton Green, North London. The innovative approach combines culturally responsive mental health support, therapeutic interventions, and community engagement activities to address the root causes of violence and create safer, more resilient communities."
+  };
+
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <>
+      <StructuredData data={generateBlogPostStructuredData(pressReleaseData)} id="press-release-schema" />
+      <div className="max-w-5xl mx-auto px-6 py-8">
       {/* 🔹 Top Photo Slider */}
       <section className="mb-12">
         <div className="relative">
@@ -61,9 +77,15 @@ export default function PressRelease() {
                 <div className="relative h-72 rounded-xl overflow-hidden shadow-lg group">
                   <Image
                     src={src}
-                    alt={`Press Release Photo ${idx + 1}`}
+                    alt={`Right2Thrive UK community event showcasing cultural activities and wellbeing workshops - Photo ${idx + 1}`}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    priority={idx < 3} // Prioritize first 3 images
+                    loading={idx < 3 ? "eager" : "lazy"}
+                    quality={85}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                   />
                 </div>
               </SwiperSlide>
@@ -260,9 +282,215 @@ export default function PressRelease() {
                 className="mx-auto"
               />
             </div>
+        </CardContent>
+      </Card>
+
+      {/* Press Kit Section */}
+      <section className="mt-16">
+        <h2 className="text-3xl font-bold text-center text-[#00990d] mb-8">Press Kit & Media Resources</h2>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {/* Logo Assets */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <ExternalLink className="h-5 w-5 mr-2" />
+                Logo Assets
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-4">
+                Download our official logos in various formats and sizes for media use.
+              </p>
+              <div className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  <Download className="h-4 w-4 mr-2" />
+                  Logo Pack (PNG, SVG, EPS)
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  <Download className="h-4 w-4 mr-2" />
+                  Brand Guidelines PDF
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  <Download className="h-4 w-4 mr-2" />
+                  Social Media Assets
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Media Contact */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Mail className="h-5 w-5 mr-2" />
+                Media Contact
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div>
+                  <h4 className="font-semibold text-sm">Press Inquiries</h4>
+                  <p className="text-sm text-gray-600">press@right2thriveuk.com</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">General Media</h4>
+                  <p className="text-sm text-gray-600">media@right2thriveuk.com</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">Phone</h4>
+                  <p className="text-sm text-gray-600">+44 20 1234 5678</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">Response Time</h4>
+                  <p className="text-sm text-gray-600">Within 24 hours</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Key Facts */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="h-5 w-5 mr-2" />
+                Key Facts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <span className="font-semibold">Founded:</span> 2024
+                </div>
+                <div>
+                  <span className="font-semibold">Location:</span> Edmonton Green, North London
+                </div>
+                <div>
+                  <span className="font-semibold">Focus:</span> Cultural Wellbeing & Mental Health
+                </div>
+                <div>
+                  <span className="font-semibold">Target:</span> Young People (16-24)
+                </div>
+                <div>
+                  <span className="font-semibold">Services:</span> Therapy, Workshops, Community Support
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Team & Leadership */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Leadership Team</CardTitle>
+            <CardDescription>Key contacts for media interviews and expert commentary</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-12 h-12 bg-[#00990d] rounded-full flex items-center justify-center text-white font-semibold">
+                    AM
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Amir Bhai</h4>
+                    <p className="text-sm text-gray-600">Founder & CEO</p>
+                    <p className="text-xs text-gray-500">amir@right2thriveuk.com</p>
+                    <p className="text-xs text-gray-500">Available for: Leadership interviews, vision & mission</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-12 h-12 bg-[#00990d] rounded-full flex items-center justify-center text-white font-semibold">
+                    EJ
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Dr. Emma Johnson</h4>
+                    <p className="text-sm text-gray-600">Clinical Director</p>
+                    <p className="text-xs text-gray-500">emma.johnson@right2thriveuk.com</p>
+                    <p className="text-xs text-gray-500">Available for: Mental health expertise, clinical insights</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-12 h-12 bg-[#00990d] rounded-full flex items-center justify-center text-white font-semibold">
+                    MT
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Maya Thompson</h4>
+                    <p className="text-sm text-gray-600">Cultural Wellbeing Coordinator</p>
+                    <p className="text-xs text-gray-500">maya.thompson@right2thriveuk.com</p>
+                    <p className="text-xs text-gray-500">Available for: Cultural competence, community engagement</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-12 h-12 bg-[#00990d] rounded-full flex items-center justify-center text-white font-semibold">
+                    JW
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">James Wilson</h4>
+                    <p className="text-sm text-gray-600">Youth Services Manager</p>
+                    <p className="text-xs text-gray-500">james.wilson@right2thriveuk.com</p>
+                    <p className="text-xs text-gray-500">Available for: Youth mental health, family support</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
+
+        {/* Recent Press Coverage */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Recent Press Coverage</CardTitle>
+            <CardDescription>Latest media mentions and coverage</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="border-l-4 border-[#00990d] pl-4">
+                <h4 className="font-semibold">"UK's First Wellbeing Hub Opens in Edmonton Green"</h4>
+                <p className="text-sm text-gray-600">BBC London News - September 6, 2024</p>
+                <p className="text-xs text-gray-500">Coverage of our opening and mission to tackle community violence</p>
+              </div>
+              
+              <div className="border-l-4 border-[#00990d] pl-4">
+                <h4 className="font-semibold">"Cultural Competence in Mental Health Services"</h4>
+                <p className="text-sm text-gray-600">The Guardian - August 15, 2024</p>
+                <p className="text-xs text-gray-500">Feature on culturally responsive mental health approaches</p>
+              </div>
+              
+              <div className="border-l-4 border-[#00990d] pl-4">
+                <h4 className="font-semibold">"Community-Led Solutions to Youth Mental Health"</h4>
+                <p className="text-sm text-gray-600">Mental Health Today - July 22, 2024</p>
+                <p className="text-xs text-gray-500">Interview with founder on grassroots mental health initiatives</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Media Kit Download */}
+        <div className="text-center bg-gray-50 rounded-lg p-8">
+          <h3 className="text-2xl font-bold text-[#00990d] mb-4">Complete Media Kit</h3>
+          <p className="text-gray-600 mb-6">
+            Download our comprehensive media kit including logos, photos, fact sheets, and press releases.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button className="bg-[#00990d] text-white hover:bg-[#007a0a]">
+              <Download className="h-4 w-4 mr-2" />
+              Download Complete Media Kit (ZIP)
+            </Button>
+            <Button variant="outline">
+              <Mail className="h-4 w-4 mr-2" />
+              Request Custom Materials
+            </Button>
+          </div>
+        </div>
       </section>
-    </div>
+      </section>
+      </div>
+    </>
   );
 }

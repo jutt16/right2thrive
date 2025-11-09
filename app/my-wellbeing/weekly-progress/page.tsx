@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { CheckCircle } from "lucide-react";
 
 export default function WeeklyProgressForm() {
   const [step, setStep] = useState(0);
@@ -71,8 +72,6 @@ export default function WeeklyProgressForm() {
 
   const update = (field: string, value: any) =>
     setData((p: any) => ({ ...p, [field]: value }));
-  const next = () => setStep((s) => Math.min(s + 1, 4));
-  const back = () => setStep((s) => Math.max(s - 1, 0));
 
   const renderInput = (label: string, field: string, type: string = "text") => (
     <div className="mb-4">
@@ -160,17 +159,44 @@ export default function WeeklyProgressForm() {
 
   const steps = [
     <>
-      <h2 className="text-xl font-bold mb-4">
-        Welcome to Your Recovery Journey!
+      <h2 className="text-2xl font-bold mb-3 text-gray-900">
+        Welcome to Right2Thrive! We're Glad You're Here.
       </h2>
-      <p className="mb-2">
-        This weekly report helps track your growth and wellbeing.
+      <p className="text-gray-700 mb-6">
+        Before we begin, let's take a few minutes to get to know you better.
+        This helps us provide the best support for your well-being.
       </p>
 
-      {/* Read-only: Your Therapist */}
+      <div className="grid gap-3 sm:grid-cols-3 mb-8">
+        {[
+          "Takes about 10 minutes",
+          "Your information is private and secure",
+          "You can save and come back anytime",
+        ].map((item) => (
+          <div
+            key={item}
+            className="flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3"
+          >
+            <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
+            <span className="text-sm text-gray-700">{item}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          👋 Meet Your Therapist
+        </h3>
+        <p className="text-gray-700">
+          Raveen Charles will be supporting you on your well-being journey. All
+          your responses are shared only with Raveen to help provide
+          personalized care.
+        </p>
+      </div>
+
       <div className="mb-4">
         <label className="block font-medium mb-1">Your Therapist</label>
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded">
+        <div className="rounded border border-blue-200 bg-blue-50 p-4">
           {loadingTherapist ? (
             <p>Loading therapist details...</p>
           ) : therapistId ? (
@@ -230,7 +256,7 @@ export default function WeeklyProgressForm() {
         </div>
       </div>
 
-      {renderInput("Date", "date", "date")}
+      <div className="mt-6">{renderInput("Select Your Check-In Date", "date", "date")}</div>
     </>,
 
     <>
@@ -252,10 +278,10 @@ export default function WeeklyProgressForm() {
       {renderTextArea("What's Been Helpful", "helpful")}
       {renderTextArea("What's Been Challenging", "challenging")}
       {renderTextArea("My Requests or Concerns", "requests")}
-    </>,
 
-    <>
-      <h3 className="text-lg font-semibold mb-2">Looking Ahead & Reflection</h3>
+      <h3 className="text-lg font-semibold mb-2 mt-6">
+        Looking Ahead & Reflection
+      </h3>
       {renderInput("My Focus for Next Week", "focus")}
       {renderInput("Something I'm Looking Forward To", "lookingForward")}
       {renderInput("One Thing I'm Proud of This Week", "pride")}
@@ -269,11 +295,36 @@ export default function WeeklyProgressForm() {
     </>,
   ];
 
+  const totalSteps = steps.length;
+  const progressPercentage =
+    totalSteps > 0 ? ((step + 1) / totalSteps) * 100 : 0;
+
+  const goToStep = (updater: (current: number) => number) =>
+    setStep((current) => {
+      const next = updater(current);
+      return Math.min(Math.max(next, 0), totalSteps - 1);
+    });
+  const back = () => goToStep((value) => value - 1);
+  const next = () => goToStep((value) => value + 1);
+
   return (
     <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow">
       <h1 className="text-2xl font-bold text-center mb-4">
         My Weekly Progress
       </h1>
+      <div className="mb-6">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <span className="text-sm font-medium text-gray-600">
+            Step {step + 1} of {totalSteps}
+          </span>
+          <div className="w-full md:w-2/3 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-green-600 transition-all duration-300"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+        </div>
+      </div>
       {steps[step]}
       <div className="flex justify-between mt-6">
         <button

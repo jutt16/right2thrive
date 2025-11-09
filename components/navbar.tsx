@@ -68,34 +68,37 @@ export default function Navbar() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/90 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur-md shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
           <Image
             src="/right2thrive-logo-no.jpg"
-            alt="Right2Thrive UK Logo"
+            alt="Right2Thrive UK - Cultural Wellbeing Hub Logo"
             width={45}
             height={45}
-            // className="rounded-full"
+            priority={true}
+            quality={90}
+            className="rounded-full"
           />
           <span className="text-lg font-bold text-[#00990d]">
             Right2Thrive UK
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex items-center space-x-1" role="navigation" aria-label="Main navigation">
           {[
             ["Home", "/"],
             ["About Us", "/about"],
             ["Cultural Activities", "/cultural-activities"],
             ["Blog", "/blog"],
             ["Press Release", "/press"],
-            ["Privacy Policy", "/privacy-policy"], 
+            ["Privacy Policy", "/privacy-policy"],
+            ["Privacy Compliance", "/privacy-compliance"], 
           ].map(([label, href]) => (
             <Link
               key={label}
               href={href}
-              className="text-sm font-medium text-gray-700 hover:text-[#00990d] transition"
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#00990d] hover:bg-green-50 rounded-md transition-all duration-200"
             >
               {label}
             </Link>
@@ -104,18 +107,18 @@ export default function Navbar() {
           {isAuthenticated && (
             <Link
               href="/wellbeing-hub"
-              className="text-sm font-medium text-gray-700 hover:text-[#00990d]"
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#00990d] hover:bg-green-50 rounded-md transition-all duration-200"
             >
               My Wellbeing Assessments
             </Link>
           )}
         </nav>
 
-        <div className="hidden md:flex items-center space-x-4">
-          <Link href="https://www.instagram.com/right2thriveuk/" target="_blank">
+        <div className="hidden md:flex items-center space-x-2">
+          <Link href="https://www.instagram.com/right2thriveuk/" target="_blank" className="p-2 hover:bg-green-50 rounded-md transition-colors">
             <Instagram className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
           </Link>
-          <Link href="https://twitter.com/@Right2ThriveUK" target="_blank">
+          <Link href="https://twitter.com/@Right2ThriveUK" target="_blank" className="p-2 hover:bg-green-50 rounded-md transition-colors">
             <Twitter className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
           </Link>
           {isAuthenticated ? (
@@ -123,9 +126,9 @@ export default function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="text-[#00990d] hover:bg-green-100"
+                  className="text-[#00990d] hover:bg-green-100 px-3 py-2 rounded-md transition-all duration-200"
                 >
-                  <User className="h-5 w-5 mr-1" />
+                  <User className="h-5 w-5 mr-2" />
                   {userData?.name || "Profile"}
                 </Button>
               </DropdownMenuTrigger>
@@ -155,13 +158,13 @@ export default function Navbar() {
               <Link href="/auth/login">
                 <Button
                   variant="outline"
-                  className="text-orange-600 border-orange-500 hover:bg-orange-500 hover:text-white"
+                  className="text-orange-600 border-orange-500 hover:bg-orange-500 hover:text-white px-4 py-2 rounded-md transition-all duration-200"
                 >
                   Login
                 </Button>
               </Link>
               <Link href="/auth/signup">
-                <Button className="bg-[#00990d] text-white hover:bg-green-700">
+                <Button className="bg-[#00990d] text-white hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-200">
                   Sign Up
                 </Button>
               </Link>
@@ -169,7 +172,13 @@ export default function Navbar() {
           )}
         </div>
 
-        <button className="md:hidden text-[#00990d]" onClick={toggleMenu}>
+        <button 
+          className="md:hidden text-[#00990d] focus:ring-2 focus:ring-[#00990d] focus:ring-opacity-50 rounded-md p-3 min-h-[44px] min-w-[44px] flex items-center justify-center" 
+          onClick={toggleMenu}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+        >
           {isMenuOpen ? (
             <X className="h-6 w-6" />
           ) : (
@@ -179,8 +188,8 @@ export default function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div className="bg-white px-4 py-4 shadow-md md:hidden">
-          <nav className="flex flex-col space-y-4 text-[#00990d]">
+        <div id="mobile-menu" className="bg-white px-4 py-4 shadow-lg border-t border-gray-200 md:hidden">
+          <nav className="flex flex-col space-y-2 text-[#00990d]" role="navigation" aria-label="Mobile navigation menu">
             {[
               ["Home", "/"],
               ["About Us", "/about"],
@@ -188,12 +197,13 @@ export default function Navbar() {
               ["Blog", "/blog"],
               ["Press Release", "/press"],
               ["Privacy Policy", "/privacy-policy"],
+              ["Privacy Compliance", "/privacy-compliance"],
             ].map(([label, href]) => (
               <Link
                 key={label}
                 href={href}
                 onClick={toggleMenu}
-                className="text-sm font-medium hover:text-orange-500"
+                className="text-base font-medium hover:text-orange-500 py-3 px-2 min-h-[44px] flex items-center"
               >
                 {label}
               </Link>
@@ -203,7 +213,7 @@ export default function Navbar() {
               <Link
                 href="/wellbeing-hub"
                 onClick={toggleMenu}
-                className="text-sm font-medium hover:text-orange-500"
+                className="text-base font-medium hover:text-orange-500 py-3 px-2 min-h-[44px] flex items-center"
               >
                 My Wellbeing Assessments
               </Link>
@@ -213,80 +223,85 @@ export default function Navbar() {
               <Link
                 href="https://www.instagram.com/right2thriveuk/"
                 target="_blank"
+                className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
-                <Instagram className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
+                <Instagram className="h-6 w-6 text-[#00990d] hover:text-orange-500" />
               </Link>
-              <Link href="https://twitter.com/@Right2ThriveUK" target="_blank">
-                <Twitter className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
+              <Link 
+                href="https://twitter.com/@Right2ThriveUK" 
+                target="_blank"
+                className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              >
+                <Twitter className="h-6 w-6 text-[#00990d] hover:text-orange-500" />
               </Link>
             </div>
 
             <div className="mt-4 border-t pt-4">
               {isAuthenticated ? (
-                <div className="flex flex-col space-y-1">
+                <div className="flex flex-col space-y-2">
                   <Button
                     variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100"
+                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
                     onClick={() => {
                       handleProfileClick();
                       toggleMenu();
                     }}
                   >
-                    <User className="mr-2 h-4 w-4" /> Profile
+                    <User className="mr-2 h-5 w-5" /> Profile
                   </Button>
                   <Button
                     variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100"
+                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
                     onClick={() => {
                       router.push("/my-wellbeing");
                       toggleMenu();
                     }}
                   >
-                    <Heart className="mr-2 h-4 w-4" /> My Wellbeing
+                    <Heart className="mr-2 h-5 w-5" /> My Wellbeing
                   </Button>
                   <Button
                     variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100"
+                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
                     onClick={() => {
                       router.push("/complaints");
                       toggleMenu();
                     }}
                   >
-                    <MessageSquareWarning className="mr-2 h-4 w-4" /> complaints
+                    <MessageSquareWarning className="mr-2 h-5 w-5" /> Complaints
                   </Button>
                   <Button
                     variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100"
+                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
                     onClick={() => {
                       router.push("/my-bookings");
                       toggleMenu();
                     }}
                   >
-                    <User className="mr-2 h-4 w-4" /> My Bookings
+                    <User className="mr-2 h-5 w-5" /> My Bookings
                   </Button>
                   <Button
                     variant="ghost"
-                    className="justify-start text-red-600 hover:bg-red-100"
+                    className="justify-start text-red-600 hover:bg-red-100 min-h-[44px] text-base"
                     onClick={() => {
                       handleLogout();
                       toggleMenu();
                     }}
                   >
-                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                    <LogOut className="mr-2 h-5 w-5" /> Logout
                   </Button>
                 </div>
               ) : (
-                <div className="flex flex-col space-y-1">
+                <div className="flex flex-col space-y-2">
                   <Link href="/auth/login" onClick={toggleMenu}>
                     <Button
                       variant="ghost"
-                      className="justify-start text-orange-600 hover:bg-orange-100"
+                      className="justify-start text-orange-600 hover:bg-orange-100 min-h-[44px] text-base w-full"
                     >
                       Login
                     </Button>
                   </Link>
                   <Link href="/auth/signup" onClick={toggleMenu}>
-                    <Button className="justify-start bg-[#00990d] text-white hover:bg-green-700 w-full">
+                    <Button className="justify-start bg-[#00990d] text-white hover:bg-green-700 w-full min-h-[44px] text-base">
                       Sign Up
                     </Button>
                   </Link>
