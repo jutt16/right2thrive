@@ -27,6 +27,43 @@ interface ProfileFormData {
   employment_status: string;
 }
 
+const extractFirstErrorMessage = (data: unknown): string | null => {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  const maybeErrors = (data as { errors?: unknown }).errors;
+  if (!maybeErrors || typeof maybeErrors !== "object") {
+    return null;
+  }
+
+  const errors = maybeErrors as Record<string, unknown>;
+  for (const value of Object.values(errors)) {
+    if (Array.isArray(value)) {
+      const firstMessage = value.find(
+        (item): item is string => typeof item === "string"
+      );
+
+      if (firstMessage) {
+        return firstMessage;
+      }
+    } else if (typeof value === "string") {
+      return value;
+    }
+  }
+
+  return null;
+};
+
+const extractMessage = (data: unknown): string | null => {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  const message = (data as { message?: unknown }).message;
+  return typeof message === "string" ? message : null;
+};
+
 export default function Profile() {
   const [formData, setFormData] = useState<ProfileFormData>({
     first_name: "",
@@ -137,15 +174,15 @@ export default function Profile() {
         }
       );
 
-      const data = await response.json();
+      const data: unknown = await response.json();
 
       if (!response.ok) {
-        if (data.errors) {
-          // Display first error from Laravel validation
-          const firstError = Object.values(data.errors)[0][0];
+        const firstError = extractFirstErrorMessage(data);
+        if (firstError) {
           throw new Error(firstError);
         }
-        throw new Error(data.message || "Update failed.");
+
+        throw new Error(extractMessage(data) ?? "Update failed.");
       }
 
       toast({
