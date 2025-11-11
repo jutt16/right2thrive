@@ -85,21 +85,21 @@ export default function Home() {
 
   const communityStories = [
     {
-      name: "Lina",
+      name: "Chris",
       role: "College student",
       image: "/img1.jpg",
       quote:
         "Finding peers who share my background made me feel seen. The support circles give me the courage to keep moving forward.",
     },
     {
-      name: "Amir",
+      name: "Chris",
       role: "Young professional",
       image: "/img2.jpg",
       quote:
         "Right2Thrive pairs real talk with real tools. I always leave group chats feeling lighter and understood.",
     },
     {
-      name: "Sade",
+      name: "Chris",
       role: "Creative artist",
       image: "/img3.jpg",
       quote:
