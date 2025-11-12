@@ -67,32 +67,33 @@ export default function Home() {
       quote:
         "Right2Thrive gave me the tools and support I needed when I felt completely alone. My therapist understood my background, and that made all the difference.",
       name: "Sarah",
-      age: "24",
+      age: "",
     },
     {
       quote:
         "Having weekly check-ins with someone who really listened helped me manage stress and focus on college again. I felt seen for the first time.",
       name: "Malik",
-      age: "19",
+      age: "",
     },
     {
       quote:
         "As a parent, I felt empowered knowing my teen had culturally aware support. The mentorship programme transformed how we communicate at home.",
-      name: "Aisha",
+      name: "Pauline",
       age: "Parent",
     },
   ];
 
   const communityStories = [
     {
-      name: "Chris",
+      name: "Brian",
       role: "College student",
       image: "/img1.jpg",
+      objectPosition: "top center",
       quote:
         "Finding peers who share my background made me feel seen. The support circles give me the courage to keep moving forward.",
     },
     {
-      name: "Chris",
+      name: "Sarah",
       role: "Young professional",
       image: "/img2.jpg",
       quote:
@@ -231,7 +232,7 @@ export default function Home() {
               Join a community that understands you
             </h2>
             <p className="mt-3 text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
-              Connect with young people who share your lived experiences. Every photograph below is used with permission from members of our community.
+              Connect with young people who share your lived experiences.
             </p>
           </div>
 
@@ -247,6 +248,7 @@ export default function Home() {
                     alt={`Portrait of ${story.name}, Right2Thrive community member`}
                     fill
                     className="object-cover"
+                    style={{ objectPosition: story.objectPosition ?? "center" }}
                     sizes="(min-width: 1024px) 320px, (min-width: 768px) 50vw, 100vw"
                     priority={index === 0}
                   />
