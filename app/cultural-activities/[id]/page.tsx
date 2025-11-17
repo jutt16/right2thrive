@@ -22,15 +22,16 @@ type EventResponse =
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const event = await getEvent(params.id);
+  const { id } = await params;
+  const event = await getEvent(id);
 
   if (!event) {
     return generateSEOMetadata({
       title: "Event not found | Right2Thrive UK",
       description: "The requested event could not be found.",
-      path: `/cultural-activities/${params.id}`,
+      path: `/cultural-activities/${id}`,
     });
   }
 
@@ -90,9 +91,10 @@ async function getEvent(idOrSlug: string): Promise<Event | null> {
 export default async function EventDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const event = await getEvent(params.id);
+  const { id } = await params;
+  const event = await getEvent(id);
 
   if (!event) {
     notFound();
