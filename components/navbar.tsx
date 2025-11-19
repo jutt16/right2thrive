@@ -68,7 +68,7 @@ export default function Navbar() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur-md shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur-md shadow-sm relative">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
           <Image
@@ -89,7 +89,7 @@ export default function Navbar() {
           {[
             ["Home", "/"],
             ["About Us", "/about"],
-            ["Cultural Activities", "/cultural-activities"],
+            ["Wellbeing Activities", "/cultural-activities"],
             ["Blog", "/blog"],
             ["Press Release", "/press"],
             ["Privacy Policy", "/privacy-policy"],
@@ -188,12 +188,12 @@ export default function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div id="mobile-menu" className="bg-white px-4 py-4 shadow-lg border-t border-gray-200 md:hidden">
-          <nav className="flex flex-col space-y-2 text-[#00990d]" role="navigation" aria-label="Mobile navigation menu">
+        <div id="mobile-menu" className="absolute left-0 right-0 top-full bg-white px-4 py-4 shadow-lg border-t border-gray-200 md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain z-50">
+          <nav className="flex flex-col space-y-2 text-[#00990d] pb-8" role="navigation" aria-label="Mobile navigation menu">
             {[
               ["Home", "/"],
               ["About Us", "/about"],
-              ["Cultural Activities", "/cultural-activities"],
+              ["Wellbeing Activities", "/cultural-activities"],
               ["Blog", "/blog"],
               ["Press Release", "/press"],
               ["Privacy Policy", "/privacy-policy"],

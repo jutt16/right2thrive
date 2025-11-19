@@ -31,7 +31,7 @@ export const ORGANIZATION_INFO = {
     'Peer Support Groups',
     'Anxiety & Trauma Workshops',
     'Career Development',
-    'Cultural Activities'
+    'Wellbeing Activities'
   ]
 };
 
@@ -63,7 +63,7 @@ export const KEYWORDS = {
     'anxiety workshops',
     'trauma support groups',
     'career development',
-    'cultural activities',
+    'wellbeing activities',
     'peer support groups'
   ],
   blog: [

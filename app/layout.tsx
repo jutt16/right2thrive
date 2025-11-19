@@ -156,7 +156,7 @@ export default function RootLayout({
                 "Peer Support Groups",
                 "Anxiety & Trauma Workshops",
                 "Career Development",
-                "Cultural Activities"
+                "Wellbeing Activities"
               ]
             })
           }}

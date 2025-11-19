@@ -94,7 +94,7 @@ export default function Home() {
     },
     {
       name: "Sarah",
-      role: "Young professional",
+      role: "Volunteer",
       image: "/img2.jpg",
       quote:
         "Right2Thrive pairs real talk with real tools. I always leave group chats feeling lighter and understood.",
@@ -325,7 +325,7 @@ export default function Home() {
           <FlowStep
             icon={<FaRocket size={36} />}
             title="Start Healing"
-            desc="Begin your 12-week journey with therapy, groups, and cultural activities."
+            desc="Begin your 12-week journey with therapy, groups, and wellbeing activities."
             delay={0.6}
             href={isAuthenticated ? "/my-wellbeing" : "/auth/signup"}
           />

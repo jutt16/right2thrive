@@ -69,7 +69,7 @@ export default function Footer() {
                   href="/cultural-activities"
                   className="hover:text-orange-400"
                 >
-                  Cultural Activities
+                  Wellbeing Activities
                 </Link>
               </li>
               <li>

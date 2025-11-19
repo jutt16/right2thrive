@@ -41,7 +41,7 @@ export default function PressRelease() {
 
   const pressReleaseData = {
     headline: "UK's First Wellbeing Hub to Tackle Community Violence Opens in Edmonton Green",
-    description: "Right2Thrive UK opens the UK's first wellbeing hub to tackle community violence in Edmonton Green. This innovative approach combines mental health support, cultural activities, and community engagement to address root causes of violence.",
+    description: "Right2Thrive UK opens the UK's first wellbeing hub to tackle community violence in Edmonton Green. This innovative approach combines mental health support, wellbeing activities, and community engagement to address root causes of violence.",
     url: "https://right2thriveuk.com/press",
     datePublished: "2024-09-06T00:00:00+00:00",
     author: "Right2Thrive UK",
@@ -77,7 +77,7 @@ export default function PressRelease() {
                 <div className="relative h-72 rounded-xl overflow-hidden shadow-lg group">
                   <Image
                     src={src}
-                    alt={`Right2Thrive UK community event showcasing cultural activities and wellbeing workshops - Photo ${idx + 1}`}
+                    alt={`Right2Thrive UK community event showcasing wellbeing activities and wellbeing workshops - Photo ${idx + 1}`}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     priority={idx < 3} // Prioritize first 3 images

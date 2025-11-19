@@ -48,12 +48,12 @@ const pressReleases: PressRelease[] = [
   {
     id: "youth-mental-health-initiative",
     title: "New Initiative Targets Youth Mental Health Crisis in North London",
-    excerpt: "Right2Thrive UK announces comprehensive youth mental health initiative providing free therapy sessions, peer support groups, and cultural activities for young people aged 16-24.",
+    excerpt: "Right2Thrive UK announces comprehensive youth mental health initiative providing free therapy sessions, peer support groups, and wellbeing activities for young people aged 16-24.",
     date: "2024-07-22",
     category: "initiative",
     featured: false,
     image: "/press3.jpg",
-    tags: ["youth mental health", "free therapy", "peer support", "cultural activities"],
+    tags: ["youth mental health", "free therapy", "peer support", "wellbeing activities"],
     downloadUrl: "/press-releases/youth-mental-health-initiative.pdf"
   },
   {

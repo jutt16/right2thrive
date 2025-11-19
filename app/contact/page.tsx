@@ -7,7 +7,7 @@ import { generateLocalBusinessStructuredData, generateFAQStructuredData } from "
 const faqData = [
   {
     question: "What services does Right2Thrive UK offer?",
-    answer: "We offer culturally responsive mental health support, 1:1 therapy sessions, anxiety and trauma workshops, peer support groups, career development, and cultural activities for young people in North London."
+    answer: "We offer culturally responsive mental health support, 1:1 therapy sessions, anxiety and trauma workshops, peer support groups, career development, and wellbeing activities for young people in North London."
   },
   {
     question: "How do I book a therapy session?",

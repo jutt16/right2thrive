@@ -1,5 +1,36 @@
 import { notFound } from "next/navigation";
 import { generateMetadata as generateSEOMetadata } from "@/lib/seo-utils";
+import Link from "next/link";
+import { Calendar, MapPin, PoundSterling, ExternalLink, ArrowLeft, Clock, Users } from "lucide-react";
+
+function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch {
+    return dateString.split('T')[0];
+  }
+}
+
+function formatLocation(event: Event): string {
+  if (!event.location) return '';
+  
+  const parts: string[] = [];
+  if (event.location.location_name) parts.push(event.location.location_name);
+  if (event.location.address) parts.push(event.location.address);
+  if (event.location.city) parts.push(event.location.city);
+  if (event.location.postcode) parts.push(event.location.postcode);
+  
+  return parts.join(', ');
+}
+
+function getGoogleMapsUrl(latitude: number, longitude: number): string {
+  return `https://www.google.com/maps?q=${latitude},${longitude}`;
+}
 
 type Event = {
   id: number;
@@ -10,6 +41,14 @@ type Event = {
   registration_end?: string;
   cost?: number | string | null;
   description?: string;
+  location?: {
+    location_name: string | null;
+    address: string | null;
+    city: string | null;
+    postcode: string | null;
+    latitude: number | null;
+    longitude: number | null;
+  };
   images?: string[];
   videos?: string[];
 };
@@ -56,7 +95,7 @@ async function getEvent(idOrSlug: string): Promise<Event | null> {
     }
 
     const res = await fetch(
-      `https://admin.right2thriveuk.com/api/events/${numericId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/events/${numericId}`,
       {
         cache: "no-store",
       }
@@ -100,84 +139,199 @@ export default async function EventDetailPage({
     notFound();
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-[#ff961b] mb-4">
-        {event.title}
-      </h1>
+  const heroImage = event.images && event.images.length > 0 ? event.images[0] : null;
+  const otherImages = event.images && event.images.length > 1 ? event.images.slice(1) : [];
 
-      <div className="mb-4 text-gray-700 space-y-1">
-        <p>
-          <span className="font-semibold">Date:</span> {event.event_date}
-        </p>
-        {event.registration_start && event.registration_end && (
-          <p>
-            <span className="font-semibold">Registration:</span>{" "}
-            {event.registration_start} - {event.registration_end}
-          </p>
-        )}
-        {typeof event.cost !== "undefined" && event.cost !== null && (
-          <p>
-            <span className="font-semibold">Cost:</span> £
-            {Number(event.cost).toFixed(2)}
-          </p>
-        )}
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50">
+      {/* Back Button */}
+      <div className="container mx-auto px-4 pt-6">
+        <Link
+          href="/cultural-activities"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-[#00990d] transition-colors mb-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Events
+        </Link>
       </div>
 
-      {event.description && (
-        <p className="text-gray-800 mb-6 whitespace-pre-line">
-          {event.description}
-        </p>
-      )}
-
-      {event.registration_link && (
-        <div className="mb-8">
-          <a
-            href={event.registration_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center rounded-md bg-[#00990d] px-6 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
-          >
-            Register / Visit event page
-          </a>
-        </div>
-      )}
-
-      {event.images && event.images.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-[#00990d] mb-3">
-            Event Images
-          </h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {event.images.map((src, index) => (
+      <div className="container mx-auto px-4 pb-12">
+        {/* Hero Section */}
+        <div className="mb-8 rounded-3xl overflow-hidden shadow-xl bg-white">
+          {heroImage && (
+            <div className="relative h-64 md:h-96 w-full">
               <img
-                key={index}
-                src={src}
-                alt={`${event.title} image ${index + 1}`}
-                className="w-full h-auto rounded-lg border border-gray-200 object-cover"
+                src={heroImage}
+                alt={event.title}
+                className="w-full h-full object-cover"
               />
-            ))}
-          </div>
-        </div>
-      )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            </div>
+          )}
+          
+          <div className="p-6 md:p-10">
+            <div className="mb-4">
+              <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Wellbeing Activity
+              </span>
+            </div>
+            
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6">
+              {event.title}
+            </h1>
 
-      {event.videos && event.videos.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-[#00990d] mb-3">
-            Event Videos
-          </h2>
-          <div className="space-y-4">
-            {event.videos.map((src, index) => (
-              <video
-                key={index}
-                src={src}
-                controls
-                className="w-full rounded-lg border border-gray-200"
-              />
-            ))}
+            {/* Event Details Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+                <Calendar className="h-5 w-5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs font-semibold text-emerald-900 uppercase tracking-wide mb-1">
+                    Event Date
+                  </p>
+                  <p className="text-sm font-medium text-slate-700">
+                    {formatDate(event.event_date)}
+                  </p>
+                </div>
+              </div>
+
+              {event.location && formatLocation(event) && (
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-100">
+                  <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-blue-900 uppercase tracking-wide mb-1">
+                      Location
+                    </p>
+                    {event.location.latitude && event.location.longitude ? (
+                      <a
+                        href={getGoogleMapsUrl(event.location.latitude, event.location.longitude)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium text-blue-700 hover:text-blue-900 hover:underline inline-flex items-center gap-1"
+                      >
+                        {formatLocation(event)}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : (
+                      <p className="text-sm font-medium text-slate-700">
+                        {formatLocation(event)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {typeof event.cost !== "undefined" && event.cost !== null && (
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 border border-amber-100">
+                  <PoundSterling className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-semibold text-amber-900 uppercase tracking-wide mb-1">
+                      Contribution
+                    </p>
+                    <p className="text-sm font-medium text-slate-700">
+                      £{Number(event.cost).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {event.registration_start && event.registration_end && (
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-purple-50 border border-purple-100">
+                  <Clock className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-semibold text-purple-900 uppercase tracking-wide mb-1">
+                      Registration Period
+                    </p>
+                    <p className="text-sm font-medium text-slate-700">
+                      {formatDate(event.registration_start)} - {formatDate(event.registration_end)}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            {event.description && (
+              <div className="mt-6 p-6 rounded-xl bg-slate-50 border border-slate-200">
+                <h2 className="text-lg font-semibold text-slate-900 mb-3">About this Event</h2>
+                <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+                  {event.description}
+                </p>
+              </div>
+            )}
+
+            {/* Registration Button */}
+            {event.registration_link && (
+              <div className="mt-6">
+                <a
+                  href={event.registration_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#00990d] to-[#00b83a] px-8 py-4 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+                >
+                  Register / Visit Event Page
+                  <ExternalLink className="h-5 w-5" />
+                </a>
+              </div>
+            )}
           </div>
         </div>
-      )}
+
+        {/* Images Gallery */}
+        {otherImages.length > 0 && (
+          <section className="mb-8">
+            <div className="rounded-3xl bg-white p-6 md:p-10 shadow-xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-1 w-12 bg-gradient-to-r from-[#00990d] to-[#00b83a] rounded-full" />
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+                  Event Gallery
+                </h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {otherImages.map((src, index) => (
+                  <div
+                    key={index}
+                    className="relative aspect-video rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group"
+                  >
+                    <img
+                      src={src}
+                      alt={`${event.title} image ${index + 2}`}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Videos Section */}
+        {event.videos && event.videos.length > 0 && (
+          <section className="mb-8">
+            <div className="rounded-3xl bg-white p-6 md:p-10 shadow-xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-1 w-12 bg-gradient-to-r from-[#00990d] to-[#00b83a] rounded-full" />
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
+                  Event Videos
+                </h2>
+              </div>
+              <div className="space-y-6">
+                {event.videos.map((src, index) => (
+                  <div
+                    key={index}
+                    className="relative aspect-video rounded-xl overflow-hidden shadow-lg bg-slate-900"
+                  >
+                    <video
+                      src={src}
+                      controls
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

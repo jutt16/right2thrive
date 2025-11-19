@@ -28,13 +28,13 @@ export default function ExpressInterestForm() {
 
     // Build message content (max 1000 chars per Laravel validation)
     const messageParts = [
-      "Express interest – Cultural activities & wellbeing workshops",
+      "Express interest – Wellbeing activities & wellbeing workshops",
       "",
       `Name: ${name}`,
       `Email: ${email}`,
       interest && `Area of interest: ${interest}`,
       "",
-      "Source: Cultural Activities – Express your interest form",
+      "Source: Wellbeing Activities – Express your interest form",
     ]
       .filter(Boolean)
       .join("\n");
@@ -149,7 +149,7 @@ export default function ExpressInterestForm() {
       )}
       <p className="mt-1 text-[11px] leading-snug text-slate-500">
         By submitting this form you agree to be contacted by Right2Thrive UK
-        regarding upcoming workshops and cultural activities.
+        regarding upcoming workshops and wellbeing activities.
       </p>
     </form>
   );

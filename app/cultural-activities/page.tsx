@@ -4,16 +4,16 @@ import { generateServiceStructuredData } from "@/lib/seo-utils";
 import ExpressInterestForm from "./ExpressInterestForm";
 
 export const metadata = generateSEOMetadata({
-  title: "Cultural Activities & Wellbeing Workshops | Right2Thrive UK",
-  description: "Join our cultural activities and wellbeing workshops designed to empower individuals, build emotional resilience, and promote healing through connection and creativity in North London.",
+  title: "Wellbeing Activities & Wellbeing Workshops | Right2Thrive UK",
+  description: "Join our wellbeing activities and wellbeing workshops designed to empower individuals, build emotional resilience, and promote healing through connection and creativity in North London.",
   keywords: [
-    "cultural activities",
+    "wellbeing activities",
     "wellbeing workshops",
     "cultural wellbeing",
     "emotional resilience",
     "healing through connection",
     "creative therapy",
-    "North London cultural activities",
+    "North London wellbeing activities",
     "community workshops"
   ],
   path: "/cultural-activities",
@@ -35,7 +35,7 @@ const culturalServices = [
   },
   {
     name: "Creative Therapy Sessions",
-    description: "Creative therapy sessions that combine cultural activities with therapeutic support to promote healing and personal growth.",
+    description: "Creative therapy sessions that combine wellbeing activities with therapeutic support to promote healing and personal growth.",
     provider: "Right2Thrive UK",
     areaServed: "North London",
     serviceType: "Therapeutic Service",
@@ -56,6 +56,14 @@ type Event = {
   registration_end?: string;
   cost?: number | string | null;
   description?: string;
+  location?: {
+    location_name: string | null;
+    address: string | null;
+    city: string | null;
+    postcode: string | null;
+    latitude: number | null;
+    longitude: number | null;
+  };
   images?: string[];
   videos?: string[];
 };
@@ -69,9 +77,39 @@ function toSlug(title: string): string {
     .replace(/-+/g, "-");
 }
 
+function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch {
+    // Fallback: just extract the date part from ISO string
+    return dateString.split('T')[0];
+  }
+}
+
+function formatLocation(event: Event): string {
+  if (!event.location) return '';
+  
+  const parts: string[] = [];
+  if (event.location.location_name) parts.push(event.location.location_name);
+  if (event.location.address) parts.push(event.location.address);
+  if (event.location.city) parts.push(event.location.city);
+  if (event.location.postcode) parts.push(event.location.postcode);
+  
+  return parts.join(', ');
+}
+
+function getGoogleMapsUrl(latitude: number, longitude: number): string {
+  return `https://www.google.com/maps?q=${latitude},${longitude}`;
+}
+
 async function getEvents(): Promise<Event[]> {
   try {
-    const res = await fetch("https://admin.right2thriveuk.com/api/events", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events`, {
       cache: "no-store",
     });
 
@@ -111,7 +149,7 @@ export default async function WellbeingWorkshops() {
             <div className="grid gap-10 md:grid-cols-[1.7fr,1.1fr] md:items-center">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100">
-                  Cultural Activities & Wellbeing
+                  Wellbeing Activities & Wellbeing
                 </p>
                 <h1 className="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
                   Right2Thrive UK
@@ -121,7 +159,7 @@ export default async function WellbeingWorkshops() {
                   </span>
                 </h1>
                 <p className="mt-5 max-w-2xl text-sm sm:text-base text-emerald-50">
-                  Evidence-informed workshops and cultural activities designed to
+                  Evidence-informed workshops and wellbeing activities designed to
                   build emotional resilience, support trauma recovery, and
                   strengthen community connection in North London.
                 </p>
@@ -200,7 +238,7 @@ export default async function WellbeingWorkshops() {
                           {event.title}
                         </h3>
                         <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-100">
-                          Cultural activity
+                          Wellbeing activity
                         </span>
                       </div>
                       <div className="mt-3 space-y-1.5 text-xs text-slate-600">
@@ -208,8 +246,27 @@ export default async function WellbeingWorkshops() {
                           <span className="font-semibold text-slate-800">
                             Date:
                           </span>{" "}
-                          {event.event_date}
+                          {formatDate(event.event_date)}
                         </p>
+                        {event.location && formatLocation(event) && (
+                          <p>
+                            <span className="font-semibold text-slate-800">
+                              Location:
+                            </span>{" "}
+                            {event.location.latitude && event.location.longitude ? (
+                              <a
+                                href={getGoogleMapsUrl(event.location.latitude, event.location.longitude)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[#00990d] hover:underline"
+                              >
+                                {formatLocation(event)}
+                              </a>
+                            ) : (
+                              formatLocation(event)
+                            )}
+                          </p>
+                        )}
                         {typeof event.cost !== "undefined" &&
                           event.cost !== null && (
                             <p>
@@ -305,38 +362,18 @@ export default async function WellbeingWorkshops() {
             </div>
           </section>
 
-          {/* About Raveen */}
-          <section className="mb-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <div className="grid gap-6 md:grid-cols-[minmax(0,1.6fr),minmax(0,1.2fr)] md:items-center">
-              <div>
-                <h2 className="text-xl font-semibold text-slate-900 sm:text-2xl">
-                  About Raveen
-                </h2>
-                <p className="mt-3 text-sm text-slate-700">
-                  Raveen is a registered psychotherapist with over 10 years of
-                  experience in mental health and social care, including work
-                  within probation services, the NHS, and local authorities. Her
-                  practice integrates evidence-based Western approaches with
-                  Eastern traditions such as breathwork and mindfulness.
-                </p>
-                <p className="mt-3 text-sm text-slate-700">
-                  Through Right2Thrive UK, she facilitates group programmes that
-                  centre safety, dignity, and cultural understanding—supporting
-                  participants to make sense of trauma, strengthen emotional
-                  resources, and reconnect with creativity and community.
-                </p>
-              </div>
-              <div className="rounded-2xl bg-emerald-50 p-5 text-sm text-slate-800">
-                <h3 className="text-sm font-semibold text-emerald-900">
-                  What you can expect from our spaces
-                </h3>
-                <ul className="mt-3 space-y-2 text-sm">
-                  <li>• Culturally sensitive, non-judgemental facilitation.</li>
-                  <li>• A focus on safety, consent, and choice in every session.</li>
-                  <li>• Practical tools you can use beyond the workshop.</li>
-                  <li>• Opportunities to connect with others who share similar experiences.</li>
-                </ul>
-              </div>
+          {/* What you can expect from our spaces */}
+          <section className="mb-10 flex justify-center">
+            <div className="w-full max-w-2xl rounded-2xl bg-emerald-50 p-6 text-sm text-slate-800 shadow-sm md:p-8">
+              <h3 className="text-base font-semibold text-emerald-900 sm:text-lg">
+                What you can expect from our spaces
+              </h3>
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>• Culturally sensitive, non-judgemental facilitation.</li>
+                <li>• A focus on safety, consent, and choice in every session.</li>
+                <li>• Practical tools you can use beyond the workshop.</li>
+                <li>• Opportunities to connect with others who share similar experiences.</li>
+              </ul>
             </div>
           </section>
         </div>

@@ -29,8 +29,8 @@ Each page now has unique, descriptive titles and meta descriptions optimized for
 - **Description**: "Right2Thrive UK opens the UK's first wellbeing hub to tackle community violence in Edmonton Green. Read our latest press release and media coverage."
 
 #### Cultural Activities (`/cultural-activities`)
-- **Title**: "Cultural Activities & Wellbeing Workshops | Right2Thrive UK"
-- **Description**: "Join our cultural activities and wellbeing workshops designed to empower individuals, build emotional resilience, and promote healing through connection and creativity in North London."
+- **Title**: "Wellbeing Activities & Wellbeing Workshops | Right2Thrive UK"
+- **Description**: "Join our wellbeing activities and wellbeing workshops designed to empower individuals, build emotional resilience, and promote healing through connection and creativity in North London."
 
 ### 2. **Comprehensive Structured Data (JSON-LD)** ✅
 

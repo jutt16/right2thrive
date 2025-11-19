@@ -15,8 +15,42 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     // Configure image sizes
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Allow external domains if needed
-    domains: [],
+    // Allow external domains if needed (legacy support)
+    domains: [
+      'right2thriveuk.com',
+      'admin.right2thriveuk.com',
+      'cdn.right2thriveuk.com',
+      'images.unsplash.com',
+      'via.placeholder.com'
+    ],
+    // Remote patterns (recommended for Next.js 13+)
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'right2thriveuk.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'admin.right2thriveuk.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.right2thriveuk.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+        pathname: '/**',
+      },
+    ],
     // Enable placeholder blur
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

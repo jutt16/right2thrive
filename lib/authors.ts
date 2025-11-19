@@ -195,7 +195,7 @@ export const authors: Author[] = [
     name: "Maya Thompson",
     slug: "maya-thompson",
     title: "Cultural Wellbeing Coordinator",
-    bio: "Maya Thompson is a passionate advocate for cultural wellbeing and community healing. With a background in social work and cultural studies, Maya coordinates our cultural activities and ensures that all programs honor the diverse backgrounds of our community members.",
+    bio: "Maya Thompson is a passionate advocate for cultural wellbeing and community healing. With a background in social work and cultural studies, Maya coordinates our wellbeing activities and ensures that all programs honor the diverse backgrounds of our community members.",
     credentials: [
       "MA Social Work",
       "Certified Cultural Competency Trainer",
@@ -206,7 +206,7 @@ export const authors: Author[] = [
       "Cultural Competency Training",
       "Community Outreach",
       "Youth Development",
-      "Cultural Activities Coordination",
+      "Wellbeing Activities Coordination",
       "Social Work",
       "Community Engagement"
     ],
@@ -218,14 +218,14 @@ export const authors: Author[] = [
     },
     publications: [
       {
-        title: "Building Bridges Through Cultural Activities",
+        title: "Building Bridges Through Wellbeing Activities",
         publication: "Community Development Journal",
         date: "2024"
       }
     ],
     speakingEngagements: [
       {
-        title: "Cultural Activities as Mental Health Support",
+        title: "Wellbeing Activities as Mental Health Support",
         event: "Community Wellbeing Conference",
         date: "2024-05-15",
         location: "Birmingham, UK"
