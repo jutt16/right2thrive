@@ -222,7 +222,7 @@ export default function Navbar() {
               </button>
             </div>
             {/* Mobile menu content */}
-            <nav className="flex flex-col space-y-2 text-[#00990d] px-4 py-4" style={{ paddingBottom: 'max(2rem, calc(2rem + env(safe-area-inset-bottom)))' }} role="navigation" aria-label="Mobile navigation menu">
+            <nav className="flex flex-col space-y-2 text-[#00990d] px-4 py-4" style={{ paddingBottom: 'max(4rem, calc(4rem + env(safe-area-inset-bottom)))' }} role="navigation" aria-label="Mobile navigation menu">
             {[
               ["Home", "/"],
               ["About Us", "/about"],
