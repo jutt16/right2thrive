@@ -3,6 +3,9 @@ import StructuredData from "@/components/structured-data";
 import { generateServiceStructuredData } from "@/lib/seo-utils";
 import ExpressInterestForm from "./ExpressInterestForm";
 
+// Force dynamic rendering since we're using no-store cache
+export const dynamic = 'force-dynamic';
+
 export const metadata = generateSEOMetadata({
   title: "Wellbeing Activities & Wellbeing Workshops | Right2Thrive UK",
   description: "Join our wellbeing activities and wellbeing workshops designed to empower individuals, build emotional resilience, and promote healing through connection and creativity in North London.",

@@ -188,8 +188,16 @@ export default function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div id="mobile-menu" className="fixed left-0 right-0 bg-white px-4 py-4 shadow-lg border-t border-gray-200 md:hidden overflow-y-auto overscroll-contain z-50" style={{ top: 'calc(4rem + 3rem)', bottom: 0 }}>
-          <nav className="flex flex-col space-y-2 text-[#00990d] pb-8" role="navigation" aria-label="Mobile navigation menu">
+        <>
+          {/* Backdrop overlay */}
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={toggleMenu}
+            aria-hidden="true"
+          />
+          {/* Mobile menu */}
+          <div id="mobile-menu" className="fixed inset-0 bg-white px-4 py-4 shadow-lg md:hidden overflow-y-auto overscroll-contain z-50 pt-20">
+            <nav className="flex flex-col space-y-2 text-[#00990d] pb-8" role="navigation" aria-label="Mobile navigation menu">
             {[
               ["Home", "/"],
               ["About Us", "/about"],
@@ -310,6 +318,7 @@ export default function Navbar() {
             </div>
           </nav>
         </div>
+        </>
       )}
     </header>
   );
