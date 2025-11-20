@@ -196,9 +196,9 @@ export default function Navbar() {
             aria-hidden="true"
           />
           {/* Mobile menu */}
-          <div id="mobile-menu" className="fixed top-0 left-0 right-0 bottom-0 bg-white shadow-lg md:hidden overflow-y-auto overscroll-contain z-50" style={{ height: '100vh', minHeight: '100vh' }}>
+          <div id="mobile-menu" className="fixed top-0 left-0 right-0 bottom-0 bg-white shadow-lg md:hidden overflow-y-auto overscroll-contain z-50" style={{ height: '100dvh', minHeight: '100dvh', maxHeight: '100dvh' }}>
             {/* Mobile menu header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between z-10" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
               <Link href="/" className="flex items-center space-x-2" onClick={toggleMenu}>
                 <Image
                   src="/right2thrive-logo-no.jpg"
@@ -222,7 +222,7 @@ export default function Navbar() {
               </button>
             </div>
             {/* Mobile menu content */}
-            <nav className="flex flex-col space-y-2 text-[#00990d] px-4 py-4 pb-8" role="navigation" aria-label="Mobile navigation menu">
+            <nav className="flex flex-col space-y-2 text-[#00990d] px-4 py-4" style={{ paddingBottom: 'max(2rem, calc(2rem + env(safe-area-inset-bottom)))' }} role="navigation" aria-label="Mobile navigation menu">
             {[
               ["Home", "/"],
               ["About Us", "/about"],
