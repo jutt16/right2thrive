@@ -196,8 +196,33 @@ export default function Navbar() {
             aria-hidden="true"
           />
           {/* Mobile menu */}
-          <div id="mobile-menu" className="fixed inset-0 bg-white px-4 py-4 shadow-lg md:hidden overflow-y-auto overscroll-contain z-50 pt-20">
-            <nav className="flex flex-col space-y-2 text-[#00990d] pb-8" role="navigation" aria-label="Mobile navigation menu">
+          <div id="mobile-menu" className="fixed top-0 left-0 right-0 bottom-0 bg-white shadow-lg md:hidden overflow-y-auto overscroll-contain z-50" style={{ height: '100vh', minHeight: '100vh' }}>
+            {/* Mobile menu header */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between z-10">
+              <Link href="/" className="flex items-center space-x-2" onClick={toggleMenu}>
+                <Image
+                  src="/right2thrive-logo-no.jpg"
+                  alt="Right2Thrive UK - Cultural Wellbeing Hub Logo"
+                  width={40}
+                  height={40}
+                  priority={true}
+                  quality={90}
+                  className="rounded-full"
+                />
+                <span className="text-base font-bold text-[#00990d]">
+                  Right2Thrive UK
+                </span>
+              </Link>
+              <button 
+                className="text-[#00990d] focus:ring-2 focus:ring-[#00990d] focus:ring-opacity-50 rounded-md p-2 min-h-[44px] min-w-[44px] flex items-center justify-center" 
+                onClick={toggleMenu}
+                aria-label="Close navigation menu"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            {/* Mobile menu content */}
+            <nav className="flex flex-col space-y-2 text-[#00990d] px-4 py-4 pb-8" role="navigation" aria-label="Mobile navigation menu">
             {[
               ["Home", "/"],
               ["About Us", "/about"],
