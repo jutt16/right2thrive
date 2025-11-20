@@ -188,7 +188,7 @@ export default function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div id="mobile-menu" className="absolute left-0 right-0 top-full bg-white px-4 py-4 shadow-lg border-t border-gray-200 md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain z-50">
+        <div id="mobile-menu" className="fixed left-0 right-0 bg-white px-4 py-4 shadow-lg border-t border-gray-200 md:hidden overflow-y-auto overscroll-contain z-50" style={{ top: 'calc(4rem + 3rem)', bottom: 0 }}>
           <nav className="flex flex-col space-y-2 text-[#00990d] pb-8" role="navigation" aria-label="Mobile navigation menu">
             {[
               ["Home", "/"],
