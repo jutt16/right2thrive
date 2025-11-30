@@ -111,12 +111,12 @@ export default function Home() {
   /** ---------- Updated Services with Youth-Friendly Copy & Icons ---------- **/
   const services = [
     {
-      title: "12-Week Wellbeing Journey",
+      title: "6‑Week Wellbeing Journey",
       description:
-        "A step-by-step programme with therapy, group chats, and creative activities that help you heal, grow, and stay strong long after the 12 weeks are done.",
-      short: "A 12-week programme with therapy, groups & creative healing.",
+        "A step-by-step programme with therapy, group chats, and creative activities that help you heal, grow, and stay strong long after the 6 weeks are done.",
+      short: "A 6‑week programme with therapy, groups & creative healing.",
       icon: <FaCalendarAlt size={28} />,
-      link: "/contact?subject=12-Week Wellbeing Programme",
+      link: "/contact?subject=6‑Week Wellbeing Programme",
     },
     {
       title: "1:1 Therapy Sessions",
@@ -169,8 +169,8 @@ export default function Home() {
     {
       title: "Extended Support",
       description:
-        "Finished your 12 weeks? We’ve still got you. Six months of mentoring and check-ins so the progress sticks. ✨",
-      short: "6 months of mentoring after the 12-week journey.",
+        "Finished your 6 weeks? We've still got you. Six months of mentoring and check-ins so the progress sticks. ✨",
+      short: "6 months of mentoring after the 6‑week journey.",
       icon: <FaHandsHelping size={28} />,
       link: "/contact?subject=Extended Support",
     },
@@ -325,7 +325,7 @@ export default function Home() {
           <FlowStep
             icon={<FaRocket size={36} />}
             title="Start Healing"
-            desc="Begin your 12-week journey with therapy, groups, and wellbeing activities."
+            desc="Begin your 6‑week journey with therapy, groups, and wellbeing activities."
             delay={0.6}
             href={isAuthenticated ? "/my-wellbeing" : "/auth/signup"}
           />
@@ -342,7 +342,7 @@ export default function Home() {
             </h2>
             <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg">
               Join thousands of young people who have transformed their lives through our 
-              12-week wellbeing programme. Get started today - it's completely free.
+              6‑week wellbeing programme. Get started today - it's completely free.
             </p>
 
             {/* Benefits Preview */}
@@ -436,6 +436,64 @@ export default function Home() {
             submitButtonText="Send Message"
             successMessage="Thank you! Your message has been sent successfully. We'll get back to you within 24 hours."
           />
+        </div>
+      </section>
+
+      {/* ===== Support Services Section ===== */}
+      <section className="py-20 bg-gradient-to-br from-green-50 to-teal-50">
+        <div className="container mx-auto max-w-4xl px-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#00990d] mb-6">
+            Support Services
+          </h2>
+          <p className="text-center text-gray-700 mb-8 text-lg">
+            If you need urgent mental health support, access these resources:
+          </p>
+          
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+              Urgent Support
+            </h3>
+            <p className="mb-4 text-gray-700">
+              The NHS Every Mind Matters service provides immediate help and resources for urgent mental health needs:
+            </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <p className="mb-3 text-gray-800 font-medium">
+                <strong>NHS Every Mind Matters - Urgent Support:</strong>
+              </p>
+              <a
+                href="https://www.nhs.uk/every-mind-matters/urgent-support/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline font-medium text-lg break-all"
+              >
+                https://www.nhs.uk/every-mind-matters/urgent-support/
+              </a>
+              <p className="mt-4 text-sm text-gray-600">
+                This service provides immediate support, self-help resources, and guidance for urgent mental health needs.
+              </p>
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <h4 className="text-xl font-semibold text-gray-900 mb-4">
+                Crisis Support Lines
+              </h4>
+              <ul className="space-y-2 text-gray-700 ml-6 list-disc">
+                <li>Samaritans: Call <strong>116 123</strong> (free, 24/7)</li>
+                <li>Crisis Text Line: Text <strong>SHOUT</strong> to <strong>85258</strong></li>
+                <li>NHS Mental Health Helpline: Call <strong>111</strong>, option 2</li>
+                <li>Emergency Services: Call <strong>999</strong> if you or someone else is in immediate danger</li>
+              </ul>
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <Link
+                href="/wellbeing-hub/support"
+                className="inline-block bg-[#00990d] text-white px-6 py-3 rounded-lg hover:bg-[#007a0a] transition-colors font-medium"
+              >
+                View All Support Services
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>

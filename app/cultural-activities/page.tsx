@@ -110,6 +110,106 @@ function getGoogleMapsUrl(latitude: number, longitude: number): string {
   return `https://www.google.com/maps?q=${latitude},${longitude}`;
 }
 
+// Static upcoming events
+const staticEvents: Event[] = [
+  {
+    id: 1001,
+    title: "Not Feeling Great but Looking Good",
+    event_date: "2026-01-14T11:00:00",
+    registration_link: null,
+    cost: 0,
+    description: "A relaxed, supportive session exploring how your emotions shape the way you act, connect with others, and understand yourself.\n\nWhat you will gain:\n• Better awareness of your emotions\n• Practical tools for handling tough feelings\n• Confidence in expressing yourself\n• Tips for healthier relationships\n• A safe space to talk and be heard\n\nWhy attend:\n• Real life strategies that actually help\n• Friendly and judgement free\n• No pressure to talk—just attend",
+    location: {
+      location_name: "Right2Thrive UK Wellbeing Hub",
+      address: "37/38 North Square, Edmonton Green Shopping Centre",
+      city: "London",
+      postcode: "N9 0HY",
+      latitude: null,
+      longitude: null
+    }
+  },
+  {
+    id: 1002,
+    title: "Understanding Trauma & PTSD",
+    event_date: "2026-01-21T11:00:00",
+    registration_link: null,
+    cost: 0,
+    description: "A calm, supportive session helping you understand trauma, its effects on your body and mind, and grounding methods for when things feel overwhelming.\n\nWhat you will gain:\n• Clear understanding of trauma and PTSD\n• Insight into trauma responses\n• Grounding methods you can use anytime\n• Tools for stability during stress\n• A gentle, safe learning space\n\nWhy attend:\n• Helps make sense of your experiences\n• Learn skills you can use straight away\n• Designed for young people",
+    location: {
+      location_name: "Right2Thrive UK Wellbeing Hub",
+      address: "37/38 North Square, Edmonton Green Shopping Centre",
+      city: "London",
+      postcode: "N9 0HY",
+      latitude: null,
+      longitude: null
+    }
+  },
+  {
+    id: 1003,
+    title: "Anger Management",
+    event_date: "2026-01-28T11:00:00",
+    registration_link: null,
+    cost: 0,
+    description: "A judgement free workshop exploring what's behind your anger and how to manage it in healthier, more positive ways.\n\nWhat you will gain:\n• Understanding anger triggers\n• Calming tools for mind and body\n• Strategies for conflict and frustration\n• Healthier ways to express emotions\n• Confidence in handling stressful situations\n\nWhy attend:\n• Makes everyday challenges easier\n• Safe, friendly environment\n• No pressure to share personal stories",
+    location: {
+      location_name: "Right2Thrive UK Wellbeing Hub",
+      address: "37/38 North Square, Edmonton Green Shopping Centre",
+      city: "London",
+      postcode: "N9 0HY",
+      latitude: null,
+      longitude: null
+    }
+  },
+  {
+    id: 1004,
+    title: "Reality Check: Poverty, Education & Independence",
+    event_date: "2026-02-04T11:00:00",
+    registration_link: null,
+    cost: 0,
+    description: "Aimed at families and young people in deprived areas experiencing cost of living stress, insecure housing or unemployment.\n\nA practical, down to earth workshop exploring how poverty, housing issues, and education challenges affect your daily life. Learn tools for building independence, accessing support, and planning a more stable future.\n\nWhat you will gain:\n• Understanding the impact of financial and social pressures\n• Tips for managing daily challenges\n• Guidance on education, training, and employment\n• Tools for building confidence and independence\n• A supportive space to connect with others\n\nWhy attend:\n• Tailored for families facing real life financial pressures\n• Provides useful, realistic strategies\n• Connect with others who understand your situation\n• Empowering—not judgemental",
+    location: {
+      location_name: "Right2Thrive UK Wellbeing Hub",
+      address: "37/38 North Square, Edmonton Green Shopping Centre",
+      city: "London",
+      postcode: "N9 0HY",
+      latitude: null,
+      longitude: null
+    }
+  },
+  {
+    id: 1005,
+    title: "Anxiety Awareness & Mindful Management",
+    event_date: "2026-02-11T11:00:00",
+    registration_link: null,
+    cost: 0,
+    description: "A calm, helpful session for anyone facing daily anxiety. Learn how anxiety works and discover mindfulness and CBT techniques to help you feel more grounded and in control.\n\nWhat you will gain:\n• Clear understanding of anxiety\n• Mindfulness tools to calm your thoughts\n• CBT strategies for unhelpful thinking\n• Everyday coping skills\n• A pressure free, supportive environment\n\nWhy attend:\n• Perfect for daily stress, worry, or overthinking\n• Builds confidence in managing anxiety\n• Practical techniques you can use instantly",
+    location: {
+      location_name: "Right2Thrive UK Wellbeing Hub",
+      address: "37/38 North Square, Edmonton Green Shopping Centre",
+      city: "London",
+      postcode: "N9 0HY",
+      latitude: null,
+      longitude: null
+    }
+  },
+  {
+    id: 1006,
+    title: "Intergenerational Trauma & Family Healing",
+    event_date: "2026-02-18T11:00:00",
+    registration_link: null,
+    cost: 0,
+    description: "A supportive, culturally aware session exploring how trauma can be passed through families and how racism, discrimination, and community pressures shape our experiences today. This workshop helps you understand these patterns, recognise your strengths, and explore ways to create healing within yourself, your family, and your future relationships.\n\nWhat you will gain:\n• A clearer understanding of intergenerational trauma and how it can show up in emotions, behaviours, and family dynamics\n• Tools to recognise the impact of racism and systemic inequality on mental health\n• Strategies for setting boundaries, communicating needs, and caring for yourself\n• Ways to break harmful cycles and build healthier patterns\n• A safe, affirming space to learn without judgement, pressure, or stigma\n\nWhy attend:\n• Created specifically for young Black people navigating racial stress and family pressures\n• Helps you understand your experiences in a validating, empowering way\n• Focuses on healing, resilience, and reclaiming your power\n• Encourages connection, community, and hope for the future",
+    location: {
+      location_name: "Right2Thrive UK Wellbeing Hub",
+      address: "37/38 North Square, Edmonton Green Shopping Centre",
+      city: "London",
+      postcode: "N9 0HY",
+      latitude: null,
+      longitude: null
+    }
+  }
+];
+
 async function getEvents(): Promise<Event[]> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events`, {
@@ -118,19 +218,25 @@ async function getEvents(): Promise<Event[]> {
 
     if (!res.ok) {
       console.error("Failed to fetch events", res.status, await res.text());
-      return [];
+      return staticEvents;
     }
 
     const data = await res.json();
 
     if (Array.isArray(data?.events)) {
-      return data.events;
+      // Merge API events with static events, avoiding duplicates
+      const apiEvents = data.events;
+      const staticEventIds = new Set(staticEvents.map(e => e.id));
+      const uniqueApiEvents = apiEvents.filter((e: Event) => !staticEventIds.has(e.id));
+      return [...staticEvents, ...uniqueApiEvents].sort((a, b) => 
+        new Date(a.event_date).getTime() - new Date(b.event_date).getTime()
+      );
     }
 
-    return [];
+    return staticEvents;
   } catch (error) {
     console.error("Error fetching events", error);
-    return [];
+    return staticEvents;
   }
 }
 
@@ -251,6 +357,12 @@ export default async function WellbeingWorkshops() {
                           </span>{" "}
                           {formatDate(event.event_date)}
                         </p>
+                        <p>
+                          <span className="font-semibold text-slate-800">
+                            Time:
+                          </span>{" "}
+                          11:00 am – 1:00 pm
+                        </p>
                         {event.location && formatLocation(event) && (
                           <p>
                             <span className="font-semibold text-slate-800">
@@ -271,19 +383,21 @@ export default async function WellbeingWorkshops() {
                           </p>
                         )}
                         {typeof event.cost !== "undefined" &&
-                          event.cost !== null && (
+                          event.cost !== null && Number(event.cost) === 0 && (
                             <p>
                               <span className="font-semibold text-slate-800">
-                                Contribution:
+                                Cost:
                               </span>{" "}
-                              £{Number(event.cost).toFixed(2)}
+                              Free
                             </p>
                           )}
                       </div>
                       {event.description && (
-                        <p className="mt-3 line-clamp-4 text-sm text-slate-700">
-                          {event.description}
-                        </p>
+                        <div className="mt-3 text-sm text-slate-700">
+                          <p className="line-clamp-3 whitespace-pre-line">
+                            {event.description.split('\n\n')[0]}
+                          </p>
+                        </div>
                       )}
                     </div>
 

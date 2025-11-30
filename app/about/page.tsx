@@ -87,87 +87,123 @@ export default function About() {
         </div>
       </section>
 
-      {/* About Us Section (Replaces Story and Mission Sections) */}
+      {/* Why We Exist Section */}
       <section className="bg-white py-20">
         <div className="container mx-auto px-4">
-          <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="space-y-10">
-              <div className="space-y-4">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#ff961b]">
-                  About Us
-                </h2>
-                <h3 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-                  Built by the community, for the community
-                </h3>
-                <p className="text-lg leading-relaxed text-gray-700">
-                  Too many young people face mental health challenges alone, struggling to find support that reflects their lived experiences. We bridge the gap between mental health care and cultural understanding, offering a safe space where you can be yourself, heal at your own pace, and build the future you deserve.
-                </p>
-              </div>
+          <div className="mx-auto max-w-4xl space-y-6">
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+              Why We Exist
+            </h2>
+            <p className="text-lg leading-relaxed text-gray-700">
+              Too many young people face mental health challenges alone, struggling to find support that reflects their lived experiences. Traditional services often overlook cultural identity, family dynamics, and the unique pressures facing marginalized communities.
+            </p>
+          </div>
+        </div>
+      </section>
 
-              <div className="space-y-6">
-                <div className="rounded-2xl border border-green-100 bg-green-50/60 p-6 shadow-sm">
-                  <h4 className="text-lg font-semibold text-[#00990d]">
-                    Mental Health &amp; Wellbeing Support
-                  </h4>
-                  <p className="mt-2 text-sm text-gray-700">
-                    From 1:1 culturally informed therapy to peer-led circles and creative wellbeing sessions, we help you heal in ways that honour the whole you.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-orange-100 bg-orange-50/60 p-6 shadow-sm">
-                  <h4 className="text-lg font-semibold text-[#ff961b]">
-                    Career &amp; Personal Growth
-                  </h4>
-                  <p className="mt-2 text-sm text-gray-700">
-                    Build confidence, discover talents, and unlock new pathways through coaching, employability support, and development workshops.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-6 shadow-sm">
-                  <h4 className="text-lg font-semibold text-blue-700">
-                    Community-Led Approach
-                  </h4>
-                  <p className="mt-2 text-sm text-gray-700">
-                    Our programmes are co-created with young people, families, and local partners so every offer reflects real needs and real stories.
-                  </p>
-                </div>
-              </div>
-            </div>
+      {/* What We Do Section */}
+      <section className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-4xl space-y-12">
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+              What We Do
+            </h2>
 
             <div className="space-y-8">
-              <div className="rounded-3xl bg-[#00990d] p-8 text-white shadow-lg">
-                <h4 className="text-2xl font-semibold">Who we stand beside</h4>
-                <p className="mt-4 text-sm leading-relaxed text-white/90">
-                  We support young people navigating identity, mental health, or trauma; families seeking culturally appropriate help; and anyone affected by violence, exclusion, or stigma.
-                </p>
-                <p className="mt-6 text-lg font-semibold text-white">
-                  You belong here.
-                </p>
-              </div>
-
-              <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-lg">
-                <h4 className="text-lg font-semibold text-gray-900">Our commitments</h4>
-                <ul className="mt-4 space-y-3 text-sm text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-[#00990d]" aria-hidden="true" />
-                    Rooted in Edmonton, North London, responding to what our community needs most.
+              {/* Mental Health & Wellbeing Support */}
+              <div className="rounded-2xl border border-green-100 bg-white p-8 shadow-sm">
+                <h3 className="text-2xl font-semibold text-[#00990d] mb-4">
+                  Mental Health &amp; Wellbeing Support
+                </h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-[#00990d] flex-shrink-0" aria-hidden="true" />
+                    <span><strong>1:1 Culturally Informed Therapy</strong> – Work with therapists who understand your background and experiences</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-[#ff961b]" aria-hidden="true" />
-                    Led by lived experience, guided by trauma-informed practice, powered by cultural knowledge.
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-[#00990d] flex-shrink-0" aria-hidden="true" />
+                    <span><strong>Peer Support Groups</strong> – Connect with others who get it</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-blue-600" aria-hidden="true" />
-                    Working shoulder-to-shoulder with local organisations, schools, and families.
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-[#00990d] flex-shrink-0" aria-hidden="true" />
+                    <span><strong>Wellbeing Activities</strong> – Build emotional resilience through creative and cultural activities</span>
                   </li>
                 </ul>
+              </div>
+
+              {/* Career & Personal Development */}
+              <div className="rounded-2xl border border-orange-100 bg-white p-8 shadow-sm">
+                <h3 className="text-2xl font-semibold text-[#ff961b] mb-4">
+                  Career &amp; Personal Development
+                </h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-[#ff961b] flex-shrink-0" aria-hidden="true" />
+                    <span><strong>Career Coaching</strong> – Discover your strengths and explore opportunities</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-[#ff961b] flex-shrink-0" aria-hidden="true" />
+                    <span><strong>Employability Support</strong> – Build skills, confidence, and pathways to work</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-[#ff961b] flex-shrink-0" aria-hidden="true" />
+                    <span><strong>Personal Development Workshops</strong> – Grow personally and professionally</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Community-Led Approach */}
+              <div className="rounded-2xl border border-blue-100 bg-white p-8 shadow-sm">
+                <h3 className="text-2xl font-semibold text-blue-700 mb-4">
+                  Community-Led Approach
+                </h3>
+                <p className="text-gray-700">
+                  We co-create them with you. Our programmes are shaped by the real experiences of our team and the communities we serve, ensuring what we offer actually works for you.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Who We Serve Section */}
+      <section className="bg-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-4xl">
+            <div className="rounded-3xl bg-[#00990d] p-8 text-white shadow-lg md:p-12">
+              <h2 className="text-3xl font-semibold mb-6 sm:text-4xl">
+                Who We Serve
+              </h2>
+              <p className="mb-6 text-lg text-white/90">
+                We support:
+              </p>
+              <ul className="space-y-4 text-white/90">
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-white flex-shrink-0" aria-hidden="true" />
+                  <span>Young people navigating mental health challenges, trauma, or identity</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-white flex-shrink-0" aria-hidden="true" />
+                  <span>Families seeking culturally appropriate support</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-white flex-shrink-0" aria-hidden="true" />
+                  <span>Anyone affected by youth violence, social exclusion, or mental health stigma</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-white flex-shrink-0" aria-hidden="true" />
+                  <span>People who&apos;ve felt misunderstood or overlooked by traditional services</span>
+                </li>
+              </ul>
+              <p className="mt-8 text-2xl font-semibold text-white">
+                You belong here.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Join Us Section */}
       <section className="bg-[#00990d] py-16 text-white">
         <div className="container mx-auto px-4">
           <div className="text-center">

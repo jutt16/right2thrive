@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Instagram, Twitter, User, Heart, LogOut, MessageSquareWarning } from "lucide-react";
+import { Menu, X, Instagram, Twitter, User, Heart, LogOut, MessageSquareWarning, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -103,15 +103,6 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
-
-          {isAuthenticated && (
-            <Link
-              href="/wellbeing-hub"
-              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#00990d] hover:bg-green-50 rounded-md transition-all duration-200"
-            >
-              My Wellbeing Assessments
-            </Link>
-          )}
         </nav>
 
         <div className="hidden md:flex items-center space-x-2">
@@ -138,6 +129,9 @@ export default function Navbar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/my-wellbeing")}>
                   <Heart className="h-4 w-4 mr-2" /> My Wellbeing
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/wellbeing-hub")}>
+                  <ClipboardList className="h-4 w-4 mr-2" /> My Wellbeing Assessments
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/complaints")}>
                   <MessageSquareWarning className="mr-2 h-4 w-4" /> Complaints
@@ -242,16 +236,6 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {isAuthenticated && (
-              <Link
-                href="/wellbeing-hub"
-                onClick={toggleMenu}
-                className="text-base font-medium hover:text-orange-500 py-3 px-2 min-h-[44px] flex items-center"
-              >
-                My Wellbeing Assessments
-              </Link>
-            )}
-
             <div className="flex gap-4 mt-4">
               <Link
                 href="https://www.instagram.com/right2thriveuk/"
@@ -291,6 +275,16 @@ export default function Navbar() {
                     }}
                   >
                     <Heart className="mr-2 h-5 w-5" /> My Wellbeing
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
+                    onClick={() => {
+                      router.push("/wellbeing-hub");
+                      toggleMenu();
+                    }}
+                  >
+                    <ClipboardList className="mr-2 h-5 w-5" /> My Wellbeing Assessments
                   </Button>
                   <Button
                     variant="ghost"

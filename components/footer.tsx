@@ -112,22 +112,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  href="/wellbeing-hub/gad7"
-                  className="hover:text-orange-400"
-                >
-                  GAD-7 Assessment
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/wellbeing-hub/phq9"
-                  className="hover:text-orange-400"
-                >
-                  PHQ-9 Assessment
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/wellbeing-hub/resources"
                   className="hover:text-orange-400"
                 >

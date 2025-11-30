@@ -219,7 +219,7 @@ export default function PressRelease() {
               <ul>
                 <li>Trauma-informed mental health support delivered by culturally competent practitioners</li>
                 <li>Career and training pathways aimed at reducing unemployment and inequality</li>
-                <li>12-week Wellbeing Programmes combining therapy, mentoring, and family healing</li>
+                <li>6‑week Wellbeing Programmes combining therapy, mentoring, and family healing</li>
                 <li>Social and cultural workshops to strengthen identity, pride, and resilience</li>
                 <li>Safe spaces where families and young people can rebuild trust and overcome fear</li>
               </ul>
