@@ -203,6 +203,31 @@ export default function About() {
         </div>
       </section>
 
+      {/* Right2Thrive UK Wellbeing Team Section */}
+      <section className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-4xl">
+            <div className="rounded-3xl border-2 border-[#ff961b] bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl md:p-12">
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
+                  Right2Thrive UK Wellbeing Team
+                </h2>
+                <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+                  Meet our dedicated team of mental health professionals who are committed to providing culturally responsive support and care.
+                </p>
+              </div>
+              <div className="text-center mt-8">
+                <Link href="/wellbeing-team">
+                  <Button className="bg-[#ff961b] text-white hover:bg-[#e8871a] text-lg px-8 py-6 rounded-full">
+                    Meet Our Team
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Join Us Section */}
       <section className="bg-[#00990d] py-16 text-white">
         <div className="container mx-auto px-4">
