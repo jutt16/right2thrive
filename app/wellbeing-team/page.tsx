@@ -248,7 +248,7 @@ export default function WellbeingTeam() {
           <CardHeader className="text-center flex flex-col items-center">
             <div className="mx-auto mb-4">
               <Image
-                src="/Raveen Charles.jpeg"
+                src="/rc.jpeg"
                 alt="Portrait of Raveen Charles, Registered Psychotherapist"
                 width={160}
                 height={160}
