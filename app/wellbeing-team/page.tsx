@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +22,16 @@ export default function WellbeingTeam() {
       <div className="space-y-12">
         {/* Evette Bailey */}
         <Card className="border-2 border-teal-100">
-          <CardHeader>
+          <CardHeader className="text-center flex flex-col items-center">
+            <div className="mx-auto mb-4">
+              <Image
+                src="/Evette Bailey.jpeg"
+                alt="Portrait of Evette Bailey, Senior CBT Practitioner"
+                width={160}
+                height={160}
+                className="rounded-full object-cover object-top w-32 h-32 border-4 border-brand-teal shadow-md"
+              />
+            </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
               Evette Bailey
             </CardTitle>
@@ -131,7 +141,16 @@ export default function WellbeingTeam() {
 
         {/* Kevin Bachan Singh */}
         <Card className="border-2 border-teal-100">
-          <CardHeader>
+          <CardHeader className="text-center flex flex-col items-center">
+            <div className="mx-auto mb-4">
+              <Image
+                src="/Kevin Bachan Singh.jpeg"
+                alt="Portrait of Kevin Bachan Singh, Behaviour Mentor and Psychodynamic Counsellor"
+                width={160}
+                height={160}
+                className="rounded-full object-cover object-top w-32 h-32 border-4 border-brand-teal shadow-md"
+              />
+            </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
               Kevin Bachan Singh BSc, Dip.Couns
             </CardTitle>
@@ -186,7 +205,16 @@ export default function WellbeingTeam() {
 
         {/* Vanessa Boachie */}
         <Card className="border-2 border-teal-100">
-          <CardHeader>
+          <CardHeader className="text-center flex flex-col items-center">
+            <div className="mx-auto mb-4">
+              <Image
+                src="/Vanessa Boachie.jpeg"
+                alt="Portrait of Vanessa Boachie, Psychological Therapist and Social Entrepreneur"
+                width={160}
+                height={160}
+                className="rounded-full object-cover object-top w-32 h-32 border-4 border-brand-teal shadow-md"
+              />
+            </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
               Vanessa Boachie (BSc, PGCert)
             </CardTitle>
@@ -217,7 +245,16 @@ export default function WellbeingTeam() {
 
         {/* Raveen Charles */}
         <Card className="border-2 border-teal-100">
-          <CardHeader>
+          <CardHeader className="text-center flex flex-col items-center">
+            <div className="mx-auto mb-4">
+              <Image
+                src="/Raveen Charles.jpeg"
+                alt="Portrait of Raveen Charles, Registered Psychotherapist"
+                width={160}
+                height={160}
+                className="rounded-full object-cover object-top w-32 h-32 border-4 border-brand-teal shadow-md"
+              />
+            </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
               Raveen Charles (She/Her)
             </CardTitle>

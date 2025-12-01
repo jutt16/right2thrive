@@ -20,14 +20,23 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  BarChart,
-  LineChart,
   Activity,
   FileText,
   Calendar,
   Clock,
   ArrowRight,
 } from "lucide-react";
+import {
+  LineChart as RechartsLineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  BarChart as RechartsBarChart,
+  Bar,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { useRouter } from "next/navigation";
 
 interface AssessmentAnswer {
@@ -351,6 +360,70 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       ? formatSessionReminder(upcomingBooking)
       : null;
 
+  const gad7ChartData =
+    gad7Assessments.length > 0
+      ? gad7Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.total_score,
+          }))
+      : [];
+
+  const phq9ChartData =
+    phq9Assessments.length > 0
+      ? phq9Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.total_score,
+          }))
+      : [];
+
+  const latestGad7 =
+    gad7Assessments.length > 0
+      ? gad7Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
+      : null;
+
+  const latestPhq9 =
+    phq9Assessments.length > 0
+      ? phq9Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
+      : null;
+
   // --- Update fetchAssessments to include PCL-5 ---
   const fetchAssessments = async () => {
     if (!isClient) return;
@@ -366,7 +439,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/pcl5`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pcl5/assessments`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -377,9 +450,38 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         pcl5Res.json(),
       ]);
 
-      if (gad7Data.success) setGad7Assessments(gad7Data.assessments);
-      if (phq9Data.success) setPhq9Assessments(phq9Data.assessments);
-      if (pcl5Data.success) setPcl5Assessments(pcl5Data.assessments);
+      // Normalise different possible response shapes:
+      // - { success: true, assessments: [...] }
+      // - { success: true, data: [...]} or { success: true, data: { assessments: [...] } }
+      const normaliseAssessments = (raw: any): any[] => {
+        if (!raw) return [];
+        const ok = raw.success === true || raw.status === true;
+        if (!ok) return [];
+
+        if (Array.isArray(raw.assessments)) return raw.assessments;
+        if (Array.isArray(raw.data?.assessments)) return raw.data.assessments;
+        if (Array.isArray(raw.data)) return raw.data;
+        return [];
+      };
+
+      const gad7List = normaliseAssessments(gad7Data);
+      const phq9List = normaliseAssessments(phq9Data);
+      const pcl5List = normaliseAssessments(pcl5Data);
+
+      setGad7Assessments(gad7List as Assessment[]);
+      setPhq9Assessments(phq9List as Assessment[]);
+      setPcl5Assessments(pcl5List as Assessment[]);
+
+      if (process.env.NODE_ENV !== "production") {
+        console.log("Assessments fetched", {
+          gad7Raw: gad7Data,
+          phq9Raw: phq9Data,
+          pcl5Raw: pcl5Data,
+          gad7Count: gad7List.length,
+          phq9Count: phq9List.length,
+          pcl5Count: pcl5List.length,
+        });
+      }
     } catch (err) {
       console.error("Error fetching assessments:", err);
     } finally {
@@ -646,9 +748,11 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 <Activity className="h-4 w-4 text-teal-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">8/21</div>
+                <div className="text-2xl font-bold">
+                  {latestGad7 ? `${latestGad7.total_score}/21` : "—"}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Moderate anxiety
+                  {latestGad7 ? latestGad7.severity_level : "No assessments yet"}
                 </p>
               </CardContent>
             </Card>
@@ -660,9 +764,13 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 <Activity className="h-4 w-4 text-teal-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">10/27</div>
+                <div className="text-2xl font-bold">
+                  {latestPhq9 ? `${latestPhq9.total_score}/27` : "—"}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Moderate depression
+                  {latestPhq9
+                    ? latestPhq9.severity_level
+                    : "No assessments yet"}
                 </p>
               </CardContent>
             </Card>
@@ -707,12 +815,34 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 <CardDescription>Your anxiety levels over time</CardDescription>
               </CardHeader>
               <CardContent className="h-80">
-                <div className="flex h-full items-center justify-center">
-                  <LineChart className="h-40 w-40 text-gray-300" />
-                  <p className="text-sm text-gray-500">
-                    Chart visualization will appear here
-                  </p>
-                </div>
+                {gad7ChartData.length === 0 ? (
+                  <div className="flex h-full items-center justify-center">
+                    <p className="text-sm text-gray-500">
+                      No GAD-7 data available yet. Complete an assessment to see
+                      your progress.
+                    </p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsLineChart
+                      data={gad7ChartData}
+                      margin={{ left: 12, right: 12, top: 12, bottom: 12 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" />
+                      <YAxis domain={[0, 21]} />
+                      <RechartsTooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#0f766e"
+                        strokeWidth={2}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    </RechartsLineChart>
+                  </ResponsiveContainer>
+                )}
               </CardContent>
             </Card>
             <Card className="col-span-1">
@@ -723,12 +853,31 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="h-80">
-                <div className="flex h-full items-center justify-center">
-                  <BarChart className="h-40 w-40 text-gray-300" />
-                  <p className="text-sm text-gray-500">
-                    Chart visualization will appear here
-                  </p>
-                </div>
+                {phq9ChartData.length === 0 ? (
+                  <div className="flex h-full items-center justify-center">
+                    <p className="text-sm text-gray-500">
+                      No PHQ-9 data available yet. Complete an assessment to see
+                      your progress.
+                    </p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsBarChart
+                      data={phq9ChartData}
+                      margin={{ left: 12, right: 12, top: 12, bottom: 12 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" />
+                      <YAxis domain={[0, 27]} />
+                      <RechartsTooltip />
+                      <Bar
+                        dataKey="score"
+                        fill="#2563eb"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </RechartsBarChart>
+                  </ResponsiveContainer>
+                )}
               </CardContent>
             </Card>
           </div>
