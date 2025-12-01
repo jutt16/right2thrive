@@ -1,0 +1,302 @@
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+
+export default function WellbeingTeam() {
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      {/* Page Header */}
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl font-bold text-[#ff961b] mb-2">
+          Right2Thrive UK – Wellbeing Team
+        </h1>
+        <p className="text-gray-600 text-lg">
+          Meet our dedicated team of mental health professionals
+        </p>
+      </div>
+
+      {/* Team Profiles */}
+      <div className="space-y-12">
+        {/* Evette Bailey */}
+        <Card className="border-2 border-teal-100">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">
+              Evette Bailey
+            </CardTitle>
+            <p className="text-lg text-gray-700 font-semibold mt-2">
+              Senior CBT Practitioner
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Evette is a highly experienced Cognitive Behavioural Therapy (CBT) practitioner with over 30 years' experience in mental health, supporting both adolescents and adults.
+            </p>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Expertise</h3>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span><strong>Extensive Experience:</strong> With more than three decades in practice, Evette brings deep knowledge and clinical expertise to every session, offering clients meaningful insight and effective therapeutic interventions.</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span><strong>Empathy and Understanding:</strong> She uses a compassionate, client centred approach that builds trust and supports clients to engage confidently in their healing journey.</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span><strong>Proven Success:</strong> Evette has a strong record of positive therapeutic outcomes, with many clients achieving significant improvements in mental health and wellbeing.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Supervision</h3>
+              <p className="text-gray-700 leading-relaxed">
+                Evette provides clinical supervision to the Right2Thrive UK Psychology Team, ensuring high quality practice, confidentiality, ethical standards, accurate record keeping, and ongoing professional development.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Accreditations & Qualifications</h3>
+              <div className="flex flex-wrap gap-2 mb-3">
+                <Badge variant="secondary">BABCP Accredited</Badge>
+                <Badge variant="secondary">Dip/PG Social Work</Badge>
+                <Badge variant="secondary">BSc (Hons) Social Science</Badge>
+                <Badge variant="secondary">Therapeutic Communication with Children</Badge>
+                <Badge variant="secondary">Dip/PG Child & Young Person IAPT</Badge>
+                <Badge variant="secondary">IAPT Supervisor Certificate</Badge>
+                <Badge variant="secondary">Dip/PG Cognitive Behavioural Therapy</Badge>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Approach</h3>
+              <p className="text-gray-700 leading-relaxed">
+                Evette works within cognitive, behavioural, and humanistic frameworks. She uses evidence based CBT interventions including cognitive restructuring, guided discovery, exposure work, behavioural activation, relaxation skills, mindfulness, and solution focused strategies.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Separator className="my-8" />
+
+        {/* Mauva Johnson Jones */}
+        <Card className="border-2 border-teal-100">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">
+              Mauva Johnson Jones
+            </CardTitle>
+            <p className="text-lg text-gray-700 font-semibold mt-2">
+              Founder & Director, Precious Moments and Health Ltd
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Experience</h3>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Over 25 years' experience mentoring and supporting children, young people, and families across schools, local authorities, and community settings.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Specialism</h3>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Supporting children with emotional and behavioural challenges.</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Integrative counselling using CBT, Solution Focused Therapy, and Play Therapy.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Professional Membership</h3>
+              <p className="text-gray-700 leading-relaxed">
+                <Badge variant="secondary">British Association for Counselling and Psychotherapy (BACP)</Badge>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Separator className="my-8" />
+
+        {/* Kevin Bachan Singh */}
+        <Card className="border-2 border-teal-100">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">
+              Kevin Bachan Singh BSc, Dip.Couns
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Kevin has spent the last 18 years working within the Enfield Secondary Tuition Centre (Pupil Referral Unit), across three sites, supporting some of the most vulnerable and disengaged students and families in the Borough of Enfield.
+            </p>
+
+            <p className="text-gray-700 leading-relaxed">
+              His work began as a Learning Behaviour Mentor, supporting students in lessons and delivering one to one mentoring to promote positive behaviour. Four years into this role, he was appointed Centre Manager for the KS3 Newbury site, where he successfully reintegrated many students back into mainstream education.
+            </p>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Training</h3>
+              <p className="text-gray-700 mb-2">Kevin has completed a wide range of behaviour focused training, including:</p>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Pivotal behaviour training with Paul Dix</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Talking Mats</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Approach Training</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Safeguarding Training</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Cornerstone VR Training</span>
+                </li>
+              </ul>
+            </div>
+
+            <p className="text-gray-700 leading-relaxed">
+              In 2019, while working full time, Kevin began formal therapy training with Enfield Counselling and Psychotherapy Service. After completing the Certificate year, he went on to achieve a three year Diploma in Psychodynamic Counselling, graduating in July 2024.
+            </p>
+
+            <p className="text-gray-700 leading-relaxed">
+              His therapeutic journey offered a new perspective on behaviour—one grounded in emotional understanding, non judgement, and the transformative power of the therapeutic relationship. With extensive behavioural work and psychodynamic training, Kevin is committed to expanding his impact by providing behavioural support, training, and therapeutic services to a wider community.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Separator className="my-8" />
+
+        {/* Vanessa Boachie */}
+        <Card className="border-2 border-teal-100">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">
+              Vanessa Boachie (BSc, PGCert)
+            </CardTitle>
+            <p className="text-lg text-gray-700 font-semibold mt-2">
+              Psychological Therapist | Social Entrepreneur
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-gray-700 leading-relaxed">
+              Vanessa is an award winning social entrepreneur and qualified Psychological Therapist specialising in CBT. With nine years' experience in mental health, she is particularly passionate about culturally sensitive therapeutic approaches.
+            </p>
+
+            <p className="text-gray-700 leading-relaxed">
+              She supports individuals experiencing depression, anxiety, social anxiety, low self esteem, life transitions, trauma, and emotional hardship. Vanessa helps clients overcome psychological barriers by exploring the underlying causes of distress and implementing practical strategies through one to one sessions and group workshops.
+            </p>
+
+            <p className="text-gray-700 leading-relaxed">
+              Vanessa has delivered workshops and healing spaces across the UK in higher education, corporate settings, and faith communities. She has collaborated with respected organisations including JP Morgan, Virgin Group Ltd, Tesco, BBC, NHS, HMPPS, and CMS International Law Firm.
+            </p>
+
+            <p className="text-gray-700 leading-relaxed">
+              She is dedicated to helping individuals deepen their self understanding and 'live their best lives'.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Separator className="my-8" />
+
+        {/* Raveen Charles */}
+        <Card className="border-2 border-teal-100">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">
+              Raveen Charles (She/Her)
+            </CardTitle>
+            <p className="text-lg text-gray-700 font-semibold mt-2">
+              Registered Psychotherapist
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Experience</h3>
+              <p className="text-gray-700 leading-relaxed">
+                Over 10 years' experience in mental health and social care, including roles within homelessness services, the Probation Service, the NHS, and local authorities.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Qualifications</h3>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>BSc Psychology (University of Leeds)</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Postgraduate Diploma in Psychotherapy</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Certifications in Compassion Focused Therapy, Clinical Hypnotherapy, Trauma Release Exercise, Meditation, and DBT Skills</span>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Specialism</h3>
+              <p className="text-gray-700 leading-relaxed mb-3">
+                Holistic mental health care incorporating cultural, societal, lifestyle, and spiritual factors.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                Raveen offers integrative psychotherapy with a holistic focus, supporting harmony between mind, body, and soul. She creates a gentle, healing, and non judgemental therapeutic space where clients can explore emotional challenges with compassion and openness.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Her work emphasises:</h3>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Somatic and body focused practices</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Meditative and mindfulness based techniques</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Breathwork and trauma/emotion release exercises</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Clinical hypnotherapy</span>
+                </li>
+              </ul>
+            </div>
+
+            <p className="text-gray-700 leading-relaxed">
+              Raveen supports clients in reconnecting with themselves, deepening self awareness, and moving from emotional difficulty to greater freedom, fulfilment, and joy. She works with individuals beyond labels or diagnoses, honouring their whole person experience.
+            </p>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">Professional Membership</h3>
+              <p className="text-gray-700 leading-relaxed">
+                <Badge variant="secondary">BACP – British Association for Counselling & Psychotherapy (Accredited Register)</Badge>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
