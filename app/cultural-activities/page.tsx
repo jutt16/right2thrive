@@ -54,6 +54,8 @@ type Event = {
   id: number;
   title: string;
   event_date: string;
+  start_time?: string | null;
+  end_time?: string | null;
   registration_link: string | null;
   registration_start?: string;
   registration_end?: string;
@@ -91,6 +93,24 @@ function formatDate(dateString: string): string {
   } catch {
     // Fallback: just extract the date part from ISO string
     return dateString.split('T')[0];
+  }
+}
+
+function formatTime(timeString?: string | null): string | null {
+  if (!timeString) return null;
+
+  try {
+    const [hours, minutes] = timeString.split(":");
+    const date = new Date();
+    date.setHours(Number(hours), Number(minutes), 0, 0);
+
+    return date.toLocaleTimeString("en-GB", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return timeString;
   }
 }
 
@@ -336,93 +356,110 @@ export default async function WellbeingWorkshops() {
 
             {events.length > 0 && (
               <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {events.map((event) => (
-                  <article
-                    key={event.id}
-                    className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
-                  >
-                    <div>
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-base font-semibold text-slate-900 sm:text-lg">
-                          {event.title}
-                        </h3>
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-100">
-                          Wellbeing activity
-                        </span>
-                      </div>
-                      <div className="mt-3 space-y-1.5 text-xs text-slate-600">
-                        <p>
-                          <span className="font-semibold text-slate-800">
-                            Date:
-                          </span>{" "}
-                          {formatDate(event.event_date)}
-                        </p>
-                        <p>
-                          <span className="font-semibold text-slate-800">
-                            Time:
-                          </span>{" "}
-                          11:00 am – 1:00 pm
-                        </p>
-                        {event.location && formatLocation(event) && (
+                {events.map((event) => {
+                  const formattedStartTime = formatTime(event.start_time);
+                  const formattedEndTime = formatTime(event.end_time);
+
+                  let timeDisplay: string;
+                  if (formattedStartTime && formattedEndTime) {
+                    timeDisplay = `${formattedStartTime} – ${formattedEndTime}`;
+                  } else if (formattedStartTime) {
+                    timeDisplay = formattedStartTime;
+                  } else if (formattedEndTime) {
+                    timeDisplay = formattedEndTime;
+                  } else {
+                    // Fallback for static events without explicit times
+                    timeDisplay = "11:00 am – 1:00 pm";
+                  }
+
+                  return (
+                    <article
+                      key={event.id}
+                      className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-3">
+                          <h3 className="text-base font-semibold text-slate-900 sm:text-lg">
+                            {event.title}
+                          </h3>
+                          <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-100">
+                            Wellbeing activity
+                          </span>
+                        </div>
+                        <div className="mt-3 space-y-1.5 text-xs text-slate-600">
                           <p>
                             <span className="font-semibold text-slate-800">
-                              Location:
+                              Date:
                             </span>{" "}
-                            {event.location.latitude && event.location.longitude ? (
-                              <a
-                                href={getGoogleMapsUrl(event.location.latitude, event.location.longitude)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-[#00990d] hover:underline"
-                              >
-                                {formatLocation(event)}
-                              </a>
-                            ) : (
-                              formatLocation(event)
-                            )}
+                            {formatDate(event.event_date)}
                           </p>
-                        )}
-                        {typeof event.cost !== "undefined" &&
-                          event.cost !== null && Number(event.cost) === 0 && (
+                          <p>
+                            <span className="font-semibold text-slate-800">
+                              Time:
+                            </span>{" "}
+                            {timeDisplay}
+                          </p>
+                          {event.location && formatLocation(event) && (
                             <p>
                               <span className="font-semibold text-slate-800">
-                                Cost:
+                                Location:
                               </span>{" "}
-                              Free
+                              {event.location.latitude && event.location.longitude ? (
+                                <a
+                                  href={getGoogleMapsUrl(event.location.latitude, event.location.longitude)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[#00990d] hover:underline"
+                                >
+                                  {formatLocation(event)}
+                                </a>
+                              ) : (
+                                formatLocation(event)
+                              )}
                             </p>
                           )}
-                      </div>
-                      {event.description && (
-                        <div className="mt-3 text-sm text-slate-700">
-                          <p className="line-clamp-3 whitespace-pre-line">
-                            {event.description.split('\n\n')[0]}
-                          </p>
+                          {typeof event.cost !== "undefined" &&
+                            event.cost !== null && Number(event.cost) === 0 && (
+                              <p>
+                                <span className="font-semibold text-slate-800">
+                                  Cost:
+                                </span>{" "}
+                                Free
+                              </p>
+                            )}
                         </div>
-                      )}
-                    </div>
+                        {event.description && (
+                          <div className="mt-3 text-sm text-slate-700">
+                            <p className="line-clamp-3 whitespace-pre-line">
+                              {event.description.split('\n\n')[0]}
+                            </p>
+                          </div>
+                        )}
+                      </div>
 
-                    <div className="mt-5 flex flex-wrap gap-3">
-                      {event.registration_link && (
+                      <div className="mt-5 flex flex-wrap gap-3">
+                        {event.registration_link && (
+                          <a
+                            href={event.registration_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex flex-1 items-center justify-center rounded-md bg-[#00990d] px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-green-700"
+                          >
+                            Register / Learn more
+                          </a>
+                        )}
                         <a
-                          href={event.registration_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex flex-1 items-center justify-center rounded-md bg-[#00990d] px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-green-700"
+                          href={`/cultural-activities/${event.id}-${toSlug(
+                            event.title
+                          )}`}
+                          className="inline-flex items-center text-xs font-semibold text-[#00990d] hover:underline"
                         >
-                          Register / Learn more
+                          View full details
                         </a>
-                      )}
-                      <a
-                        href={`/cultural-activities/${event.id}-${toSlug(
-                          event.title
-                        )}`}
-                        className="inline-flex items-center text-xs font-semibold text-[#00990d] hover:underline"
-                      >
-                        View full details
-                      </a>
-                    </div>
-                  </article>
-                ))}
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             )}
           </section>
