@@ -56,15 +56,11 @@ export default function WellbeingOnboarding() {
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    // Check if user has completed onboarding
-    const hasCompletedOnboarding = localStorage.getItem("wellbeing_onboarding_completed");
-    
-    if (!hasCompletedOnboarding) {
-      // Small delay to ensure page is loaded
-      setTimeout(() => {
-        setIsOpen(true);
-      }, 500);
-    }
+    // Always show the onboarding guide when the My Wellbeing page loads
+    // (do not persist completion in localStorage so it appears on every login/visit)
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 500);
   }, []);
 
   const handleNext = () => {
@@ -82,12 +78,10 @@ export default function WellbeingOnboarding() {
   };
 
   const handleComplete = () => {
-    localStorage.setItem("wellbeing_onboarding_completed", "true");
     setIsOpen(false);
   };
 
   const handleSkip = () => {
-    localStorage.setItem("wellbeing_onboarding_completed", "true");
     setIsOpen(false);
   };
 
