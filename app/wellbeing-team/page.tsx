@@ -599,6 +599,166 @@ export default function WellbeingTeam() {
             </div>
           </CardContent>
         </Card>
+
+        <Separator className="my-8" />
+
+        {/* Colin Lee-Own */}
+        <Card className="border-2 border-teal-100">
+          <CardHeader className="text-center flex flex-col items-center">
+            <div className="mx-auto mb-4">
+              <Image
+                src="/collin.jpeg"
+                alt="Portrait of Colin Lee-Own, Founder of Right2Thrive UK Social Enterprise"
+                width={160}
+                height={160}
+                className="rounded-full object-cover object-top w-32 h-32 border-4 border-brand-teal shadow-md"
+              />
+            </div>
+            <CardTitle className="text-2xl font-bold text-[#ff961b]">
+              Colin Lee-Own
+            </CardTitle>
+            <p className="text-lg text-gray-700 font-semibold mt-2">
+              Founder of Right2Thrive UK Social Enterprise
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">
+                Meet Colin Lee-Own – Founder of Right2Thrive UK Social Enterprise
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Colin Lee-Own is the founder and heart behind Right2Thrive UK. With a community career beginning in 1984 as a youth and community worker in Haringey Youth Service, Colin has spent over four decades supporting young people, families, and diverse communities across London.
+              </p>
+              <p className="text-gray-700 leading-relaxed mt-3">
+                He has always been dedicated to empowering young people who face barriers such as exclusion, unemployment, or lack of opportunities. His leadership, lived experience, and passion for community development have shaped Right2Thrive UK into a trusted wellbeing and support hub.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">
+                Colin&apos;s Journey in Youth & Community Work
+              </h3>
+              
+              <div className="mb-4">
+                <h4 className="text-lg font-semibold text-teal-600 mb-2">
+                  Youth Work & Community Leadership
+                </h4>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Started as a Youth & Community Worker in Haringey Youth Service (1984)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Developed and delivered youth programmes during a time of major social and cultural change</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Believes in creating opportunities, building resilience, and supporting young people to thrive despite challenges</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-lg font-semibold text-teal-600 mb-2">
+                  Regeneration & Employment Support
+                </h4>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span><strong>Project Manager at AD 2000 Productions (1994–2000)</strong></span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">–</span>
+                    <span>Led regeneration projects in Enfield</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">–</span>
+                    <span>Created programmes to tackle youth unemployment</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">–</span>
+                    <span>Supported young people in building practical skills, confidence, and employment pathways</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-lg font-semibold text-teal-600 mb-2">
+                  Jasmaine Scholars (2005–2019)
+                </h4>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Developed marketing strategies to increase community awareness</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Mentored young people excluded from school, helping them reconnect with education and positive goals</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Designed community engagement activities to support young people at risk</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-lg font-semibold text-teal-600 mb-2">
+                  Founder of 21K Digital Media
+                </h4>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Created a digital media platform focused on youth voice, creativity, and personal development</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Supported young people in media skills, communication, and digital confidence</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>Built community connections through storytelling and digital engagement</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-teal-700 mb-3">
+                Role at Right2Thrive UK
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-3">
+                As founder, Colin:
+              </p>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Leads the organisation&apos;s vision, values, and strategic direction</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Supports the wellbeing team and youth mentors</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Builds strong partnerships with schools, local authorities, and community groups</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Ensures all support is inclusive, culturally aware, and centred on real community needs</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Advocates for young people facing disadvantage, mental‑health barriers, or exclusion</span>
+                </li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed mt-3">
+                Colin&apos;s leadership is rooted in compassion, fairness, and a genuine belief in every young person&apos;s potential.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
