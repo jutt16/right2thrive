@@ -353,7 +353,16 @@ export default function WellbeingTeam() {
 
         {/* Mauva Johnson Jones */}
         <Card className="border-2 border-teal-100">
-          <CardHeader>
+          <CardHeader className="text-center flex flex-col items-center">
+            <div className="mx-auto mb-4">
+              <Image
+                src="/Mauva Jonson.jpeg"
+                alt="Portrait of Mauva Johnson Jones, Founder & Director at Precious Moments and Health Ltd"
+                width={160}
+                height={160}
+                className="rounded-full object-cover object-top w-32 h-32 border-4 border-brand-teal shadow-md"
+              />
+            </div>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
               Mauva Johnson Jones
             </CardTitle>
