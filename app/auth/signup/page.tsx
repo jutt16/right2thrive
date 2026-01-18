@@ -33,15 +33,15 @@ import { Progress } from "@/components/ui/progress"
 
 // --- Options Constants ---
 const GENDER_OPTIONS = [
-  "Woman", "Man", "Non Binary", "Transfeminine", "Transmasculine", 
+  "Female", "Male", "Non Binary", "Transfeminine", "Transmasculine",
   "Agender", "I don't know", "Prefer not to say", "Other"
 ]
 
 const ISSUES_OPTIONS = [
-  "Stress or Anxiety", "Depression", "School challenges", "ADHD/ADD", 
-  "Addiction", "Trauma or abuse", "Loss of a loved one", 
-  "Relationship with friends", "Family conflicts", "Fears or phobias", 
-  "Anger issues", "Panic attacks", "Trouble sleeping or insomnia", 
+  "Stress or Anxiety", "Depression", "School challenges", "ADHD/ADD",
+  "Addiction", "Trauma or abuse", "Loss of a loved one",
+  "Relationship with friends", "Family conflicts", "Fears or phobias",
+  "Anger issues", "Panic attacks", "Trouble sleeping or insomnia",
   "Eating disorders", "LGBTQ issues", "Other"
 ]
 
@@ -54,7 +54,7 @@ const PARENT_RELATIONSHIP_OPTIONS = [
 ]
 
 const SUICIDE_THOUGHTS_OPTIONS = [
-  "Never", "Over a year ago", "Over 3 months ago", 
+  "Never", "Over a year ago", "Over 3 months ago",
   "Over a month ago", "Over 2 weeks ago", "In the last 2 weeks"
 ]
 
@@ -63,7 +63,7 @@ const SCHOOL_STATUS_OPTIONS = [
 ]
 
 const LIVING_SITUATION_OPTIONS = [
-  "At home with both of your parents", "At home with one parent", 
+  "At home with both of your parents", "At home with one parent",
   "Split custody with both parents", "Other"
 ]
 
@@ -80,7 +80,7 @@ export default function SignupPage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
-  
+
   // Form State
   const [formData, setFormData] = useState({
     // Step 1: Account
@@ -90,7 +90,7 @@ export default function SignupPage() {
     password: "",
     confirmPassword: "",
     termsAccepted: false,
-    
+
     // Step 2 & 3: Profile
     gender_identity: "",
     age: "",
@@ -120,7 +120,7 @@ export default function SignupPage() {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }))
-    
+
     if (name === 'password') {
       setPasswordStrength(calculatePasswordStrength(value))
     }
@@ -134,8 +134,8 @@ export default function SignupPage() {
   const handleCheckboxChange = (option: string, checked: boolean) => {
     setFormData((prev) => {
       const current = prev.issues_facing
-      const updated = checked 
-        ? [...current, option] 
+      const updated = checked
+        ? [...current, option]
         : current.filter(item => item !== option)
       return { ...prev, issues_facing: updated }
     })
@@ -210,7 +210,7 @@ export default function SignupPage() {
             email: formData.email,
             password: formData.password,
             password_confirmation: formData.confirmPassword,
-            
+
             gender_identity: formData.gender_identity,
             age: parseInt(formData.age),
             issues_facing: formData.issues_facing,
@@ -272,10 +272,10 @@ export default function SignupPage() {
           <CardDescription>
             Step {step} of 3: {step === 1 ? "Account Details" : step === 2 ? "Personal Profile" : "Well-being Check"}
           </CardDescription>
-          
+
           {/* Progress Bar */}
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-4">
-            <motion.div 
+            <motion.div
               className="h-full bg-[#00990d]"
               initial={{ width: "0%" }}
               animate={{ width: `${(step / 3) * 100}%` }}
@@ -287,9 +287,9 @@ export default function SignupPage() {
         <CardContent className="p-6 md:p-8">
           {success ? (
             <div className="text-center py-12">
-              <motion.div 
-                initial={{ scale: 0 }} 
-                animate={{ scale: 1 }} 
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
                 className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6"
               >
                 <CheckCircle className="h-10 w-10 text-green-600" />
@@ -373,11 +373,10 @@ export default function SignupPage() {
                           {[1, 2, 3, 4, 5].map((l) => (
                             <div
                               key={l}
-                              className={`flex-1 rounded-full transition-colors ${
-                                l <= passwordStrength 
+                              className={`flex-1 rounded-full transition-colors ${l <= passwordStrength
                                   ? (passwordStrength <= 2 ? 'bg-red-400' : passwordStrength <= 3 ? 'bg-yellow-400' : 'bg-green-500')
                                   : 'bg-gray-200'
-                              }`}
+                                }`}
                             />
                           ))}
                         </div>
@@ -404,8 +403,8 @@ export default function SignupPage() {
                   <motion.div key="step2" {...fadeIn} className="space-y-6">
                     <div className="space-y-2">
                       <Label>1. What is your gender identity?</Label>
-                      <Select 
-                        value={formData.gender_identity} 
+                      <Select
+                        value={formData.gender_identity}
                         onValueChange={(val) => handleSelectChange("gender_identity", val)}
                       >
                         <SelectTrigger className={errors.gender_identity ? "border-red-500" : ""}>
@@ -447,7 +446,7 @@ export default function SignupPage() {
                         />
                         {errors.country && <p className="text-xs text-red-500">{errors.country}</p>}
                       </div>
-                      
+
                       <div className="space-y-2">
                         <Label>10. Preferred therapy language?</Label>
                         <Input
@@ -463,8 +462,8 @@ export default function SignupPage() {
 
                     <div className="space-y-2">
                       <Label>7. Do you currently go to school?</Label>
-                      <Select 
-                        value={formData.school_status} 
+                      <Select
+                        value={formData.school_status}
                         onValueChange={(val) => handleSelectChange("school_status", val)}
                       >
                         <SelectTrigger className={errors.school_status ? "border-red-500" : ""}>
@@ -481,8 +480,8 @@ export default function SignupPage() {
 
                     <div className="space-y-2">
                       <Label>8. Where do you currently live?</Label>
-                      <Select 
-                        value={formData.living_situation} 
+                      <Select
+                        value={formData.living_situation}
                         onValueChange={(val) => handleSelectChange("living_situation", val)}
                       >
                         <SelectTrigger className={errors.living_situation ? "border-red-500" : ""}>
@@ -506,8 +505,8 @@ export default function SignupPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-2 border rounded-md custom-scrollbar">
                         {ISSUES_OPTIONS.map((issue) => (
                           <div key={issue} className="flex items-center space-x-2">
-                            <Checkbox 
-                              id={`issue-${issue}`} 
+                            <Checkbox
+                              id={`issue-${issue}`}
                               checked={formData.issues_facing.includes(issue)}
                               onCheckedChange={(checked) => handleCheckboxChange(issue, checked as boolean)}
                             />
@@ -520,8 +519,8 @@ export default function SignupPage() {
 
                     <div className="space-y-2">
                       <Label>4. Have you ever been in therapy before?</Label>
-                      <Select 
-                        value={formData.therapy_history} 
+                      <Select
+                        value={formData.therapy_history}
                         onValueChange={(val) => handleSelectChange("therapy_history", val)}
                       >
                         <SelectTrigger className={errors.therapy_history ? "border-red-500" : ""}>
@@ -538,8 +537,8 @@ export default function SignupPage() {
 
                     <div className="space-y-2">
                       <Label>5. How would you rate your relationship with your parents?</Label>
-                      <RadioGroup 
-                        value={formData.relationship_with_parents} 
+                      <RadioGroup
+                        value={formData.relationship_with_parents}
                         onValueChange={(val) => handleSelectChange("relationship_with_parents", val)}
                         className="flex space-x-4"
                       >
@@ -555,8 +554,8 @@ export default function SignupPage() {
 
                     <div className="space-y-2">
                       <Label>6. When was the last time you thought about suicide?</Label>
-                      <Select 
-                        value={formData.last_suicide_thought} 
+                      <Select
+                        value={formData.last_suicide_thought}
                         onValueChange={(val) => handleSelectChange("last_suicide_thought", val)}
                       >
                         <SelectTrigger className={errors.last_suicide_thought ? "border-red-500" : ""}>
@@ -572,12 +571,12 @@ export default function SignupPage() {
                     </div>
 
                     <div className="flex items-start space-x-2 pt-4 border-t">
-                      <Checkbox 
-                        id="terms" 
+                      <Checkbox
+                        id="terms"
                         checked={formData.termsAccepted}
                         onCheckedChange={(c) => {
                           setFormData(p => ({ ...p, termsAccepted: c as boolean }))
-                          if(errors.termsAccepted) setErrors(p => ({...p, termsAccepted: undefined}))
+                          if (errors.termsAccepted) setErrors(p => ({ ...p, termsAccepted: undefined }))
                         }}
                       />
                       <Label htmlFor="terms" className="text-sm font-normal">
@@ -603,8 +602,8 @@ export default function SignupPage() {
                     Next Step <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="bg-orange-500 hover:bg-orange-600 text-white"
                     disabled={isLoading}
                   >
@@ -618,12 +617,12 @@ export default function SignupPage() {
         </CardContent>
         {step === 1 && (
           <CardFooter className="justify-center border-t py-4 bg-gray-50">
-             <div className="text-center text-sm text-gray-600">
-                Already have an account?{" "}
-                <Link href="/auth/login" className="font-medium text-orange-600 hover:text-teal-700">
-                  Sign in
-                </Link>
-              </div>
+            <div className="text-center text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link href="/auth/login" className="font-medium text-orange-600 hover:text-teal-700">
+                Sign in
+              </Link>
+            </div>
           </CardFooter>
         )}
       </Card>
