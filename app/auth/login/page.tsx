@@ -2,11 +2,11 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,14 +20,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export default function LoginPage() {
+function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("patient");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const message = searchParams.get("message");
+    if (message === "email-verified") {
+      setSuccessMessage("Email verified successfully! You can now log in.");
+    } else if (message === "account-created") {
+      setSuccessMessage("Account created successfully! Please verify your email to continue.");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (userType === "therapist") {
@@ -62,9 +73,19 @@ export default function LoginPage() {
       }
 
       if (data.success) {
+        // Check if email is verified
+        if (!data.user.is_email_verified) {
+          // Store email for verification page
+          localStorage.setItem("pendingVerificationEmail", data.user.email);
+          // Don't store token or user data if not verified
+          router.push(`/auth/verify-email?email=${encodeURIComponent(data.user.email)}`);
+          return;
+        }
+
         // store everything in localStorage
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        // Store chat_id separately if it exists
         if (data.therapist) {
           localStorage.setItem("therapist", JSON.stringify(data.therapist));
         } else {
@@ -121,6 +142,12 @@ export default function LoginPage() {
             {error && (
               <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-500">
                 {error}
+              </div>
+            )}
+            {successMessage && (
+              <div className="mb-4 rounded-md bg-green-50 p-3 text-sm text-green-700 flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" />
+                {successMessage}
               </div>
             )}
             <div className="space-y-4">
@@ -212,5 +239,23 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto flex min-h-[calc(100vh-16rem)] items-center justify-center px-4 py-12">
+        <Card className="mx-auto w-full max-w-md border-2 border-teal-100">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -111,11 +111,11 @@ interface Booking {
 }
 
 const QUICK_CHECK_IN_OPTIONS = [
-  { value: "great", emoji: "😊", label: "Great" },
-  { value: "okay", emoji: "😐", label: "Okay" },
-  { value: "down", emoji: "😔", label: "Down" },
-  { value: "anxious", emoji: "😰", label: "Anxious" },
-  { value: "frustrated", emoji: "😡", label: "Frustrated" },
+  { value: "great", emoji: "??", label: "Great" },
+  { value: "okay", emoji: "??", label: "Okay" },
+  { value: "down", emoji: "??", label: "Down" },
+  { value: "anxious", emoji: "??", label: "Anxious" },
+  { value: "frustrated", emoji: "??", label: "Frustrated" },
 ] as const;
 
 export default function WellbeingHub() {
@@ -128,8 +128,15 @@ export default function WellbeingHub() {
       const token = localStorage.getItem("token");
       const user = localStorage.getItem("user");
       if (token && user) {
+        const parsedUser = JSON.parse(user);
+        // Check if email is verified
+        if (!parsedUser.is_email_verified) {
+          localStorage.setItem("pendingVerificationEmail", parsedUser.email);
+          router.push(`/auth/verify-email?email=${encodeURIComponent(parsedUser.email)}`);
+          return;
+        }
         setIsAuthenticated(true);
-        setUserData(JSON.parse(user));
+        setUserData(parsedUser);
       } else {
         router.push("/auth/login");
       }
@@ -220,7 +227,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
     const therapistName =
       booking.therapist?.first_name?.trim() ||
       booking.therapist?.last_name?.trim() ||
-      "your therapist";
+      "your wellbeing coach";
 
     if (!start) {
       return `Your session with ${therapistName} is coming up soon. Complete these check-ins before your session for the best experience.`;
@@ -585,7 +592,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         className="space-y-4"
         onValueChange={setActiveTab}
       >
-        <TabsList className="gflex w-full overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-5">
+        <TabsList className="flex w-full overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-5">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="assessments">Assessments</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
@@ -599,7 +606,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
           <Card>
             <CardHeader>
               <CardTitle>Session Notes</CardTitle>
-              <CardDescription>Notes shared by your therapist</CardDescription>
+              <CardDescription>Notes shared by your wellbeing coach</CardDescription>
             </CardHeader>
             <CardContent>
               {sessionNotes.length === 0 ? (
@@ -661,7 +668,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                       <div key={med.id} className="grid grid-cols-4 gap-4 p-4">
                         <div>{formatDate(med.last_updated)}</div>
                         <div>{med.condition}</div>
-                        <div>{med.medications || "—"}</div>
+                        <div>{med.medications || ""}</div>
                         <div>
                           {med.therapist
                             ? `${med.therapist.first_name} ${med.therapist.last_name}`
@@ -683,7 +690,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               Welcome back
             </p>
             <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">
-              Hello {userFirstName}! 👋
+              Hello {userFirstName}! ??
             </h2>
             {isLoadingBookings ? (
               <p className="mt-3 text-sm text-white/85">
@@ -749,7 +756,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {latestGad7 ? `${latestGad7.total_score}/21` : "—"}
+                  {latestGad7 ? `${latestGad7.total_score}/21` : ""}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {latestGad7 ? latestGad7.severity_level : "No assessments yet"}
@@ -765,7 +772,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {latestPhq9 ? `${latestPhq9.total_score}/27` : "—"}
+                  {latestPhq9 ? `${latestPhq9.total_score}/27` : ""}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {latestPhq9
@@ -803,7 +810,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
           <Card className="border border-emerald-100 bg-emerald-50/80">
             <CardContent className="flex items-center justify-between gap-3 py-6">
               <p className="text-base font-semibold text-emerald-900">
-                Your anxiety improved by 30% this month! Keep up the great work 🎉
+                Your anxiety improved by 30% this month! Keep up the great work ??
               </p>
             </CardContent>
           </Card>

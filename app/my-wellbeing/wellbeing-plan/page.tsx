@@ -234,7 +234,7 @@ export default function WellbeingPlan() {
 
             <div className="mt-4 bg-blue-50 p-4 rounded border border-blue-200">
               <h4 className="font-semibold text-blue-900 mb-2">
-                Your Therapist
+                Your Wellbeing Coach
               </h4>
 
               {isLoadingTherapistDetails ? (
@@ -648,7 +648,7 @@ export default function WellbeingPlan() {
       <button
         type="button"
         onClick={() => router.push("/my-wellbeing/download")}
-        title="View documents assigned by your therapist"
+        title="View documents assigned by your wellbeing coach"
         aria-label="View therapists assigned documents"
         className="inline-flex items-center gap-3 px-4 py-2 mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg shadow-md hover:shadow-lg transition-colors transition-shadow duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300"
       >

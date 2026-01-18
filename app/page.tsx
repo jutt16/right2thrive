@@ -20,12 +20,16 @@ import {
   FaLaptop,
 } from "react-icons/fa";
 import useAuthStatus from "@/hooks/useAuthStatus";
+import { useHomepageData } from "@/hooks/useHomepageData";
+import { getIconComponent } from "@/lib/iconMapper";
 import { EnhancedForm } from "@/components/enhanced-form";
 import { useAnalytics, AnalyticsPageTracker } from "@/lib/analytics";
+import { TherapistSelection } from "@/components/TherapistSelection";
 
 export default function Home() {
   const isAuthenticated = useAuthStatus();
   const analytics = useAnalytics();
+  const { data: homepageData, loading, error } = useHomepageData();
 
   const handleFormSubmit = async (data: Record<string, string>) => {
     try {
@@ -33,7 +37,7 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/contact/message`,
         {
           method: "POST",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
             "X-CSRF-Token": "csrf-token-placeholder" // Would be real CSRF token
           },
@@ -47,7 +51,7 @@ export default function Home() {
           }),
         }
       );
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to send message. Please try again.");
@@ -62,347 +66,272 @@ export default function Home() {
     }
   };
 
-  const testimonials = [
-    {
-      quote:
-        "Right2Thrive gave me the tools and support I needed when I felt completely alone. My therapist understood my background, and that made all the difference.",
-      name: "Sarah",
-      age: "",
-    },
-    {
-      quote:
-        "Having weekly check-ins with someone who really listened helped me manage stress and focus on college again. I felt seen for the first time.",
-      name: "Malik",
-      age: "",
-    },
-    {
-      quote:
-        "As a parent, I felt empowered knowing my teen had culturally aware support. The mentorship programme transformed how we communicate at home.",
-      name: "Pauline",
-      age: "Parent",
-    },
-  ];
+  // Use dynamic data from API, fallback to empty arrays if loading or no data
+  const testimonials = homepageData?.testimonials || [];
+  const communityStories = homepageData?.community_stories || [];
+  const services = homepageData?.services || [];
+  const flowSteps = homepageData?.flow_steps || [];
+  const hero = homepageData?.hero;
+  const sectionHeadings = homepageData?.section_headings || {};
+  const ctaSection = homepageData?.cta_section;
+  const supportServices = homepageData?.support_services;
 
-  const communityStories = [
-    {
-      name: "Brian",
-      role: "College student",
-      image: "/img1.jpg",
-      objectPosition: "top center",
-      quote:
-        "Finding peers who share my background made me feel seen. The support circles give me the courage to keep moving forward.",
-    },
-    {
-      name: "Sarah",
-      role: "Volunteer",
-      image: "/img2.jpg",
-      quote:
-        "Right2Thrive pairs real talk with real tools. I always leave group chats feeling lighter and understood.",
-    },
-    {
-      name: "Chris",
-      role: "Creative artist",
-      image: "/img3.jpg",
-      quote:
-        "Being around people who get it has been the most healing part of this journey. We lift each other up every week.",
-    },
-  ];
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <p className="mt-4 text-gray-600">Loading...</p>
+      </div>
+    );
+  }
 
-  /** ---------- Updated Services with Youth-Friendly Copy & Icons ---------- **/
-  const services = [
-    {
-      title: "6‑Week Wellbeing Journey",
-      description:
-        "A step-by-step programme with therapy, group chats, and creative activities that help you heal, grow, and stay strong long after the 6 weeks are done.",
-      short: "A 6‑week programme with therapy, groups & creative healing.",
-      icon: <FaCalendarAlt size={28} />,
-      link: "/contact?subject=6‑Week Wellbeing Programme",
-    },
-    {
-      title: "1:1 Therapy Sessions",
-      description:
-        "Your space, your pace. Private sessions with someone who listens and gets it — no judgement, just support that’s tailored to you.",
-      short: "Private sessions at your pace with no judgement.",
-      icon: <FaComments size={28} />,
-      link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
-    },
-    {
-      title: "Anxiety & Trauma Workshops",
-      description:
-        "Stress? Overthinking? Sleepless nights? We get it. Learn simple tools like breathing hacks and mindset shifts to calm your mind and take back control. 💚",
-      short: "Learn breathing hacks & mindset shifts to reduce stress.",
-      icon: <FaBrain size={28} />,
-      link: "/anxiety-and-trauma-workshops",
-    },
-    {
-      title: "Career & Future Support",
-      description:
-        "Need help with CVs, interviews, or finding your path? We’ll coach you, connect you with mentors, and give you the skills to shine in your next step. 🚀",
-      short: "CV help, interview prep & mentorship for your next step.",
-      icon: <FaBriefcase size={28} />,
-      link: "/contact?subject=Career Development Support",
-    },
-    {
-      title: "Peer Support Groups",
-      description:
-        "Real talk with people who understand. Safe spaces to share stories, swap coping tips, and remind each other you’re not alone.",
-      short: "Safe peer spaces to share & support each other.",
-      icon: <FaUsers size={28} />,
-      link: "/contact?subject=Group Support Sessions",
-    },
-    {
-      title: "Mind & Body Wellness",
-      description:
-        "From Tai Chi to mindfulness, these sessions help you de-stress, recharge, and keep your head and body in sync. 🧘🏾‍♀",
-      short: "Tai Chi & mindfulness to de-stress & recharge.",
-      icon: <FaSpa size={28} />,
-      link: "/contact?subject=Mind & Body Wellness",
-    },
-    {
-      title: "Weekly Check-Ins",
-      description:
-        "Quick catch-ups to see how you’re doing, give you a boost, and keep your wellbeing on track week by week.",
-      short: "Quick weekly check-ins to stay on track.",
-      icon: <FaClock size={28} />,
-      link: isAuthenticated ? "/wellbeing-hub?tab=assessments" : "/auth/login",
-    },
-    {
-      title: "Extended Support",
-      description:
-        "Finished your 6 weeks? We've still got you. Six months of mentoring and check-ins so the progress sticks. ✨",
-      short: "6 months of mentoring after the 6‑week journey.",
-      icon: <FaHandsHelping size={28} />,
-      link: "/contact?subject=Extended Support",
-    },
-    {
-      title: "Online Wellbeing Portal",
-      description:
-        "Your digital safe space. Access resources, track your growth, and join virtual sessions while you wait for specialist care.",
-      short: "Access resources, track growth & join virtual sessions.",
-      icon: <FaLaptop size={28} />,
-      isFeatured: true,
-      link: isAuthenticated ? "/my-wellbeing" : "/auth/login",
-    },
-  ];
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen px-4">
+        <div className="text-red-600 mb-4">?? {error}</div>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col">
       <AnalyticsPageTracker path="/" title="Right2Thrive UK - Cultural Wellbeing Support" category="homepage" />
       {/* ===== Hero Section ===== */}
-      <section
-        className="relative bg-cover bg-center bg-no-repeat text-white"
-        style={{
-          backgroundImage: "url('/banner.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat"
-        }}
-        role="banner"
-        aria-label="Hero section introducing Right2Thrive UK services"
-      >
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+      {hero && (
+        <section
+          className="relative bg-cover bg-center bg-no-repeat text-white"
+          style={{
+            backgroundImage: hero.background_image ? `url('${hero.background_image}')` : "url('/banner.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat"
+          }}
+          role="banner"
+          aria-label="Hero section introducing Right2Thrive UK services"
+        >
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
 
-        <div className="relative container mx-auto px-4 py-16 sm:py-20 md:py-28 text-center md:text-left flex flex-col items-center md:items-start max-w-4xl">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-2xl mb-4 sm:mb-6 text-white">
-            Your Mental Health Matters. You Deserve to Thrive.
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-100 leading-relaxed mb-6 sm:mb-8 drop-shadow-lg max-w-2xl">
-            Culturally responsive therapy, mentorship, and support for young people and families in the UK. Start your journey to wellbeing today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center md:items-start w-full sm:w-auto">
-            <Link href={isAuthenticated ? "/my-wellbeing" : "/auth/signup"} className="w-full sm:w-auto">
-              <Button className="bg-yellow-400 text-green-900 hover:bg-yellow-300 font-semibold px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:ring-4 focus:ring-yellow-300 focus:ring-opacity-50 text-lg sm:text-xl w-full sm:w-auto min-h-[56px]">
-                Get Started
-              </Button>
-            </Link>
-            <Link href="/contact" className="w-full sm:w-auto">
-              <Button variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-green-900 font-semibold px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:ring-4 focus:ring-white focus:ring-opacity-60 text-lg sm:text-xl w-full sm:w-auto min-h-[56px] bg-transparent backdrop-blur-sm">
-                Speak to Someone
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gradient-to-b from-white via-green-50 to-white py-16 sm:py-20">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="mb-10 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Join a community that understands you
-            </h2>
-            <p className="mt-3 text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
-              Connect with young people who share your lived experiences.
+          <div className="relative container mx-auto px-4 py-16 sm:py-20 md:py-28 text-center md:text-left flex flex-col items-center md:items-start max-w-4xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-2xl mb-4 sm:mb-6 text-white">
+              {hero.title}
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl text-gray-100 leading-relaxed mb-6 sm:mb-8 drop-shadow-lg max-w-2xl">
+              {hero.description}
             </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {communityStories.map((story, index) => (
-              <div
-                key={index}
-                className="flex flex-col overflow-hidden rounded-2xl border border-green-100 bg-white shadow-sm transition hover:shadow-md"
-              >
-                <div className="relative h-64 w-full">
-                  <Image
-                    src={story.image}
-                    alt={`Portrait of ${story.name}, Right2Thrive community member`}
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: story.objectPosition ?? "center" }}
-                    sizes="(min-width: 1024px) 320px, (min-width: 768px) 50vw, 100vw"
-                    priority={index === 0}
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-3 p-6">
-                  <p className="text-base text-gray-700 leading-relaxed">
-                    “{story.quote}”
-                  </p>
-                  <div className="mt-auto">
-                    <p className="text-sm font-semibold text-gray-900">{story.name}</p>
-                    <p className="text-xs uppercase tracking-wide text-green-600">
-                      {story.role}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Testimonial Section ===== */}
-      <section className="bg-white py-16 sm:py-20">
-        <div className="container mx-auto px-4 max-w-5xl text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-            What Our Community Says
-          </h2>
-          <div className="grid gap-8 sm:gap-10 md:grid-cols-3">
-            {testimonials.map((testimonial, index) => (
-              <blockquote
-                key={index}
-                className="bg-gray-50 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 text-left flex flex-col gap-4"
-              >
-                <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
-                  “{testimonial.quote}”
-                </p>
-                <footer className="text-sm font-semibold text-gray-900">
-                  {testimonial.name}
-                  {testimonial.age ? `, ${testimonial.age}` : ""}
-                </footer>
-              </blockquote>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 3-Step Flow ===== */}
-      <div className="relative container mx-auto mt-12 md:mt-20 pb-16 px-6 z-20">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative">
-          <motion.div
-            className="hidden md:block absolute top-12 left-0 right-0 h-[4px] 
-                      bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 rounded-full"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            style={{ transformOrigin: "left center" }}
-          />
-
-          <FlowStep
-            icon={<FaHandshake size={36} />}
-            title="Sign Up"
-            desc="Create your free account and complete your wellbeing assessment."
-            delay={0}
-            href={isAuthenticated ? "/my-wellbeing" : "/auth/signup"}
-          />
-          <FlowStep
-            icon={<FaUsers size={36} />}
-            title="Get Matched"
-            desc="We'll connect you with the right support based on your needs."
-            delay={0.3}
-            href={isAuthenticated ? "/my-wellbeing" : "/auth/signup"}
-          />
-          <FlowStep
-            icon={<FaRocket size={36} />}
-            title="Start Healing"
-            desc="Begin your 6‑week journey with therapy, groups, and wellbeing activities."
-            delay={0.6}
-            href={isAuthenticated ? "/my-wellbeing" : "/auth/signup"}
-          />
-        </div>
-      </div>
-
-      {isAuthenticated ? (
-        <MagazineSection />
-      ) : (
-        <section className="py-20 bg-gradient-to-br from-green-50 to-teal-50 text-center">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-3xl font-bold mb-6 text-gray-800">
-              Ready to Start Your Healing Journey?
-            </h2>
-            <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg">
-              Join thousands of young people who have transformed their lives through our 
-              6‑week wellbeing programme. Get started today - it's completely free.
-            </p>
-
-            {/* Benefits Preview */}
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <div className="text-green-600 text-2xl mb-2">✓</div>
-                <h3 className="font-semibold mb-2">Free Assessment</h3>
-                <p className="text-sm text-gray-600">Complete your wellbeing check in 5 minutes</p>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <div className="text-green-600 text-2xl mb-2">✓</div>
-                <h3 className="font-semibold mb-2">Personalized Support</h3>
-                <p className="text-sm text-gray-600">Get matched with the right therapist and group</p>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <div className="text-green-600 text-2xl mb-2">✓</div>
-                <h3 className="font-semibold mb-2">Cultural Understanding</h3>
-                <p className="text-sm text-gray-600">Support that respects your background and values</p>
-              </div>
-            </div>
-
-            {/* Primary CTA */}
-            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 w-full">
-              <Link href="/auth/signup" className="w-full sm:w-auto">
-                <Button className="bg-yellow-400 hover:bg-yellow-300 text-green-900 px-6 sm:px-8 py-4 sm:py-5 rounded-xl text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto min-h-[56px] sm:min-h-[48px]">
-                  Start My Free Journey Now
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center md:items-start w-full sm:w-auto">
+              <Link href={hero.primary_button_link || (isAuthenticated ? "/my-wellbeing" : "/auth/signup")} className="w-full sm:w-auto">
+                <Button className="bg-yellow-400 text-green-900 hover:bg-yellow-300 font-semibold px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:ring-4 focus:ring-yellow-300 focus:ring-opacity-50 text-lg sm:text-xl w-full sm:w-auto min-h-[56px]">
+                  {hero.primary_button_text || "Get Started"}
+                </Button>
+              </Link>
+              <Link href={hero.secondary_button_link || "/contact"} className="w-full sm:w-auto">
+                <Button variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-green-900 font-semibold px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:ring-4 focus:ring-white focus:ring-opacity-60 text-lg sm:text-xl w-full sm:w-auto min-h-[56px] bg-transparent backdrop-blur-sm">
+                  {hero.secondary_button_text || "Speak to Someone"}
                 </Button>
               </Link>
             </div>
-            
-            <p className="text-sm text-gray-500 mt-4">
-              Already have an account? <Link href="/auth/login" className="text-green-600 hover:text-green-700 font-medium">Sign in here</Link>
-            </p>
           </div>
         </section>
       )}
 
-      {/* ===== Services Section ===== */}
-      <section id="services" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#ff961b] mb-8 sm:mb-12">
-            Explore Our Services
-          </h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, index) => (
-              <ServiceCard key={index} service={service} />
+      {communityStories.length > 0 && (
+        <section className="bg-gradient-to-b from-white via-green-50 to-white py-16 sm:py-20">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="mb-10 text-center">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                {sectionHeadings.community_stories?.heading || "Join a community that understands you"}
+              </h2>
+              {sectionHeadings.community_stories?.subheading && (
+                <p className="mt-3 text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+                  {sectionHeadings.community_stories.subheading}
+                </p>
+              )}
+            </div>
+
+            <div className="grid gap-8 md:grid-cols-3">
+              {communityStories.map((story, index) => (
+                <div
+                  key={story.id || index}
+                  className="flex flex-col overflow-hidden rounded-2xl border border-green-100 bg-white shadow-sm transition hover:shadow-md"
+                >
+                  <div className="relative h-64 w-full">
+                    <Image
+                      src={story.image}
+                      alt={`Portrait of ${story.name}, Right2Thrive community member`}
+                      fill
+                      className="object-cover"
+                      style={{ objectPosition: story.objectPosition ?? "center" }}
+                      sizes="(min-width: 1024px) 320px, (min-width: 768px) 50vw, 100vw"
+                      priority={index === 0}
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-3 p-6">
+                    <p className="text-base text-gray-700 leading-relaxed">
+                      "{story.quote}"
+                    </p>
+                    <div className="mt-auto">
+                      <p className="text-sm font-semibold text-gray-900">{story.name}</p>
+                      <p className="text-xs uppercase tracking-wide text-green-600">
+                        {story.role}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== Testimonial Section ===== */}
+      {testimonials.length > 0 && (
+        <section className="bg-white py-16 sm:py-20">
+          <div className="container mx-auto px-4 max-w-5xl text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+              {sectionHeadings.testimonials?.heading || "What Our Community Says"}
+            </h2>
+            <div className="grid gap-8 sm:gap-10 md:grid-cols-3">
+              {testimonials.map((testimonial, index) => (
+                <blockquote
+                  key={testimonial.id || index}
+                  className="bg-gray-50 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 text-left flex flex-col gap-4"
+                >
+                  <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
+                    "{testimonial.quote}"
+                  </p>
+                  <footer className="text-sm font-semibold text-gray-900">
+                    {testimonial.name}
+                    {testimonial.age ? `, ${testimonial.age}` : ""}
+                  </footer>
+                </blockquote>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== 3-Step Flow ===== */}
+      {flowSteps.length > 0 && (
+        <div className="relative container mx-auto mt-12 md:mt-20 pb-16 px-6 z-20">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative">
+            <motion.div
+              className="hidden md:block absolute top-12 left-0 right-0 h-[4px] 
+                        bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 rounded-full"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              style={{ transformOrigin: "left center" }}
+            />
+
+            {flowSteps.map((step, index) => (
+              <FlowStep
+                key={step.id || index}
+                icon={getIconComponent(step.icon_name, 36) || <FaHandshake size={36} />}
+                title={step.title}
+                desc={step.description}
+                delay={index * 0.3}
+                href={step.link || (isAuthenticated ? "/my-wellbeing" : "/auth/signup")}
+              />
             ))}
           </div>
         </div>
-      </section>
+      )}
+
+      {/* ===== Therapist Selection Section ===== */}
+      <TherapistSelection />
+
+      {isAuthenticated ? (
+        <MagazineSection />
+      ) : (
+        ctaSection && (
+          <section className="py-20 bg-gradient-to-br from-green-50 to-teal-50 text-center">
+            <div className="container mx-auto px-4 max-w-4xl">
+              <h2 className="text-3xl font-bold mb-6 text-gray-800">
+                {ctaSection.title}
+              </h2>
+              <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg">
+                {ctaSection.description}
+              </p>
+
+              {/* Benefits Preview */}
+              {ctaSection.benefits && ctaSection.benefits.length > 0 && (
+                <div className="grid md:grid-cols-3 gap-6 mb-8">
+                  {ctaSection.benefits.map((benefit, index) => {
+                    // Parse benefit string (format: "Title - Description")
+                    const parts = benefit.split(" - ");
+                    const title = parts[0] || benefit;
+                    const description = parts[1] || "";
+
+                    return (
+                      <div key={index} className="bg-white p-6 rounded-xl shadow-sm">
+                        <div className="text-green-600 text-2xl mb-2">?</div>
+                        <h3 className="font-semibold mb-2">{title}</h3>
+                        {description && (
+                          <p className="text-sm text-gray-600">{description}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Primary CTA */}
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 w-full">
+                <Link href={ctaSection.button_link || "/auth/signup"} className="w-full sm:w-auto">
+                  <Button className="bg-yellow-400 hover:bg-yellow-300 text-green-900 px-6 sm:px-8 py-4 sm:py-5 rounded-xl text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto min-h-[56px] sm:min-h-[48px]">
+                    {ctaSection.button_text || "Start My Free Journey Now"}
+                  </Button>
+                </Link>
+              </div>
+
+              {ctaSection.login_link_text && ctaSection.login_link_url && (
+                <p className="text-sm text-gray-500 mt-4">
+                  {ctaSection.login_link_text.split("?")[0]}
+                  <Link href={ctaSection.login_link_url} className="text-green-600 hover:text-green-700 font-medium">
+                    {ctaSection.login_link_text.includes("Sign in") ? " Sign in here" : ""}
+                  </Link>
+                </p>
+              )}
+            </div>
+          </section>
+        )
+      )}
+
+      {/* ===== Services Section ===== */}
+      {services.length > 0 && (
+        <section id="services" className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#ff961b] mb-8 sm:mb-12">
+              {sectionHeadings.services?.heading || "Explore Our Services"}
+            </h2>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {services.map((service, index) => {
+                // Map service data to include icon component
+                const serviceWithIcon = {
+                  ...service,
+                  icon: getIconComponent(service.icon_name, 28),
+                  isFeatured: service.isFeatured,
+                };
+                return <ServiceCard key={service.id || index} service={serviceWithIcon} />;
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ===== Contact Form ===== */}
       <section className="py-20 bg-white" id="contact">
         <div className="container mx-auto max-w-3xl px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-[#00990d] mb-4 sm:mb-6 text-center">
-            Let's Talk
+            {sectionHeadings.contact?.heading || "Let's Talk"}
           </h2>
           <p className="text-center text-gray-600 mb-10">
-            We're here to listen. Whether you need guidance, resources, or a
-            safe space to talk, reach out to us today.
+            {sectionHeadings.contact?.subheading || "We're here to listen. Whether you need guidance, resources, or a safe space to talk, reach out to us today."}
           </p>
           <EnhancedForm
             fields={[
@@ -440,62 +369,69 @@ export default function Home() {
       </section>
 
       {/* ===== Support Services Section ===== */}
-      <section className="py-20 bg-gradient-to-br from-green-50 to-teal-50">
-        <div className="container mx-auto max-w-4xl px-4">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#00990d] mb-6">
-            Support Services
-          </h2>
-          <p className="text-center text-gray-700 mb-8 text-lg">
-            If you need urgent mental health support, access these resources:
-          </p>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-              Urgent Support
-            </h3>
-            <p className="mb-4 text-gray-700">
-              The NHS Every Mind Matters service provides immediate help and resources for urgent mental health needs:
+      {supportServices && (
+        <section className="py-20 bg-gradient-to-br from-green-50 to-teal-50">
+          <div className="container mx-auto max-w-4xl px-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#00990d] mb-6">
+              {sectionHeadings.support_services?.heading || supportServices.title || "Support Services"}
+            </h2>
+            <p className="text-center text-gray-700 mb-8 text-lg">
+              {sectionHeadings.support_services?.subheading || supportServices.description || "If you need urgent mental health support, access these resources:"}
             </p>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <p className="mb-3 text-gray-800 font-medium">
-                <strong>NHS Every Mind Matters - Urgent Support:</strong>
-              </p>
-              <a
-                href="https://www.nhs.uk/every-mind-matters/urgent-support/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline font-medium text-lg break-all"
-              >
-                https://www.nhs.uk/every-mind-matters/urgent-support/
-              </a>
-              <p className="mt-4 text-sm text-gray-600">
-                This service provides immediate support, self-help resources, and guidance for urgent mental health needs.
-              </p>
-            </div>
 
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <h4 className="text-xl font-semibold text-gray-900 mb-4">
-                Crisis Support Lines
-              </h4>
-              <ul className="space-y-2 text-gray-700 ml-6 list-disc">
-                <li>Samaritans: Call <strong>116 123</strong> (free, 24/7)</li>
-                <li>Crisis Text Line: Text <strong>SHOUT</strong> to <strong>85258</strong></li>
-                <li>NHS Mental Health Helpline: Call <strong>111</strong>, option 2</li>
-                <li>Emergency Services: Call <strong>999</strong> if you or someone else is in immediate danger</li>
-              </ul>
-            </div>
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+                Urgent Support
+              </h3>
+              <p className="mb-4 text-gray-700">
+                {supportServices.description}
+              </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <p className="mb-3 text-gray-800 font-medium">
+                  <strong>{supportServices.service_name}:</strong>
+                </p>
+                <a
+                  href={supportServices.service_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline font-medium text-lg break-all"
+                >
+                  {supportServices.service_url}
+                </a>
+                {supportServices.service_description && (
+                  <p className="mt-4 text-sm text-gray-600">
+                    {supportServices.service_description}
+                  </p>
+                )}
+              </div>
 
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <Link
-                href="/wellbeing-hub/support"
-                className="inline-block bg-[#00990d] text-white px-6 py-3 rounded-lg hover:bg-[#007a0a] transition-colors font-medium"
-              >
-                View All Support Services
-              </Link>
+              {supportServices.crisis_lines && supportServices.crisis_lines.length > 0 && (
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <h4 className="text-xl font-semibold text-gray-900 mb-4">
+                    Crisis Support Lines
+                  </h4>
+                  <ul className="space-y-2 text-gray-700 ml-6 list-disc">
+                    {supportServices.crisis_lines.map((line, index) => (
+                      <li key={index} dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {supportServices.view_all_link_text && supportServices.view_all_link_url && (
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <Link
+                    href={supportServices.view_all_link_url}
+                    className="inline-block bg-[#00990d] text-white px-6 py-3 rounded-lg hover:bg-[#007a0a] transition-colors font-medium"
+                  >
+                    {supportServices.view_all_link_text}
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
@@ -517,7 +453,7 @@ function FormField({
   ) => void;
 }) {
   const fieldId = `field-${name}`;
-  
+
   return (
     <div>
       <label htmlFor={fieldId} className="block text-sm font-medium text-gray-700 mb-1">
@@ -589,7 +525,7 @@ function FlowStep({
       </motion.div>
 
       {/* Title */}
-      <h3 
+      <h3
         id={`flow-step-${title.replace(/\s+/g, '-').toLowerCase()}`}
         className="mt-4 text-xl font-semibold uppercase tracking-wide text-gray-800"
       >
@@ -614,30 +550,27 @@ function ServiceCard({ service }: { service: any }) {
   return (
     <Link href={service.link}>
       <div
-        className={`rounded-2xl p-6 shadow-md hover:shadow-xl transition cursor-pointer focus-within:ring-4 focus-within:ring-[#00990d] focus-within:ring-opacity-50 ${
-          service.isFeatured
-            ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white border-2 border-yellow-300"
-            : "bg-gray-50"
-        }`}
+        className={`rounded-2xl p-6 shadow-md hover:shadow-xl transition cursor-pointer focus-within:ring-4 focus-within:ring-[#00990d] focus-within:ring-opacity-50 ${service.isFeatured
+          ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white border-2 border-yellow-300"
+          : "bg-gray-50"
+          }`}
         role="article"
         aria-labelledby={`service-title-${service.title.replace(/\s+/g, '-').toLowerCase()}`}
       >
         <div className="flex items-center gap-3 mb-4">
-          <div aria-hidden="true">{service.icon}</div>
+          <div aria-hidden="true">{service.icon || <FaCalendarAlt size={28} />}</div>
           <h3
             id={`service-title-${service.title.replace(/\s+/g, '-').toLowerCase()}`}
-            className={`text-xl font-semibold ${
-              service.isFeatured ? "text-yellow-300" : "text-blue-700"
-            }`}
+            className={`text-xl font-semibold ${service.isFeatured ? "text-yellow-300" : "text-blue-700"
+              }`}
           >
             {service.title}
           </h3>
         </div>
 
         <p
-          className={`leading-relaxed mb-4 ${
-            service.isFeatured ? "text-white" : "text-gray-700"
-          }`}
+          className={`leading-relaxed mb-4 ${service.isFeatured ? "text-white" : "text-gray-700"
+            }`}
         >
           {expanded ? service.description : service.short}
         </p>

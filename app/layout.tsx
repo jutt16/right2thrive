@@ -9,6 +9,7 @@ import Script from "next/script";
 import Analytics from "@/components/analytics"; // ✅ This is critical!
 import PerformanceMonitor from "@/components/performance-monitor";
 import CookieConsent from "@/components/gdpr-cookie-consent";
+import FloatingChatWrapper from "@/components/FloatingChatWrapper";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -210,6 +211,7 @@ export default function RootLayout({
               <PerformanceMonitor />
             </Suspense>
             <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
+            <FloatingChatWrapper />
             <Footer />
             <Suspense fallback={null}>
               <CookieConsent />

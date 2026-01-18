@@ -1,7 +1,8 @@
+// Force file update for VPS cache
 import { notFound } from "next/navigation";
 import { generateMetadata as generateSEOMetadata } from "@/lib/seo-utils";
 import Link from "next/link";
-import { Calendar, MapPin, PoundSterling, ExternalLink, ArrowLeft, Clock, Users } from "lucide-react";
+import { Calendar, MapPin, PoundSterling, ExternalLink, ArrowLeft, Clock, Users, User } from "lucide-react";
 
 function formatDate(dateString: string): string {
   try {
@@ -16,15 +17,33 @@ function formatDate(dateString: string): string {
   }
 }
 
+function formatTime(timeString?: string | null): string | null {
+  if (!timeString) return null;
+
+  try {
+    const [hours, minutes] = timeString.split(":");
+    const date = new Date();
+    date.setHours(Number(hours), Number(minutes), 0, 0);
+
+    return date.toLocaleTimeString("en-GB", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return timeString;
+  }
+}
+
 function formatLocation(event: Event): string {
   if (!event.location) return '';
-  
+
   const parts: string[] = [];
   if (event.location.location_name) parts.push(event.location.location_name);
   if (event.location.address) parts.push(event.location.address);
   if (event.location.city) parts.push(event.location.city);
   if (event.location.postcode) parts.push(event.location.postcode);
-  
+
   return parts.join(', ');
 }
 
@@ -36,11 +55,24 @@ type Event = {
   id: number;
   title: string;
   event_date: string;
+  event_type: 'physical' | 'online';
+  session_link: string | null;
+  start_time?: string | null;
+  end_time?: string | null;
   registration_link: string | null;
   registration_start?: string;
   registration_end?: string;
   cost?: number | string | null;
   description?: string;
+  organizer?: {
+    id: number;
+    name: string;
+    title: string;
+    slug: string;
+    profile_image: string;
+    short_intro: string;
+    bio: string;
+  } | null;
   location?: {
     location_name: string | null;
     address: string | null;
@@ -168,14 +200,17 @@ export default async function EventDetailPage({
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
             </div>
           )}
-          
+
           <div className="p-6 md:p-10">
             <div className="mb-4">
-              <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                Wellbeing Activity
+              <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${event.event_type === 'online'
+                ? 'bg-blue-100 text-blue-700'
+                : 'bg-emerald-100 text-emerald-700'
+                }`}>
+                {event.event_type === 'online' ? 'Online Event' : 'Wellbeing Activity'}
               </span>
             </div>
-            
+
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6">
               {event.title}
             </h1>
@@ -191,10 +226,17 @@ export default async function EventDetailPage({
                   <p className="text-sm font-medium text-slate-700">
                     {formatDate(event.event_date)}
                   </p>
+                  {(event.start_time || event.end_time) && (
+                    <p className="text-xs text-slate-600 mt-1">
+                      {event.start_time && event.end_time
+                        ? `${formatTime(event.start_time)} - ${formatTime(event.end_time)}`
+                        : formatTime(event.start_time) || formatTime(event.end_time) || ''}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {event.location && formatLocation(event) && (
+              {event.event_type === 'physical' && event.location && formatLocation(event) && (
                 <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-100">
                   <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -220,6 +262,20 @@ export default async function EventDetailPage({
                 </div>
               )}
 
+              {event.event_type === 'online' && (
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-100">
+                  <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-blue-900 uppercase tracking-wide mb-1">
+                      Location
+                    </p>
+                    <p className="text-sm font-medium text-slate-700">
+                      Online Event
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {typeof event.cost !== "undefined" && event.cost !== null && (
                 <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 border border-amber-100">
                   <PoundSterling className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
@@ -228,7 +284,7 @@ export default async function EventDetailPage({
                       Contribution
                     </p>
                     <p className="text-sm font-medium text-slate-700">
-                      £{Number(event.cost).toFixed(2)}
+                      {Number(event.cost) === 0 ? 'Free' : `£${Number(event.cost).toFixed(2)}`}
                     </p>
                   </div>
                 </div>
@@ -251,26 +307,89 @@ export default async function EventDetailPage({
 
             {/* Description */}
             {event.description && (
-              <div className="mt-6 p-6 rounded-xl bg-slate-50 border border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-900 mb-3">About this Event</h2>
-                <p className="text-slate-700 leading-relaxed whitespace-pre-line">
-                  {event.description}
-                </p>
+              <div className="mt-6 p-6 md:p-8 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-1 w-12 bg-gradient-to-r from-[#00990d] to-[#00b83a] rounded-full" />
+                  <h2 className="text-xl font-bold text-slate-900">About this Event</h2>
+                </div>
+                <div className="prose prose-slate max-w-none">
+                  <p className="text-slate-700 leading-relaxed whitespace-pre-line text-base">
+                    {event.description}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Organizer Section */}
+            {event.organizer && (
+              <div className="mt-6 p-6 md:p-8 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-1 w-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full" />
+                  <h2 className="text-xl font-bold text-slate-900">Event Organizer</h2>
+                </div>
+                <div className="flex flex-col md:flex-row gap-6">
+                  {event.organizer.profile_image && (
+                    <div className="flex-shrink-0">
+                      <img
+                        src={event.organizer.profile_image}
+                        alt={event.organizer.name}
+                        className="w-32 h-32 md:w-40 md:h-40 rounded-xl object-cover shadow-lg border-4 border-white"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <div className="flex items-start gap-3 mb-2">
+                      <User className="h-5 w-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900">{event.organizer.name}</h3>
+                        {event.organizer.title && (
+                          <p className="text-sm font-medium text-indigo-700 mt-0.5">{event.organizer.title}</p>
+                        )}
+                      </div>
+                    </div>
+                    {event.organizer.short_intro && (
+                      <p className="text-sm text-slate-700 mb-3 leading-relaxed">
+                        {event.organizer.short_intro}
+                      </p>
+                    )}
+                    {event.organizer.bio && (
+                      <div className="mt-4 p-4 rounded-lg bg-white/60 border border-indigo-100">
+                        <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+                          {event.organizer.bio}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
             {/* Registration Button */}
-            {event.registration_link && (
-              <div className="mt-6">
-                <a
-                  href={event.registration_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#00990d] to-[#00b83a] px-8 py-4 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
-                >
-                  Register / Visit Event Page
-                  <ExternalLink className="h-5 w-5" />
-                </a>
+            {/* Join / Registration Buttons */}
+            {(event.registration_link || (event.event_type === 'online' && event.session_link)) && (
+              <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap gap-4">
+                {event.event_type === 'online' && event.session_link && (
+                  <a
+                    href={event.session_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+                  >
+                    Join Session
+                    <ExternalLink className="h-5 w-5" />
+                  </a>
+                )}
+                {event.registration_link && (
+                  <a
+                    href={event.registration_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#00990d] to-[#00b83a] px-8 py-4 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+                  >
+                    Register / Visit Event Page
+                    <ExternalLink className="h-5 w-5" />
+                  </a>
+                )}
               </div>
             )}
           </div>
@@ -290,7 +409,7 @@ export default async function EventDetailPage({
                 {otherImages.map((src, index) => (
                   <div
                     key={index}
-                    className="relative aspect-video rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group"
+                    className="relative aspect-video rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group cursor-pointer"
                   >
                     <img
                       src={src}
@@ -335,5 +454,3 @@ export default async function EventDetailPage({
     </div>
   );
 }
-
-

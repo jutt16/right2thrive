@@ -23,10 +23,22 @@ export default function WellbeingHub() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // make sure we’re on the client before using localStorage
+    setIsClient(true); // make sure we're on the client before using localStorage
     const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
     if (!token) {
       router.replace("/auth/login"); // redirect if not logged in
+      return;
+    }
+    
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      // Check if email is verified
+      if (!parsedUser.is_email_verified) {
+        localStorage.setItem("pendingVerificationEmail", parsedUser.email);
+        router.replace(`/auth/verify-email?email=${encodeURIComponent(parsedUser.email)}`);
+        return;
+      }
     }
   }, [router]);
 

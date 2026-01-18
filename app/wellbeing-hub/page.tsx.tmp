@@ -1,0 +1,671 @@
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Activity,
+  FileText,
+  Calendar,
+  Clock,
+  ArrowRight,
+} from "lucide-react";
+import {
+  LineChart as RechartsLineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  BarChart as RechartsBarChart,
+  Bar,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { useRouter } from "next/navigation";
+
+interface AssessmentAnswer {
+  question_id: number;
+  question_text: string;
+  answer_value: number;
+  answer_text: string;
+}
+
+interface Assessment {
+  id: number;
+  user_id: number;
+  therapist_id: number;
+  total_score: number;
+  severity_level: string;
+  answers: AssessmentAnswer[];
+  created_at: string;
+  therapist: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  };
+}
+
+interface SessionNote {
+  id: number;
+  patient_id: number;
+  therapist_id: number;
+  notes: string;
+  date: string;
+  created_at: string;
+  therapist?: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  };
+}
+
+interface Medication {
+  id: number;
+  condition: string;
+  medications: string;
+  notes: string;
+  last_updated: string;
+  patient: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+  therapist: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+}
+
+type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
+
+interface Booking {
+  id: number;
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: BookingStatus;
+  meeting_link?: string | null;
+  therapist?: {
+    first_name?: string;
+    last_name?: string;
+  };
+}
+
+const QUICK_CHECK_IN_OPTIONS = [
+  { value: "great", emoji: "??", label: "Great" },
+  { value: "okay", emoji: "??", label: "Okay" },
+  { value: "down", emoji: "??", label: "Down" },
+  { value: "anxious", emoji: "??", label: "Anxious" },
+  { value: "frustrated", emoji: "??", label: "Frustrated" },
+] as const;
+
+export default function WellbeingHub() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
+      if (token && user) {
+        const parsedUser = JSON.parse(user);
+        // Check if email is verified
+        if (!parsedUser.is_email_verified) {
+          localStorage.setItem("pendingVerificationEmail", parsedUser.email);
+          router.push(`/auth/verify-email?email=${encodeURIComponent(parsedUser.email)}`);
+          return;
+        }
+        setIsAuthenticated(true);
+        setUserData(parsedUser);
+      } else {
+        router.push("/auth/login");
+      }
+    }
+  }, [router]);
+
+  if (!isAuthenticated) return null;
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <WellbeingHubContent userData={userData} />
+    </Suspense>
+  );
+}
+
+function WellbeingHubContent({ userData }: { userData: any }) {
+  const searchParams = useSearchParams();
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [upcomingBooking, setUpcomingBooking] = useState<Booking | null>(null);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(true);
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("tab") || "assessments"
+  );
+  const [selectedAssessment, setSelectedAssessment] =
+    useState<Assessment | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  const [gad7Assessments, setGad7Assessments] = useState<Assessment[]>([]);
+  const [phq9Assessments, setPhq9Assessments] = useState<Assessment[]>([]);
+  const [sessionNotes, setSessionNotes] = useState<SessionNote[]>([]);
+  const [pcl5Assessments, setPcl5Assessments] = useState<Assessment[]>([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+  const [quickCheckInSelection, setQuickCheckInSelection] = useState<string | null>(null);
+  const [showCheckInConfirmation, setShowCheckInConfirmation] = useState(false);
+
+  const parseBookingDateTime = (date?: string, time?: string) => {
+    if (!date || !time) return null;
+    const trimmedTime = time.trim();
+    if (!trimmedTime) return null;
+
+    let normalizedTime = trimmedTime;
+
+    if (/^\d{1,2}:\d{2}$/.test(trimmedTime)) {
+      const [hours, minutes] = trimmedTime.split(":");
+      normalizedTime = `${hours.padStart(2, "0")}:${minutes}:00`;
+    } else if (/^\d{1,2}:\d{2}:\d{2}$/.test(trimmedTime)) {
+      const [hours, minutes, seconds] = trimmedTime.split(":");
+      normalizedTime = `${hours.padStart(2, "0")}:${minutes}:${seconds}`;
+    }
+
+    const isoCandidate = `${date}T${normalizedTime}`;
+    let parsed = new Date(isoCandidate);
+
+    if (Number.isNaN(parsed.getTime())) {
+      parsed = new Date(`${date} ${trimmedTime}`);
+    }
+
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  };
+
+  const findUpcomingBookingWithinWeek = (items: Booking[]) => {
+    const now = new Date();
+    const weekAhead = new Date(now);
+    weekAhead.setDate(now.getDate() + 7);
+
+    const nextBooking = items
+      .map((booking) => {
+        const start = parseBookingDateTime(booking.date, booking.start_time);
+        return { booking, start };
+      })
+      .filter(({ start, booking }) => {
+        if (!start) return false;
+        if (booking.status === "cancelled" || booking.status === "completed") {
+          return false;
+        }
+        return start >= now && start <= weekAhead;
+      })
+      .sort((a, b) => a.start!.getTime() - b.start!.getTime())[0];
+
+    return nextBooking?.booking ?? null;
+  };
+
+  const formatSessionReminder = (booking: Booking) => {
+    const start = parseBookingDateTime(booking.date, booking.start_time);
+    const therapistName =
+      booking.therapist?.first_name?.trim() ||
+      booking.therapist?.last_name?.trim() ||
+      "your wellbeing coach";
+
+    if (!start) {
+      return `Your session with ${therapistName} is coming up soon. Complete these check-ins before your session for the best experience.`;
+    }
+
+    const today = new Date();
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const startOfSessionDay = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate()
+    );
+    const diffDays = Math.round(
+      (startOfSessionDay.getTime() - startOfToday.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    let dayDescriptor: string;
+    if (diffDays === 0) {
+      dayDescriptor = "today";
+    } else if (diffDays === 1) {
+      dayDescriptor = "tomorrow";
+    } else {
+      dayDescriptor = `on ${new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      }).format(start)}`;
+    }
+
+    const timeLabelRaw = new Intl.DateTimeFormat("en-GB", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(start);
+    const timeLabel = timeLabelRaw.replace("am", "AM").replace("pm", "PM");
+
+    return `Your session with ${therapistName} is ${dayDescriptor} at ${timeLabel}. Complete these check-ins before your session for the best experience.`;
+  };
+
+  const handleQuickCheckIn = (
+    value: (typeof QUICK_CHECK_IN_OPTIONS)[number]["value"]
+  ) => {
+    setQuickCheckInSelection(value);
+    setShowCheckInConfirmation(true);
+  };
+
+  useEffect(() => setIsClient(true), []);
+
+  useEffect(() => {
+    if (isClient) {
+      fetchAssessments();
+      fetchSessionNotes();
+      fetchMedications();
+    }
+  }, [isClient]);
+
+  useEffect(() => {
+    if (isClient) {
+      const newUrl = `${window.location.pathname}?tab=${activeTab}`;
+      window.history.pushState({}, "", newUrl);
+    }
+  }, [activeTab, isClient]);
+  useEffect(() => {
+    if (!isClient) return;
+
+    let isMounted = true;
+
+    const fetchBookings = async () => {
+      setIsLoadingBookings(true);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          if (isMounted) {
+            setUpcomingBooking(null);
+          }
+          return;
+        }
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/bookings`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (!isMounted) return;
+
+        let data: any = null;
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
+
+        if (
+          res.ok &&
+          data?.success &&
+          Array.isArray(data.data)
+        ) {
+          const upcoming = findUpcomingBookingWithinWeek(data.data);
+          setUpcomingBooking(upcoming);
+        } else {
+          setUpcomingBooking(null);
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("Error fetching bookings:", error);
+          setUpcomingBooking(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingBookings(false);
+        }
+      }
+    };
+
+    fetchBookings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isClient]);
+
+  const userFirstName =
+    (typeof userData?.first_name === "string" && userData.first_name.trim().length > 0
+      ? userData.first_name.trim()
+      : typeof userData?.name === "string" && userData.name.trim().length > 0
+      ? userData.name.trim().split(" ")[0]
+      : "there");
+
+  const sessionReminderMessage =
+    !isLoadingBookings && upcomingBooking
+      ? formatSessionReminder(upcomingBooking)
+      : null;
+
+  const gad7ChartData =
+    gad7Assessments.length > 0
+      ? gad7Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.total_score,
+          }))
+      : [];
+
+  const phq9ChartData =
+    phq9Assessments.length > 0
+      ? phq9Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.total_score,
+          }))
+      : [];
+
+  const latestGad7 =
+    gad7Assessments.length > 0
+      ? gad7Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
+      : null;
+
+  const latestPhq9 =
+    phq9Assessments.length > 0
+      ? phq9Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
+      : null;
+
+  // --- Update fetchAssessments to include PCL-5 ---
+  const fetchAssessments = async () => {
+    if (!isClient) return;
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const [gad7Res, phq9Res, pcl5Res] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pcl5/assessments`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      const [gad7Data, phq9Data, pcl5Data] = await Promise.all([
+        gad7Res.json(),
+        phq9Res.json(),
+        pcl5Res.json(),
+      ]);
+
+      // Normalise different possible response shapes:
+      // - { success: true, assessments: [...] }
+      // - { success: true, data: [...]} or { success: true, data: { assessments: [...] } }
+      const normaliseAssessments = (raw: any): any[] => {
+        if (!raw) return [];
+        const ok = raw.success === true || raw.status === true;
+        if (!ok) return [];
+
+        if (Array.isArray(raw.assessments)) return raw.assessments;
+        if (Array.isArray(raw.data?.assessments)) return raw.data.assessments;
+        if (Array.isArray(raw.data)) return raw.data;
+        return [];
+      };
+
+      const gad7List = normaliseAssessments(gad7Data);
+      const phq9List = normaliseAssessments(phq9Data);
+      const pcl5List = normaliseAssessments(pcl5Data);
+
+      setGad7Assessments(gad7List as Assessment[]);
+      setPhq9Assessments(phq9List as Assessment[]);
+      setPcl5Assessments(pcl5List as Assessment[]);
+
+      if (process.env.NODE_ENV !== "production") {
+        console.log("Assessments fetched", {
+          gad7Raw: gad7Data,
+          phq9Raw: phq9Data,
+          pcl5Raw: pcl5Data,
+          gad7Count: gad7List.length,
+          phq9Count: phq9List.length,
+          pcl5Count: pcl5List.length,
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching assessments:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const fetchAssessments = async () => {
+  //   if (!isClient) return;
+  //   setIsLoading(true);
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) return;
+
+  //     const [gad7Res, phq9Res] = await Promise.all([
+  //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }),
+  //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }),
+  //     ]);
+
+  //     const [gad7Data, phq9Data] = await Promise.all([
+  //       gad7Res.json(),
+  //       phq9Res.json(),
+  //     ]);
+
+  //     if (gad7Data.success) setGad7Assessments(gad7Data.assessments);
+  //     if (phq9Data.success) setPhq9Assessments(phq9Data.assessments);
+  //   } catch (err) {
+  //     console.error("Error fetching assessments:", err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const fetchSessionNotes = async () => {
+    if (!isClient) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/session-notes`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await res.json();
+      if (data.status) setSessionNotes(data.session_notes);
+    } catch (err) {
+      console.error("Error fetching session notes:", err);
+    }
+  };
+
+  const fetchMedications = async () => {
+    if (!isClient) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/medications`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await res.json();
+      if (data.status === "success") {
+        setMedications(data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching medications:", err);
+    }
+  };
+
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+  const handleTakeAssessment = (path: string) => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) router.push(path);
+    else router.push("/auth/login");
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <Tabs
+        defaultValue={activeTab}
+        className="space-y-4"
+        onValueChange={setActiveTab}
+      >
+        <TabsList className="flex w-full overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-5">
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="assessments">Assessments</TabsTrigger>
+          <TabsTrigger value="resources">Resources</TabsTrigger>
+          <TabsTrigger value="session-notes">Session Notes</TabsTrigger>
+          <TabsTrigger value="medications">Medications</TabsTrigger>
+          <TabsTrigger value="wellbeing-update">Wellbeing</TabsTrigger>
+        </TabsList>
+
+        {/* Session Notes Tab */}
+        <TabsContent value="session-notes" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Session Notes</CardTitle>
+              <CardDescription>Notes shared by your wellbeing coach</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {sessionNotes.length === 0 ? (
+                <p className="text-center text-gray-500">
+                  No session notes available
+                </p>
+              ) : (
+                <div className="rounded-md border">
+                  <div className="grid grid-cols-3 gap-4 bg-muted p-4 font-medium">
+                    <div>Date</div>
+                    <div>Therapist</div>
+                    <div>Notes</div>
+                  </div>
+                  <div className="divide-y">
+                    {sessionNotes.map((note) => (
+                      <div key={note.id} className="grid grid-cols-3 gap-4 p-4">
+                        {/* Date */}
+                        <div>{formatDate(note.date || note.created_at)}</div>
+
+                        {/* Therapist name */}
+                        <div>
+                          {note.therapist
+                            ? `${note.therapist.first_name} ${note.therapist.last_name}`
+                            : "Unknown Therapist"}
+                        </div>
+
+                        {/* Notes */}
+                        <div>{note.notes}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="medications" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Medications</CardTitle>
+              <CardDescription>Your recorded medical history</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {medications.length === 0 ? (
+                <p className="text-center text-gray-500">
+                  No medical history added yet
+                </p>
+              ) : (
+                <div className="rounded-md border">
+                  <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
+                    <div>Date</div>
+                    <div>Condition</div>
+                    <div>Medications</div>
+                    <div>Therapist</div>
+                  </div>
+                  <div className="divide-y">
+                    {medications.map((med) => (
+                      <div key={med.id} className="grid grid-cols-4 gap-4 p-4">
+                        <div>{formatDate(med.last_updated)}</div>
+                        <div>{med.condition}</div>
+                        <div>{med.medications || "

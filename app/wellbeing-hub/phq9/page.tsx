@@ -133,6 +133,15 @@ export default function PHQ9Assessment() {
       router.push("/auth/login");
       return;
     }
+    
+    const parsedUser = JSON.parse(user);
+    // Check if email is verified
+    if (!parsedUser.is_email_verified) {
+      localStorage.setItem("pendingVerificationEmail", parsedUser.email);
+      router.push(`/auth/verify-email?email=${encodeURIComponent(parsedUser.email)}`);
+      return;
+    }
+    
     setIsAuthenticated(true);
 
     // Try to read therapist from either `therapist` or `auth`
@@ -478,7 +487,7 @@ export default function PHQ9Assessment() {
                 </p>
 
                 <div className="space-y-2">
-                  <Label htmlFor="therapist">Your Therapist</Label>
+                  <Label htmlFor="therapist">Your Wellbeing Coach</Label>
 
                   {/* When locked: show disabled select with single therapist; otherwise list */}
                   {isTherapistLocked ? (
@@ -651,7 +660,7 @@ export default function PHQ9Assessment() {
                         data.data.questions.length === 0
                       ) {
                         throw new Error(
-                          "Therapist has not set up any questions for the PHQ-9 assessment. Please contact your therapist to set up the assessment questions."
+                          "Therapist has not set up any questions for the PHQ-9 assessment. Please contact your wellbeing coach to set up the assessment questions."
                         );
                       }
 

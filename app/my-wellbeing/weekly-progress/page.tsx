@@ -185,7 +185,7 @@ export default function WeeklyProgressForm() {
 
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          👋 Meet Your Therapist
+          👋 Meet Your Wellbeing Coach
         </h3>
         <p className="text-gray-700">
           Raveen Charles will be supporting you on your well-being journey. All
@@ -195,7 +195,7 @@ export default function WeeklyProgressForm() {
       </div>
 
       <div className="mb-4">
-        <label className="block font-medium mb-1">Your Therapist</label>
+        <label className="block font-medium mb-1">Your Wellbeing Coach</label>
         <div className="rounded border border-blue-200 bg-blue-50 p-4">
           {loadingTherapist ? (
             <p>Loading therapist details...</p>

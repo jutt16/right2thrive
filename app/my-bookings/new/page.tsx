@@ -226,9 +226,9 @@ export default function NewBookingPage() {
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Create New Booking</h1>
 
-      {/* Your Therapist (read-only) */}
+      {/* your wellbeing coach (read-only) */}
       <div className="mb-6">
-        <label className="block font-medium mb-1">Your Therapist</label>
+        <label className="block font-medium mb-1">Your Wellbeing Coach</label>
         <Card>
           <CardHeader>
             <CardTitle>
@@ -405,7 +405,7 @@ export default function NewBookingPage() {
       {/* No availability */}
       {therapistId && availability.length === 0 && !loadingTherapist && (
         <p className="mt-4 text-sm text-gray-600">
-          No availability found for your therapist.
+          No availability found for your wellbeing coach.
         </p>
       )}
     </div>

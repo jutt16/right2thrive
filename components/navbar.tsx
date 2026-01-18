@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Instagram, Twitter, User, Heart, LogOut, MessageSquareWarning, ClipboardList } from "lucide-react";
+import { Menu, X, Instagram, Twitter, User, Heart, LogOut, MessageSquareWarning, ClipboardList, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -79,6 +79,7 @@ export default function Navbar() {
             priority={true}
             quality={90}
             className="rounded-full"
+            style={{ width: "auto", height: "auto" }}
           />
           <span className="text-lg font-bold text-[#00990d]">
             Right2Thrive UK
@@ -93,7 +94,7 @@ export default function Navbar() {
             ["Blog", "/blog"],
             ["Press Release", "/press"],
             ["Privacy Policy", "/privacy-policy"],
-            ["Privacy Compliance", "/privacy-compliance"], 
+            ["Privacy Compliance", "/privacy-compliance"],
           ].map(([label, href]) => (
             <Link
               key={label}
@@ -112,6 +113,12 @@ export default function Navbar() {
           <Link href="https://twitter.com/@Right2ThriveUK" target="_blank" className="p-2 hover:bg-green-50 rounded-md transition-colors">
             <Twitter className="h-5 w-5 text-[#00990d] hover:text-orange-500" />
           </Link>
+          <a href="/app-release.apk" download className="hidden lg:flex">
+            <Button variant="outline" className="text-[#00990d] border-[#00990d] hover:bg-green-50 px-3 py-2 h-9 rounded-md transition-all duration-200 gap-2">
+              <Download className="h-4 w-4" />
+              <span className="text-sm font-medium">Get App</span>
+            </Button>
+          </a>
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -166,8 +173,8 @@ export default function Navbar() {
           )}
         </div>
 
-        <button 
-          className="md:hidden text-[#00990d] focus:ring-2 focus:ring-[#00990d] focus:ring-opacity-50 rounded-md p-3 min-h-[44px] min-w-[44px] flex items-center justify-center" 
+        <button
+          className="md:hidden text-[#00990d] focus:ring-2 focus:ring-[#00990d] focus:ring-opacity-50 rounded-md p-3 min-h-[44px] min-w-[44px] flex items-center justify-center"
           onClick={toggleMenu}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
@@ -184,7 +191,7 @@ export default function Navbar() {
       {isMenuOpen && (
         <>
           {/* Backdrop overlay */}
-          <div 
+          <div
             className="fixed inset-0 bg-black/50 z-40 md:hidden"
             onClick={toggleMenu}
             aria-hidden="true"
@@ -207,8 +214,8 @@ export default function Navbar() {
                   Right2Thrive UK
                 </span>
               </Link>
-              <button 
-                className="text-[#00990d] focus:ring-2 focus:ring-[#00990d] focus:ring-opacity-50 rounded-md p-2 min-h-[44px] min-w-[44px] flex items-center justify-center" 
+              <button
+                className="text-[#00990d] focus:ring-2 focus:ring-[#00990d] focus:ring-opacity-50 rounded-md p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 onClick={toggleMenu}
                 aria-label="Close navigation menu"
               >
@@ -217,126 +224,136 @@ export default function Navbar() {
             </div>
             {/* Mobile menu content */}
             <nav className="flex flex-col space-y-2 text-[#00990d] px-4 py-4" style={{ paddingBottom: 'max(4rem, calc(4rem + env(safe-area-inset-bottom)))' }} role="navigation" aria-label="Mobile navigation menu">
-            {[
-              ["Home", "/"],
-              ["About Us", "/about"],
-              ["Wellbeing Activities", "/cultural-activities"],
-              ["Blog", "/blog"],
-              ["Press Release", "/press"],
-              ["Privacy Policy", "/privacy-policy"],
-              ["Privacy Compliance", "/privacy-compliance"],
-            ].map(([label, href]) => (
-              <Link
-                key={label}
-                href={href}
+              {[
+                ["Home", "/"],
+                ["About Us", "/about"],
+                ["Wellbeing Activities", "/cultural-activities"],
+                ["Blog", "/blog"],
+                ["Press Release", "/press"],
+                ["Privacy Policy", "/privacy-policy"],
+                ["Privacy Compliance", "/privacy-compliance"],
+              ].map(([label, href]) => (
+                <Link
+                  key={label}
+                  href={href}
+                  onClick={toggleMenu}
+                  className="text-base font-medium hover:text-orange-500 py-3 px-2 min-h-[44px] flex items-center"
+                >
+                  {label}
+                </Link>
+              ))}
+
+              <a
+                href="/app-release.apk"
+                download
                 onClick={toggleMenu}
-                className="text-base font-medium hover:text-orange-500 py-3 px-2 min-h-[44px] flex items-center"
+                className="text-base font-medium text-[#00990d] hover:text-orange-500 py-3 px-2 min-h-[44px] flex items-center gap-2"
               >
-                {label}
-              </Link>
-            ))}
+                <Download className="h-5 w-5" />
+                Download App
+              </a>
 
-            <div className="flex gap-4 mt-4">
-              <Link
-                href="https://www.instagram.com/right2thriveuk/"
-                target="_blank"
-                className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center"
-              >
-                <Instagram className="h-6 w-6 text-[#00990d] hover:text-orange-500" />
-              </Link>
-              <Link 
-                href="https://twitter.com/@Right2ThriveUK" 
-                target="_blank"
-                className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center"
-              >
-                <Twitter className="h-6 w-6 text-[#00990d] hover:text-orange-500" />
-              </Link>
-            </div>
+              <div className="flex gap-4 mt-4">
+                <Link
+                  href="https://www.instagram.com/right2thriveuk/"
+                  target="_blank"
+                  className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                >
+                  <Instagram className="h-6 w-6 text-[#00990d] hover:text-orange-500" />
+                </Link>
+                <Link
+                  href="https://twitter.com/@Right2ThriveUK"
+                  target="_blank"
+                  className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                >
+                  <Twitter className="h-6 w-6 text-[#00990d] hover:text-orange-500" />
+                </Link>
+              </div>
 
-            <div className="mt-4 border-t pt-4">
-              {isAuthenticated ? (
-                <div className="flex flex-col space-y-2">
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
-                    onClick={() => {
-                      handleProfileClick();
-                      toggleMenu();
-                    }}
-                  >
-                    <User className="mr-2 h-5 w-5" /> Profile
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
-                    onClick={() => {
-                      router.push("/my-wellbeing");
-                      toggleMenu();
-                    }}
-                  >
-                    <Heart className="mr-2 h-5 w-5" /> My Wellbeing
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
-                    onClick={() => {
-                      router.push("/wellbeing-hub");
-                      toggleMenu();
-                    }}
-                  >
-                    <ClipboardList className="mr-2 h-5 w-5" /> My Wellbeing Assessments
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
-                    onClick={() => {
-                      router.push("/complaints");
-                      toggleMenu();
-                    }}
-                  >
-                    <MessageSquareWarning className="mr-2 h-5 w-5" /> Complaints
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
-                    onClick={() => {
-                      router.push("/my-bookings");
-                      toggleMenu();
-                    }}
-                  >
-                    <User className="mr-2 h-5 w-5" /> My Bookings
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start text-red-600 hover:bg-red-100 min-h-[44px] text-base"
-                    onClick={() => {
-                      handleLogout();
-                      toggleMenu();
-                    }}
-                  >
-                    <LogOut className="mr-2 h-5 w-5" /> Logout
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex flex-col space-y-2">
-                  <Link href="/auth/login" onClick={toggleMenu}>
+              <div className="mt-4 border-t pt-4">
+                {isAuthenticated ? (
+                  <div className="flex flex-col space-y-2">
                     <Button
                       variant="ghost"
-                      className="justify-start text-orange-600 hover:bg-orange-100 min-h-[44px] text-base w-full"
+                      className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
+                      onClick={() => {
+                        handleProfileClick();
+                        toggleMenu();
+                      }}
                     >
-                      Login
+                      <User className="mr-2 h-5 w-5" /> Profile
                     </Button>
-                  </Link>
-                  <Link href="/auth/signup" onClick={toggleMenu}>
-                    <Button className="justify-start bg-[#00990d] text-white hover:bg-green-700 w-full min-h-[44px] text-base">
-                      Sign Up
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
+                      onClick={() => {
+                        router.push("/my-wellbeing");
+                        toggleMenu();
+                      }}
+                    >
+                      <Heart className="mr-2 h-5 w-5" /> My Wellbeing
                     </Button>
-                  </Link>
-                </div>
-              )}
-            </div>
-          </nav>
-        </div>
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
+                      onClick={() => {
+                        router.push("/wellbeing-hub");
+                        toggleMenu();
+                      }}
+                    >
+                      <ClipboardList className="mr-2 h-5 w-5" /> My Wellbeing Assessments
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
+                      onClick={() => {
+                        router.push("/complaints");
+                        toggleMenu();
+                      }}
+                    >
+                      <MessageSquareWarning className="mr-2 h-5 w-5" /> Complaints
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
+                      onClick={() => {
+                        router.push("/my-bookings");
+                        toggleMenu();
+                      }}
+                    >
+                      <User className="mr-2 h-5 w-5" /> My Bookings
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-red-600 hover:bg-red-100 min-h-[44px] text-base"
+                      onClick={() => {
+                        handleLogout();
+                        toggleMenu();
+                      }}
+                    >
+                      <LogOut className="mr-2 h-5 w-5" /> Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-2">
+                    <Link href="/auth/login" onClick={toggleMenu}>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-orange-600 hover:bg-orange-100 min-h-[44px] text-base w-full"
+                      >
+                        Login
+                      </Button>
+                    </Link>
+                    <Link href="/auth/signup" onClick={toggleMenu}>
+                      <Button className="justify-start bg-[#00990d] text-white hover:bg-green-700 w-full min-h-[44px] text-base">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
         </>
       )}
     </header>

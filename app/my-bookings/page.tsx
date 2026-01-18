@@ -352,8 +352,8 @@ export default function MyBookingsPage() {
             <div className="space-y-3">
               {[ 
                 { label: "Overall Experience", name: "overall_experience", options: ["excellent", "good", "okay", "poor"] },
-                { label: "Did your therapist listen to you?", name: "listened", options: ["always", "often", "sometimes", "rarely"] },
-                { label: "Did your therapist help you?", name: "helped", options: ["yes_a_lot", "yes_a_bit", "not_really", "not_at_all"] },
+                { label: "Did your wellbeing coach listen to you?", name: "listened", options: ["always", "often", "sometimes", "rarely"] },
+                { label: "Did your wellbeing coach help you?", name: "helped", options: ["yes_a_lot", "yes_a_bit", "not_really", "not_at_all"] },
                 { label: "Did you feel safe and comfortable?", name: "safe_comfort", options: ["always", "usually", "sometimes", "never"] },
                 { label: "Would you recommend this therapist?", name: "recommend", options: ["yes", "no", "not_sure"] },
               ].map((field) => (

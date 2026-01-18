@@ -108,6 +108,15 @@ export default function Footer() {
                   Subject Access Requests Policy
                 </Link>
               </li>
+              <li>
+                <a
+                  href="/app-release.apk"
+                  download
+                  className="hover:text-orange-400 font-semibold"
+                >
+                  Download App
+                </a>
+              </li>
             </ul>
           </div>
 
