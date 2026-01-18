@@ -46,6 +46,47 @@ export default function WellbeingHub() {
     }
   }, [router]);
 
+  // Re-check therapist status when page becomes visible or when returning from another page
+  useEffect(() => {
+    const checkTherapistStatus = () => {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        try {
+          const parsedUser = JSON.parse(userStr);
+          setHasTherapist(!!parsedUser.therapist_id);
+        } catch (e) {
+          console.error("Error parsing user from localStorage", e);
+        }
+      }
+    };
+
+    // Check when page becomes visible (user switches back to tab or navigates back)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        checkTherapistStatus();
+      }
+    };
+
+    // Check when localStorage changes (in case of updates from other tabs or components)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "user") {
+        checkTherapistStatus();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also check when component mounts or updates
+    window.addEventListener("focus", checkTherapistStatus);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", checkTherapistStatus);
+    };
+  }, []);
+
   const handleChooseCoach = () => {
     // Set a flag in sessionStorage to trigger scroll on home page
     sessionStorage.setItem("scrollToCoach", "true");
