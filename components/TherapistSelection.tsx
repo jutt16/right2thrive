@@ -104,13 +104,16 @@ export function TherapistSelection() {
                     const user = JSON.parse(userStr);
                     user.therapist_id = therapistId;
                     localStorage.setItem("user", JSON.stringify(user));
-
-                    // Dispatch custom event to notify other components
-                    window.dispatchEvent(new CustomEvent("therapistAssigned", { detail: { therapistId } }));
                 }
 
-                // Replace therapist in localStorage with null after successful assignment
-                localStorage.setItem("therapist", "null");
+                // Update local storage with selected therapist details
+                const selectedTherapist = therapists.find(t => t.id === therapistId);
+                if (selectedTherapist) {
+                    localStorage.setItem("therapist", JSON.stringify(selectedTherapist));
+                }
+
+                // Dispatch custom event to notify other components
+                window.dispatchEvent(new CustomEvent("therapistAssigned", { detail: { therapistId } }));
             } else {
                 throw new Error(data.message || "Failed to assign therapist");
             }
