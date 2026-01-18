@@ -191,15 +191,18 @@ export function TherapistSelection() {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent className="flex-grow space-y-2 text-sm text-slate-600">
+                                <CardContent className="flex-grow space-y-3 text-sm text-slate-600">
                                     {therapist.gender && (
-                                        <p><strong className="font-medium text-slate-900">Gender:</strong> {therapist.gender}</p>
+                                        <div className="flex justify-between items-center py-1 border-b border-slate-50">
+                                            <span className="font-medium text-slate-500">Gender</span>
+                                            <span className="text-slate-900">{therapist.gender}</span>
+                                        </div>
                                     )}
                                     {therapist.cultural_background && (
-                                        <p><strong className="font-medium text-slate-900">Background:</strong> {therapist.cultural_background}</p>
-                                    )}
-                                    {therapist.experience && (
-                                        <p><strong className="font-medium text-slate-900">Experience:</strong> {therapist.experience}</p>
+                                        <div className="flex justify-between items-start py-1 border-b border-slate-50">
+                                            <span className="font-medium text-slate-500">Background</span>
+                                            <span className="text-slate-900 text-right">{therapist.cultural_background}</span>
+                                        </div>
                                     )}
                                 </CardContent>
                                 <CardFooter className="pt-4 flex flex-col gap-2">
@@ -281,7 +284,6 @@ export function TherapistSelection() {
                                         <TabsList className="bg-slate-100 p-1 rounded-lg mb-6 sticky top-0 z-10 w-full justify-start overflow-x-auto">
                                             <TabsTrigger value="professional" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Professional</TabsTrigger>
                                             <TabsTrigger value="personal" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Personal Info</TabsTrigger>
-                                            <TabsTrigger value="contact" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Contact & Location</TabsTrigger>
                                         </TabsList>
 
                                         <TabsContent value="professional" className="space-y-6 mt-0">
@@ -318,41 +320,7 @@ export function TherapistSelection() {
                                             </div>
                                         </TabsContent>
 
-                                        <TabsContent value="contact" className="space-y-6 mt-0">
-                                            <div className="space-y-4">
-                                                <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                                    <Mail className="h-5 w-5 text-green-600 mt-0.5" />
-                                                    <div>
-                                                        <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Email</h4>
-                                                        <p className="text-slate-900">{selectedDetailsTherapist.email}</p>
-                                                    </div>
-                                                </div>
-                                                {(selectedDetailsTherapist.telephone || selectedDetailsTherapist.mobile) && (
-                                                    <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                                        <Phone className="h-5 w-5 text-green-600 mt-0.5" />
-                                                        <div className="grid grid-cols-2 gap-8 w-full">
-                                                            <div>
-                                                                <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Telephone</h4>
-                                                                <p className="text-slate-900">{selectedDetailsTherapist.telephone || "N/A"}</p>
-                                                            </div>
-                                                            <div>
-                                                                <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Mobile</h4>
-                                                                <p className="text-slate-900">{selectedDetailsTherapist.mobile || "N/A"}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                                <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                                    <MapPin className="h-5 w-5 text-green-600 mt-0.5" />
-                                                    <div>
-                                                        <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Location</h4>
-                                                        <p className="text-slate-900">
-                                                            {[selectedDetailsTherapist.address, selectedDetailsTherapist.country].filter(Boolean).join(', ') || "Location not provided"}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </TabsContent>
+
                                     </Tabs>
                                 </ScrollArea>
                             </div>
