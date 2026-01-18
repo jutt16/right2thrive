@@ -64,7 +64,7 @@ export default function WellbeingPlan() {
     if (tRaw) {
       try {
         stored = JSON.parse(tRaw);
-      } catch {}
+      } catch { }
     }
     if (!stored) {
       const authRaw = localStorage.getItem("auth");
@@ -72,7 +72,7 @@ export default function WellbeingPlan() {
         try {
           const parsed = JSON.parse(authRaw);
           if (parsed?.therapist) stored = parsed.therapist;
-        } catch {}
+        } catch { }
       }
     }
 
@@ -305,9 +305,8 @@ export default function WellbeingPlan() {
                   <button
                     key={emoji}
                     onClick={() => updateField("mood", emoji)}
-                    className={`p-2 border rounded ${
-                      formData.mood === emoji ? "bg-blue-200" : ""
-                    }`}
+                    className={`p-2 border rounded ${formData.mood === emoji ? "bg-blue-200" : ""
+                      }`}
                   >
                     {emoji}
                   </button>
@@ -315,17 +314,22 @@ export default function WellbeingPlan() {
               </div>
             </div>
             <div className="mb-4">
-              <label className="block mb-1">
-                Overall Wellbeing Score (1 to 10):
+              <label className="block mb-2 font-medium">
+                Overall Wellbeing Score (1 to 10): <span className="text-blue-600 font-bold">{formData.score || "5"}</span>
               </label>
               <input
-                type="number"
+                type="range"
                 min="1"
                 max="10"
-                className="border p-2 w-full rounded"
-                value={formData.score || ""}
+                step="1"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                value={formData.score || "5"}
                 onChange={(e) => updateField("score", e.target.value)}
               />
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>1 (Poor)</span>
+                <span>10 (Excellent)</span>
+              </div>
             </div>
             <div className="mb-4">
               <label className="block mb-1">What’s influencing my mood?</label>
@@ -613,25 +617,115 @@ export default function WellbeingPlan() {
       case "review":
         return (
           <div>
-            <h3 className="text-lg font-semibold mb-4">Review Your Plan</h3>
-            <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
-              {JSON.stringify(
-                {
-                  ...formData,
-                  therapist: Number(
-                    selectedTherapist || formData.therapist || 0
-                  ),
-                },
-                null,
-                2
-              )}
-            </pre>
-            <button
-              onClick={handleSubmit}
-              className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-            >
-              Submit
-            </button>
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold mb-4">Review Your Plan</h3>
+
+              <div className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
+                {/* Sections based on steps */}
+                <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                  {/* Daily Check-in */}
+                  <div className="border-b border-slate-200 pb-3">
+                    <h4 className="font-bold text-blue-800 text-sm uppercase">Daily Check-in</h4>
+                    <p className="text-sm mt-1"><strong>Mood:</strong> {formData.mood || "—"}</p>
+                    <p className="text-sm"><strong>Wellbeing Score:</strong> {formData.score || "—"}/10</p>
+                    {formData.moodFactors?.length > 0 && (
+                      <p className="text-sm"><strong>Mood Influencers:</strong> {formData.moodFactors.join(", ")}</p>
+                    )}
+                  </div>
+
+                  {/* Support Circle */}
+                  {(formData.supportCircle?.length > 0 || formData.mentalProfessionals?.length > 0) && (
+                    <div className="border-b border-slate-200 pb-3">
+                      <h4 className="font-bold text-blue-800 text-sm uppercase">Support Circle</h4>
+                      {formData.supportCircle?.filter(Boolean).length > 0 && (
+                        <div className="mt-1">
+                          <p className="text-xs font-semibold text-slate-500">Personal Support:</p>
+                          <ul className="list-disc list-inside text-sm pl-2">
+                            {formData.supportCircle.filter(Boolean).map((s: string, i: number) => <li key={i}>{s}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      {formData.mentalProfessionals?.filter(Boolean).length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-xs font-semibold text-slate-500">Mental Health Professionals:</p>
+                          <ul className="list-disc list-inside text-sm pl-2">
+                            {formData.mentalProfessionals.filter(Boolean).map((s: string, i: number) => <li key={i}>{s}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Wellness Toolkit */}
+                  {(formData.wellnessTools?.length > 0 || formData.newStrategies?.length > 0) && (
+                    <div className="border-b border-slate-200 pb-3">
+                      <h4 className="font-bold text-blue-800 text-sm uppercase">Wellness Toolkit</h4>
+                      {formData.wellnessTools?.length > 0 && (
+                        <p className="text-sm mt-1"><strong>Tools:</strong> {formData.wellnessTools.join(", ")}</p>
+                      )}
+                      {formData.newStrategies?.length > 0 && (
+                        <p className="text-sm"><strong>New Strategies:</strong> {formData.newStrategies.join(", ")}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Medication */}
+                  {(formData.medicationName || formData.dosage) && (
+                    <div className="border-b border-slate-200 pb-3">
+                      <h4 className="font-bold text-blue-800 text-sm uppercase">Medication</h4>
+                      <p className="text-sm mt-1"><strong>Name:</strong> {formData.medicationName || "—"}</p>
+                      <p className="text-sm"><strong>Dosage/Freq:</strong> {formData.dosage || "—"} ({formData.frequency || "—"})</p>
+                    </div>
+                  )}
+
+                  {/* Action Plan */}
+                  {(formData.warningSigns?.length > 0 || formData.immediateSteps?.length > 0) && (
+                    <div className="border-b border-slate-200 pb-3">
+                      <h4 className="font-bold text-blue-800 text-sm uppercase">Action Plan</h4>
+                      {formData.warningSigns?.length > 0 && (
+                        <p className="text-sm mt-1"><strong>Warning Signs:</strong> {formData.warningSigns.join(", ")}</p>
+                      )}
+                      {formData.immediateSteps?.length > 0 && (
+                        <p className="text-sm"><strong>Steps:</strong> {formData.immediateSteps.join(", ")}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Goals */}
+                  {(formData.shortGoal || formData.longGoal) && (
+                    <div className="border-b border-slate-200 pb-3">
+                      <h4 className="font-bold text-blue-800 text-sm uppercase">Goals</h4>
+                      <p className="text-sm mt-1"><strong>Short-term:</strong> {formData.shortGoal || "—"}</p>
+                      <p className="text-sm"><strong>Long-term Vision:</strong> {formData.longGoal || "—"}</p>
+                    </div>
+                  )}
+
+                  {/* Crisis Plan */}
+                  {(formData.crisisAction || formData.emergencyName) && (
+                    <div className="border-b border-slate-200 pb-3 text-red-700">
+                      <h4 className="font-bold text-red-800 text-sm uppercase">Crisis Plan</h4>
+                      <p className="text-sm mt-1"><strong>Action:</strong> {formData.crisisAction || "—"}</p>
+                      <p className="text-sm"><strong>Contact:</strong> {formData.emergencyName || "—"} ({formData.emergencyPhone || "—"})</p>
+                    </div>
+                  )}
+
+                  {/* Reflection */}
+                  {(formData.pride || formData.grateful) && (
+                    <div className="pb-3">
+                      <h4 className="font-bold text-blue-800 text-sm uppercase">Reflection</h4>
+                      <p className="text-sm mt-1"><strong>Proud of:</strong> {formData.pride || "—"}</p>
+                      <p className="text-sm"><strong>Grateful for:</strong> {formData.grateful || "—"}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={handleSubmit}
+                className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
+              >
+                Submit
+              </button>
+            </div>
           </div>
         );
 
