@@ -73,15 +73,24 @@ export default function Home() {
       // Clear the flag
       sessionStorage.removeItem("scrollToCoach");
 
-      // Wait for page to fully load, then scroll
-      setTimeout(() => {
+      // Function to attempt scroll with retry logic
+      const attemptScroll = (attempts = 0, maxAttempts = 10) => {
         const element = document.getElementById("choose-wellbeing-coach");
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          // Element found, scroll to it
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
+        } else if (attempts < maxAttempts) {
+          // Element not found yet, retry after delay
+          setTimeout(() => attemptScroll(attempts + 1, maxAttempts), 300);
         }
-      }, 500);
+      };
+
+      // Start attempting to scroll after initial delay
+      setTimeout(() => attemptScroll(), 500);
     }
-  }, []);
+  }, [loading]); // Depend on loading state to re-run when data loads
 
   // Use dynamic data from API, fallback to empty arrays if loading or no data
   const testimonials = homepageData?.testimonials || [];
@@ -260,9 +269,7 @@ export default function Home() {
       )}
 
       {/* ===== Therapist Selection Section ===== */}
-      <div id="choose-wellbeing-coach">
-        <TherapistSelection />
-      </div>
+      <TherapistSelection />
 
       {isAuthenticated ? (
         <MagazineSection />
