@@ -241,9 +241,9 @@ export function TherapistSelection() {
 
                 {/* Therapist Details Dialog */}
                 <Dialog open={!!selectedDetailsTherapist} onOpenChange={(open) => !open && setSelectedDetailsTherapist(null)}>
-                    <DialogContent className="max-w-3xl max-h-[90vh] p-0 overflow-hidden border-none shadow-2xl">
+                    <DialogContent className="max-w-3xl h-[85vh] p-0 overflow-hidden border-none shadow-2xl flex flex-col">
                         {selectedDetailsTherapist && (
-                            <div className="flex flex-col h-full bg-white">
+                            <div className="flex flex-col flex-1 bg-white overflow-hidden">
                                 <div className="relative h-32 bg-gradient-to-r from-green-600 to-teal-600">
                                     <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-2xl shadow-lg">
                                         <div className="h-24 w-24 rounded-xl bg-green-50 flex items-center justify-center overflow-hidden">
