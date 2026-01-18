@@ -264,7 +264,6 @@ export function TherapistSelection() {
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <DialogTitle className="text-2xl font-bold text-slate-900">{selectedDetailsTherapist.name}</DialogTitle>
-                                            <p className="text-green-600 font-medium">{selectedDetailsTherapist.qualifications || "Professional Therapist"}</p>
                                         </div>
                                         <Button
                                             onClick={() => {
