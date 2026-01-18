@@ -3,9 +3,19 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Check, Loader2 } from "lucide-react";
+import { User, Check, Loader2, Mail, Phone, MapPin, Briefcase, GraduationCap, Globe, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogDescription,
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Therapist {
     id: number;
@@ -27,6 +37,7 @@ export function TherapistSelection() {
     const [loading, setLoading] = useState(true);
     const [assigningId, setAssigningId] = useState<number | null>(null);
     const [assignedTherapistId, setAssignedTherapistId] = useState<number | null>(null);
+    const [selectedDetailsTherapist, setSelectedDetailsTherapist] = useState<Therapist | null>(null);
     const router = useRouter();
     const { toast } = useToast();
 
@@ -191,7 +202,15 @@ export function TherapistSelection() {
                                         <p><strong className="font-medium text-slate-900">Experience:</strong> {therapist.experience}</p>
                                     )}
                                 </CardContent>
-                                <CardFooter className="pt-4">
+                                <CardFooter className="pt-4 flex flex-col gap-2">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full border-green-600 text-green-700 hover:bg-green-50"
+                                        onClick={() => setSelectedDetailsTherapist(therapist)}
+                                    >
+                                        <Info className="mr-2 h-4 w-4" />
+                                        View Profile
+                                    </Button>
                                     <Button
                                         className={`w-full ${isAssigned ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-[#00990d] hover:bg-[#007a0a] text-white'}`}
                                         onClick={() => !isAssigned && handleSelectTherapist(therapist.id)}
@@ -216,6 +235,130 @@ export function TherapistSelection() {
                         );
                     })}
                 </div>
+
+                {/* Therapist Details Dialog */}
+                <Dialog open={!!selectedDetailsTherapist} onOpenChange={(open) => !open && setSelectedDetailsTherapist(null)}>
+                    <DialogContent className="max-w-3xl max-h-[90vh] p-0 overflow-hidden border-none shadow-2xl">
+                        {selectedDetailsTherapist && (
+                            <div className="flex flex-col h-full bg-white">
+                                <div className="relative h-32 bg-gradient-to-r from-green-600 to-teal-600">
+                                    <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-2xl shadow-lg">
+                                        <div className="h-24 w-24 rounded-xl bg-green-50 flex items-center justify-center overflow-hidden">
+                                            {selectedDetailsTherapist.profile_picture_url ? (
+                                                <img
+                                                    src={selectedDetailsTherapist.profile_picture_url}
+                                                    alt={selectedDetailsTherapist.name}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            ) : (
+                                                <User className="h-12 w-12 text-green-600" />
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-16 px-8 pb-4">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <DialogTitle className="text-2xl font-bold text-slate-900">{selectedDetailsTherapist.name}</DialogTitle>
+                                            <p className="text-green-600 font-medium">{selectedDetailsTherapist.qualifications || "Professional Therapist"}</p>
+                                        </div>
+                                        <Button
+                                            onClick={() => {
+                                                handleSelectTherapist(selectedDetailsTherapist.id);
+                                                setSelectedDetailsTherapist(null);
+                                            }}
+                                            disabled={assignedTherapistId === selectedDetailsTherapist.id || assigningId !== null}
+                                            className="bg-green-600 hover:bg-green-700 text-white"
+                                        >
+                                            {assignedTherapistId === selectedDetailsTherapist.id ? "Assigned" : "Select Coach"}
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <ScrollArea className="flex-1 px-8 pb-8">
+                                    <Tabs defaultValue="professional" className="w-full">
+                                        <TabsList className="bg-slate-100 p-1 rounded-lg mb-6 sticky top-0 z-10 w-full justify-start overflow-x-auto">
+                                            <TabsTrigger value="professional" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Professional</TabsTrigger>
+                                            <TabsTrigger value="personal" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Personal Info</TabsTrigger>
+                                            <TabsTrigger value="contact" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Contact & Location</TabsTrigger>
+                                        </TabsList>
+
+                                        <TabsContent value="professional" className="space-y-6 mt-0">
+                                            <section>
+                                                <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                                    <GraduationCap className="h-4 w-4 text-green-600" />
+                                                    Qualifications
+                                                </h4>
+                                                <p className="text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                                    {selectedDetailsTherapist.qualifications || "Information not provided."}
+                                                </p>
+                                            </section>
+                                            <section>
+                                                <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                                    <Briefcase className="h-4 w-4 text-green-600" />
+                                                    Professional Experience
+                                                </h4>
+                                                <p className="text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                                    {selectedDetailsTherapist.experience || "No experience details available."}
+                                                </p>
+                                            </section>
+                                        </TabsContent>
+
+                                        <TabsContent value="personal" className="space-y-6 mt-0">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Gender</h4>
+                                                    <p className="text-slate-900 font-medium">{selectedDetailsTherapist.gender || "Not specified"}</p>
+                                                </div>
+                                                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Cultural Background</h4>
+                                                    <p className="text-slate-900 font-medium">{selectedDetailsTherapist.cultural_background || "Not specified"}</p>
+                                                </div>
+                                            </div>
+                                        </TabsContent>
+
+                                        <TabsContent value="contact" className="space-y-6 mt-0">
+                                            <div className="space-y-4">
+                                                <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                                    <Mail className="h-5 w-5 text-green-600 mt-0.5" />
+                                                    <div>
+                                                        <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Email</h4>
+                                                        <p className="text-slate-900">{selectedDetailsTherapist.email}</p>
+                                                    </div>
+                                                </div>
+                                                {(selectedDetailsTherapist.telephone || selectedDetailsTherapist.mobile) && (
+                                                    <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                                        <Phone className="h-5 w-5 text-green-600 mt-0.5" />
+                                                        <div className="grid grid-cols-2 gap-8 w-full">
+                                                            <div>
+                                                                <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Telephone</h4>
+                                                                <p className="text-slate-900">{selectedDetailsTherapist.telephone || "N/A"}</p>
+                                                            </div>
+                                                            <div>
+                                                                <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Mobile</h4>
+                                                                <p className="text-slate-900">{selectedDetailsTherapist.mobile || "N/A"}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                                    <MapPin className="h-5 w-5 text-green-600 mt-0.5" />
+                                                    <div>
+                                                        <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Location</h4>
+                                                        <p className="text-slate-900">
+                                                            {[selectedDetailsTherapist.address, selectedDetailsTherapist.country].filter(Boolean).join(', ') || "Location not provided"}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </TabsContent>
+                                    </Tabs>
+                                </ScrollArea>
+                            </div>
+                        )}
+                    </DialogContent>
+                </Dialog>
             </div>
         </section>
     );
