@@ -74,8 +74,14 @@ export default function WellbeingHub() {
       }
     };
 
+    // Listen for custom therapist assignment event
+    const handleTherapistAssigned = () => {
+      checkTherapistStatus();
+    };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("therapistAssigned", handleTherapistAssigned as EventListener);
 
     // Also check when component mounts or updates
     window.addEventListener("focus", checkTherapistStatus);
@@ -83,6 +89,7 @@ export default function WellbeingHub() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("therapistAssigned", handleTherapistAssigned as EventListener);
       window.removeEventListener("focus", checkTherapistStatus);
     };
   }, []);

@@ -104,6 +104,9 @@ export function TherapistSelection() {
                     const user = JSON.parse(userStr);
                     user.therapist_id = therapistId;
                     localStorage.setItem("user", JSON.stringify(user));
+
+                    // Dispatch custom event to notify other components
+                    window.dispatchEvent(new CustomEvent("therapistAssigned", { detail: { therapistId } }));
                 }
 
                 // Replace therapist in localStorage with null after successful assignment
