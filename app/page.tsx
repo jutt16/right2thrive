@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MagazineSection from "@/components/ui/magazinesection";
 import { motion } from "framer-motion";
 import {
@@ -65,6 +65,23 @@ export default function Home() {
       throw error;
     }
   };
+
+  // Handle scroll to therapist selection when navigating from my-wellbeing
+  useEffect(() => {
+    const shouldScroll = sessionStorage.getItem("scrollToCoach");
+    if (shouldScroll === "true") {
+      // Clear the flag
+      sessionStorage.removeItem("scrollToCoach");
+
+      // Wait for page to fully load, then scroll
+      setTimeout(() => {
+        const element = document.getElementById("choose-wellbeing-coach");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 500);
+    }
+  }, []);
 
   // Use dynamic data from API, fallback to empty arrays if loading or no data
   const testimonials = homepageData?.testimonials || [];

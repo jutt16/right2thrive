@@ -46,6 +46,12 @@ export default function WellbeingHub() {
     }
   }, [router]);
 
+  const handleChooseCoach = () => {
+    // Set a flag in sessionStorage to trigger scroll on home page
+    sessionStorage.setItem("scrollToCoach", "true");
+    router.push("/");
+  };
+
   if (!isClient) return null; // avoid SSR hydration issues
 
   return (
@@ -65,12 +71,13 @@ export default function WellbeingHub() {
               <p className="text-gray-700 mb-4">
                 You haven't selected a wellbeing coach yet. Choose a professional from our network to begin your personalized wellbeing journey.
               </p>
-              <Link href="/#choose-wellbeing-coach">
-                <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
-                  <ThumbsUp className="h-5 w-5" />
-                  Choose Your Wellbeing Coach
-                </button>
-              </Link>
+              <button
+                onClick={handleChooseCoach}
+                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                <ThumbsUp className="h-5 w-5" />
+                Choose Your Wellbeing Coach
+              </button>
             </div>
           </div>
         )}
