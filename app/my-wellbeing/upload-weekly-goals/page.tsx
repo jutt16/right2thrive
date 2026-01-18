@@ -83,7 +83,7 @@ export default function WeeklyGoalsPage() {
   const [error, setError] = useState('');
 
   // Form
-  const [rows, setRows] = useState<WeeklyGoalRow[]>(Array.from({ length: 5 }, (_, i) => ({
+  const [rows, setRows] = useState<WeeklyGoalRow[]>(Array.from({ length: 3 }, (_, i) => ({
     number: i + 1,
     goal: '',
     how: '',
@@ -277,7 +277,7 @@ export default function WeeklyGoalsPage() {
             </p>
           </div>
           <button onClick={addRow} disabled={rows.length >= MAX_ROWS} className="inline-flex items-center justify-center rounded-full border border-blue-300 w-9 h-9 hover:bg-blue-50 active:scale-95 transition disabled:opacity-50" title="Add row">
-            <Plus className="w-5 h-5"/>
+            <Plus className="w-5 h-5" />
           </button>
         </div>
 
@@ -287,10 +287,10 @@ export default function WeeklyGoalsPage() {
           <div className="w-full border border-blue-300 rounded-md px-3 py-2 text-gray-800 text-sm bg-white">
             {isLoadingTherapistDetails ? <p className="text-gray-500">Loading therapist details…</p> : selectedTherapist ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div className="flex items-center gap-2"><User2 className="w-4 h-4 text-blue-600"/><span><strong>Name:</strong> {getTherapistDisplayName(selectedTherapistDetails)}</span></div>
-                <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-blue-600"/><span><strong>Email:</strong> {selectedTherapistDetails?.email ?? 'N/A'}</span></div>
-                <div className="flex items-center gap-2"><VenetianMask className="w-4 h-4 text-blue-600"/><span><strong>Gender:</strong> {selectedTherapistDetails?.profile?.gender ?? 'N/A'}</span></div>
-                <div className="flex items-center gap-2"><Globe className="w-4 h-4 text-blue-600"/><span><strong>Culture:</strong> {selectedTherapistDetails?.profile?.cultural_background ?? 'N/A'}</span></div>
+                <div className="flex items-center gap-2"><User2 className="w-4 h-4 text-blue-600" /><span><strong>Name:</strong> {getTherapistDisplayName(selectedTherapistDetails)}</span></div>
+                <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-blue-600" /><span><strong>Email:</strong> {selectedTherapistDetails?.email ?? 'N/A'}</span></div>
+                <div className="flex items-center gap-2"><VenetianMask className="w-4 h-4 text-blue-600" /><span><strong>Gender:</strong> {selectedTherapistDetails?.profile?.gender ?? 'N/A'}</span></div>
+                <div className="flex items-center gap-2"><Globe className="w-4 h-4 text-blue-600" /><span><strong>Culture:</strong> {selectedTherapistDetails?.profile?.cultural_background ?? 'N/A'}</span></div>
               </div>
             ) : <p className="text-gray-500">No therapist found. Contact support.</p>}
             {error && <p className="mt-2 text-sm text-red-600">Error: {error}</p>}
@@ -314,12 +314,12 @@ export default function WeeklyGoalsPage() {
                   <td className="border-t border-gray-200 px-3 py-3 text-sm text-gray-700">
                     <div className="flex items-center gap-2">
                       <span className="inline-block min-w-[1.25rem]">{row.number}</span>
-                      <button type="button" onClick={() => removeRowByIndex(idx)} className="inline-flex items-center justify-center rounded-full border border-gray-300 w-7 h-7 hover:bg-gray-50 active:scale-95 transition disabled:opacity-50" disabled={rows.length <= MIN_ROWS}><Minus className="w-4 h-4"/></button>
+                      <button type="button" onClick={() => removeRowByIndex(idx)} className="inline-flex items-center justify-center rounded-full border border-gray-300 w-7 h-7 hover:bg-gray-50 active:scale-95 transition disabled:opacity-50" disabled={rows.length <= MIN_ROWS}><Minus className="w-4 h-4" /></button>
                     </div>
                   </td>
-                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e)=>autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.goal} onChange={e=>updateRow(idx,'goal')(e.target.value)}/></td>
-                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e)=>autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.how} onChange={e=>updateRow(idx,'how')(e.target.value)}/></td>
-                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e)=>autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.outcome} onChange={e=>updateRow(idx,'outcome')(e.target.value)}/></td>
+                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.goal} onChange={e => updateRow(idx, 'goal')(e.target.value)} /></td>
+                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.how} onChange={e => updateRow(idx, 'how')(e.target.value)} /></td>
+                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.outcome} onChange={e => updateRow(idx, 'outcome')(e.target.value)} /></td>
                 </tr>
               ))}
             </tbody>
@@ -330,17 +330,17 @@ export default function WeeklyGoalsPage() {
         {/* Reflection */}
         <div className="mb-6">
           <h3 className="text-base md:text-lg font-semibold text-blue-900 mb-2">Weekly Reflection</h3>
-          <textarea rows={3} onInput={(e)=>autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={reflection} onChange={e=>setReflection(e.target.value)}/>
+          <textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={reflection} onChange={e => setReflection(e.target.value)} />
         </div>
 
         {/* Alerts */}
-        {submitError && <div className="flex items-center gap-2 text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-3 text-sm"><AlertCircle className="w-4 h-4"/><span>{submitError}</span></div>}
-        {submitSuccess && <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2 mb-3 text-sm"><CheckCircle2 className="w-4 h-4"/><span>{submitSuccess}</span></div>}
+        {submitError && <div className="flex items-center gap-2 text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-3 text-sm"><AlertCircle className="w-4 h-4" /><span>{submitError}</span></div>}
+        {submitSuccess && <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2 mb-3 text-sm"><CheckCircle2 className="w-4 h-4" /><span>{submitSuccess}</span></div>}
 
         {/* Submit Button */}
         <div className="flex justify-end">
           <button onClick={handleSubmit} disabled={isSubmitting} className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-xl">
-            <UploadCloud className="w-5 h-5"/>
+            <UploadCloud className="w-5 h-5" />
             {isSubmitting ? 'Submitting…' : 'Submit Weekly Goals'}
           </button>
         </div>
@@ -370,9 +370,9 @@ export default function WeeklyGoalsPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <button onClick={() => downloadJSON(item)} className="inline-flex items-center gap-2 rounded-md border border-blue-300 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50 transition" title="Download JSON"><FileDown className="w-4 h-4"/>JSON</button>
+                      <button onClick={() => downloadJSON(item)} className="inline-flex items-center gap-2 rounded-md border border-blue-300 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50 transition" title="Download JSON"><FileDown className="w-4 h-4" />JSON</button>
                       <button onClick={() => toggleExpand(item.id)} className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition" title={isOpen ? 'Hide details' : 'View details'}>
-                        <Eye className="w-4 h-4"/>{isOpen ? <>Hide <ChevronUp className="w-4 h-4"/></> : <>View <ChevronDown className="w-4 h-4"/></>}
+                        <Eye className="w-4 h-4" />{isOpen ? <>Hide <ChevronUp className="w-4 h-4" /></> : <>View <ChevronDown className="w-4 h-4" /></>}
                       </button>
                     </div>
                   </div>
