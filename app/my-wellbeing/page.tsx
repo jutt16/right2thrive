@@ -21,6 +21,7 @@ const wellbeingOptions = [
 export default function WellbeingHub() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const [hasTherapist, setHasTherapist] = useState(true);
 
   useEffect(() => {
     setIsClient(true); // make sure we're on the client before using localStorage
@@ -30,7 +31,7 @@ export default function WellbeingHub() {
       router.replace("/auth/login"); // redirect if not logged in
       return;
     }
-    
+
     if (user) {
       const parsedUser = JSON.parse(user);
       // Check if email is verified
@@ -39,6 +40,9 @@ export default function WellbeingHub() {
         router.replace(`/auth/verify-email?email=${encodeURIComponent(parsedUser.email)}`);
         return;
       }
+
+      // Check if user has a therapist assigned
+      setHasTherapist(!!parsedUser.therapist_id);
     }
   }, [router]);
 
@@ -48,6 +52,29 @@ export default function WellbeingHub() {
     <>
       <WellbeingOnboarding />
       <div className="max-w-3xl mx-auto mt-10 mb-10 px-4">
+        {/* Show "Choose Your Wellbeing Coach" card if no therapist assigned */}
+        {!hasTherapist && (
+          <div className="rounded-xl shadow-xl border border-yellow-400 overflow-hidden mb-6 bg-gradient-to-br from-yellow-50 to-orange-50">
+            <div className="bg-gradient-to-r from-yellow-500 to-orange-500 px-6 py-4">
+              <h2 className="text-xl font-bold text-white">Choose Your Wellbeing Coach</h2>
+              <p className="text-yellow-50 text-sm mt-1">
+                Get personalized support from a professional wellbeing coach
+              </p>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-700 mb-4">
+                You haven't selected a wellbeing coach yet. Choose a professional from our network to begin your personalized wellbeing journey.
+              </p>
+              <Link href="/#choose-wellbeing-coach">
+                <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+                  <ThumbsUp className="h-5 w-5" />
+                  Choose Your Wellbeing Coach
+                </button>
+              </Link>
+            </div>
+          </div>
+        )}
+
         <div className="rounded-xl shadow-xl border border-cyan-400 overflow-hidden">
           <div className="bg-cyan-600 px-6 py-4">
             <h1 className="text-2xl font-bold text-white">My Wellbeing Space</h1>

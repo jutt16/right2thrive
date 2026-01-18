@@ -243,7 +243,9 @@ export default function Home() {
       )}
 
       {/* ===== Therapist Selection Section ===== */}
-      <TherapistSelection />
+      <div id="choose-wellbeing-coach">
+        <TherapistSelection />
+      </div>
 
       {isAuthenticated ? (
         <MagazineSection />

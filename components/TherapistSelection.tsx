@@ -105,6 +105,9 @@ export function TherapistSelection() {
                     user.therapist_id = therapistId;
                     localStorage.setItem("user", JSON.stringify(user));
                 }
+
+                // Replace therapist in localStorage with null after successful assignment
+                localStorage.setItem("therapist", "null");
             } else {
                 throw new Error(data.message || "Failed to assign therapist");
             }
