@@ -24,7 +24,7 @@ export default function WeeklyProgressForm() {
     if (tRaw) {
       try {
         stored = JSON.parse(tRaw);
-      } catch {}
+      } catch { }
     }
 
     // fallback "auth.therapist"
@@ -34,7 +34,7 @@ export default function WeeklyProgressForm() {
         try {
           const parsed = JSON.parse(authRaw);
           if (parsed?.therapist) stored = parsed.therapist;
-        } catch {}
+        } catch { }
       }
     }
 
@@ -105,9 +105,8 @@ export default function WeeklyProgressForm() {
           <button
             key={e}
             onClick={() => update("mood", e)}
-            className={`p-2 border rounded ${
-              data.mood === e ? "bg-blue-200" : ""
-            }`}
+            className={`p-2 border rounded ${data.mood === e ? "bg-blue-200" : ""
+              }`}
           >
             {e}
           </button>
@@ -203,9 +202,8 @@ export default function WeeklyProgressForm() {
             <>
               <p>
                 <strong>Name:</strong>{" "}
-                {`${therapistDetails?.first_name ?? ""} ${
-                  therapistDetails?.last_name ?? ""
-                }`.trim() || "—"}
+                {`${therapistDetails?.first_name ?? ""} ${therapistDetails?.last_name ?? ""
+                  }`.trim() || "—"}
               </p>
               <p>
                 <strong>Email:</strong> {therapistDetails?.email ?? "N/A"}
@@ -271,24 +269,20 @@ export default function WeeklyProgressForm() {
       {renderEmojiSelect()}
       {renderTextArea("Positive Changes I've Noticed", "positiveChanges")}
       {renderTextArea("Challenges in My Well-being", "wellbeingChallenges")}
-    </>,
 
-    <>
-      <h3 className="text-lg font-semibold mb-2">Support and Feedback</h3>
+      <h3 className="text-lg font-semibold mb-2 mt-6">Support and Feedback</h3>
       {renderTextArea("What's Been Helpful", "helpful")}
       {renderTextArea("What's Been Challenging", "challenging")}
       {renderTextArea("My Requests or Concerns", "requests")}
 
-      <h3 className="text-lg font-semibold mb-2 mt-6">
-        Looking Ahead & Reflection
-      </h3>
+      <h3 className="text-lg font-semibold mb-2 mt-6">Looking Ahead & Reflection</h3>
       {renderInput("My Focus for Next Week", "focus")}
       {renderInput("Something I'm Looking Forward To", "lookingForward")}
       {renderInput("One Thing I'm Proud of This Week", "pride")}
       {renderInput("Something I Learned About Myself", "learned")}
       <button
         onClick={handleSubmit}
-        className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
+        className="mt-4 px-4 py-2 bg-green-600 text-white rounded w-full"
       >
         Submit
       </button>
@@ -333,7 +327,7 @@ export default function WeeklyProgressForm() {
           className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
         >
           Back
-          
+
         </button>
         {step < steps.length - 1 && (
           <button
