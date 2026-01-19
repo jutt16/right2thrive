@@ -160,8 +160,8 @@ export function TherapistSelection() {
         <section id="choose-wellbeing-coach" className="py-16 bg-slate-50">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-10">
-                    <h2 className="text-3xl font-bold text-slate-900 mb-4">Choose Your Wellbeing Coach</h2>
-                    <p className="text-slate-600 max-w-2xl mx-auto">
+                    <h2 className="text-3xl font-bold text-slate-900 mb-4 px-2">Choose Your Wellbeing Coach</h2>
+                    <p className="text-slate-600 max-w-2xl mx-auto px-4">
                         Select a professional from our network to begin your journey.
                     </p>
                 </div>
@@ -172,9 +172,9 @@ export function TherapistSelection() {
 
                         return (
                             <Card key={therapist.id} className={`flex flex-col h-full transition-all duration-300 ${isAssigned ? 'ring-2 ring-green-500 shadow-lg' : 'hover:shadow-md'}`}>
-                                <CardHeader>
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 overflow-hidden flex-shrink-0">
+                                <CardHeader className="p-5">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-14 w-14 rounded-full bg-green-100 flex items-center justify-center text-green-700 overflow-hidden flex-shrink-0 shadow-inner">
                                             {therapist.profile_picture_url ? (
                                                 <img
                                                     src={therapist.profile_picture_url}
@@ -182,12 +182,12 @@ export function TherapistSelection() {
                                                     className="h-full w-full object-cover"
                                                 />
                                             ) : (
-                                                <User className="h-6 w-6" />
+                                                <User className="h-7 w-7" />
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <CardTitle className="text-lg truncate">{therapist.name}</CardTitle>
-                                            <CardDescription className="truncate">{therapist.qualifications || "Professional Therapist"}</CardDescription>
+                                            <CardTitle className="text-lg font-bold truncate">{therapist.name}</CardTitle>
+                                            <CardDescription className="text-xs text-slate-500 truncate">{therapist.qualifications || "Wellbeing Coach"}</CardDescription>
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -205,17 +205,17 @@ export function TherapistSelection() {
                                         </div>
                                     )}
                                 </CardContent>
-                                <CardFooter className="pt-4 flex flex-col gap-2">
+                                <CardFooter className="pt-4 flex flex-col gap-3">
                                     <Button
                                         variant="outline"
-                                        className="w-full border-green-600 text-green-700 hover:bg-green-50"
+                                        className="w-full h-11 border-green-600 text-green-700 hover:bg-green-50 rounded-xl"
                                         onClick={() => setSelectedDetailsTherapist(therapist)}
                                     >
                                         <Info className="mr-2 h-4 w-4" />
                                         View Profile
                                     </Button>
                                     <Button
-                                        className={`w-full ${isAssigned ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-[#00990d] hover:bg-[#007a0a] text-white'}`}
+                                        className={`w-full h-11 rounded-xl ${isAssigned ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-[#00990d] hover:bg-[#007a0a] text-white'}`}
                                         onClick={() => !isAssigned && handleSelectTherapist(therapist.id)}
                                         disabled={isAssigned || assigningId !== null}
                                     >
@@ -230,7 +230,7 @@ export function TherapistSelection() {
                                                 Assigned
                                             </>
                                         ) : (
-                                            "Select Therapist"
+                                            "Select Coach"
                                         )}
                                     </Button>
                                 </CardFooter>
@@ -241,12 +241,12 @@ export function TherapistSelection() {
 
                 {/* Therapist Details Dialog */}
                 <Dialog open={!!selectedDetailsTherapist} onOpenChange={(open) => !open && setSelectedDetailsTherapist(null)}>
-                    <DialogContent className="max-w-3xl h-[85vh] p-0 overflow-hidden border-none shadow-2xl flex flex-col">
+                    <DialogContent className="max-w-3xl w-[95vw] sm:w-full h-[90dvh] md:h-[85vh] p-0 overflow-hidden border-none shadow-2xl flex flex-col rounded-2xl">
                         {selectedDetailsTherapist && (
                             <div className="flex flex-col flex-1 bg-white overflow-hidden">
-                                <div className="relative h-32 bg-gradient-to-r from-green-600 to-teal-600">
-                                    <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-2xl shadow-lg">
-                                        <div className="h-24 w-24 rounded-xl bg-green-50 flex items-center justify-center overflow-hidden">
+                                <div className="relative h-32 sm:h-40 bg-gradient-to-r from-green-600 to-teal-600">
+                                    <div className="absolute -bottom-12 left-4 sm:left-8 p-1 bg-white rounded-2xl shadow-lg">
+                                        <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl bg-green-50 flex items-center justify-center overflow-hidden">
                                             {selectedDetailsTherapist.profile_picture_url ? (
                                                 <img
                                                     src={selectedDetailsTherapist.profile_picture_url}
@@ -260,10 +260,11 @@ export function TherapistSelection() {
                                     </div>
                                 </div>
 
-                                <div className="pt-16 px-8 pb-4">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <DialogTitle className="text-2xl font-bold text-slate-900">{selectedDetailsTherapist.name}</DialogTitle>
+                                <div className="pt-16 px-4 sm:px-8 pb-4">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                        <div className="flex-1 min-w-0">
+                                            <DialogTitle className="text-2xl font-bold text-slate-900 break-words">{selectedDetailsTherapist.name}</DialogTitle>
+                                            <p className="text-slate-500 text-sm mt-1">{selectedDetailsTherapist.qualifications || "Wellbeing Coach"}</p>
                                         </div>
                                         <Button
                                             onClick={() => {
@@ -271,14 +272,14 @@ export function TherapistSelection() {
                                                 setSelectedDetailsTherapist(null);
                                             }}
                                             disabled={assignedTherapistId === selectedDetailsTherapist.id || assigningId !== null}
-                                            className="bg-green-600 hover:bg-green-700 text-white"
+                                            className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white min-h-[44px]"
                                         >
-                                            {assignedTherapistId === selectedDetailsTherapist.id ? "Assigned" : "Select Coach"}
+                                            {assignedTherapistId === selectedDetailsTherapist.id ? "Already Assigned" : "Select This Coach"}
                                         </Button>
                                     </div>
                                 </div>
 
-                                <ScrollArea className="flex-1 px-8 pb-8">
+                                <ScrollArea className="flex-1 px-4 sm:px-8 pb-8">
                                     <Tabs defaultValue="professional" className="w-full">
                                         <TabsList className="bg-slate-100 p-1 rounded-lg mb-6 sticky top-0 z-10 w-full justify-start overflow-x-auto">
                                             <TabsTrigger value="professional" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Professional</TabsTrigger>
