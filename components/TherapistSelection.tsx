@@ -158,7 +158,7 @@ export function TherapistSelection() {
 
     return (
         <section id="choose-wellbeing-coach" className="py-16 bg-slate-50">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-0 sm:px-4">
                 <div className="text-center mb-10">
                     <h2 className="text-3xl font-bold text-slate-900 mb-4 px-2">Choose Your Wellbeing Coach</h2>
                     <p className="text-slate-600 max-w-2xl mx-auto px-4">
@@ -166,13 +166,13 @@ export function TherapistSelection() {
                     </p>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {therapists.map((therapist) => {
                         const isAssigned = assignedTherapistId === therapist.id;
 
                         return (
-                            <Card key={therapist.id} className={`flex flex-col h-full transition-all duration-300 ${isAssigned ? 'ring-2 ring-green-500 shadow-lg' : 'hover:shadow-md'}`}>
-                                <CardHeader className="p-5">
+                            <Card key={therapist.id} className={`flex flex-col w-full h-full transition-all duration-300 ${isAssigned ? 'ring-2 ring-green-500 shadow-lg' : 'hover:shadow-md'}`}>
+                                <CardHeader className="p-4 sm:p-5">
                                     <div className="flex items-center gap-4">
                                         <div className="h-14 w-14 rounded-full bg-green-100 flex items-center justify-center text-green-700 overflow-hidden flex-shrink-0 shadow-inner">
                                             {therapist.profile_picture_url ? (
@@ -191,7 +191,7 @@ export function TherapistSelection() {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent className="flex-grow space-y-3 text-sm text-slate-600">
+                                <CardContent className="flex-grow p-4 sm:p-6 pt-0 space-y-3 text-sm text-slate-600">
                                     {therapist.gender && (
                                         <div className="flex justify-between items-center py-1 border-b border-slate-50">
                                             <span className="font-medium text-slate-500">Gender</span>
@@ -199,13 +199,13 @@ export function TherapistSelection() {
                                         </div>
                                     )}
                                     {therapist.cultural_background && (
-                                        <div className="flex justify-between items-start py-1 border-b border-slate-50">
-                                            <span className="font-medium text-slate-500">Background</span>
-                                            <span className="text-slate-900 text-right">{therapist.cultural_background}</span>
+                                        <div className="flex justify-between items-start py-1 border-b border-slate-50 gap-4">
+                                            <span className="font-medium text-slate-500 shrink-0">Background</span>
+                                            <span className="text-slate-900 text-right break-words min-w-0">{therapist.cultural_background}</span>
                                         </div>
                                     )}
                                 </CardContent>
-                                <CardFooter className="pt-4 flex flex-col gap-3">
+                                <CardFooter className="p-4 sm:p-6 pt-4 flex flex-col gap-3">
                                     <Button
                                         variant="outline"
                                         className="w-full h-11 border-green-600 text-green-700 hover:bg-green-50 rounded-xl"
@@ -328,6 +328,6 @@ export function TherapistSelection() {
                     </DialogContent>
                 </Dialog>
             </div>
-        </section>
+        </section >
     );
 }
