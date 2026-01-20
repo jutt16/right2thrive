@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ThumbsUp, FileText, Pill, Activity, Calendar, Clock } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 import WellbeingOnboarding from "@/components/wellbeing-onboarding";
 
 const wellbeingOptions = [
@@ -22,9 +22,6 @@ export default function WellbeingHub() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [hasTherapist, setHasTherapist] = useState(true);
-  const [sessionNotes, setSessionNotes] = useState<any[]>([]);
-  const [medications, setMedications] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsClient(true); // make sure we're on the client before using localStorage
@@ -47,42 +44,7 @@ export default function WellbeingHub() {
       // Check if user has a therapist assigned
       setHasTherapist(!!parsedUser.therapist_id);
     }
-
-    fetchDashboardData();
   }, [router]);
-
-  const fetchDashboardData = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    setIsLoading(true);
-    try {
-      // Fetch Session Notes
-      const notesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/session-notes`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const notesData = await notesRes.json();
-      if (notesData.status) setSessionNotes(notesData.session_notes);
-
-      // Fetch Medications
-      const medRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/medications`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const medData = await medRes.json();
-      if (medData.status === "success") setMedications(medData.data);
-    } catch (err) {
-      console.error("Error fetching dashboard data:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
 
   // Re-check therapist status when page becomes visible or when returning from another page
   useEffect(() => {
@@ -188,85 +150,6 @@ export default function WellbeingHub() {
                 </span>
               </Link>
             ))}
-          </div>
-        </div>
-
-        {/* Session Notes & Medication Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          {/* Latest Session Note */}
-          <div className="rounded-xl shadow-lg border border-orange-200 overflow-hidden bg-white">
-            <div className="bg-orange-500 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <FileText className="h-5 w-5" /> Latest Session Note
-              </h2>
-              <Link href="/wellbeing-hub?tab=session-notes" className="text-orange-100 text-xs hover:underline">
-                View All
-              </Link>
-            </div>
-            <div className="p-6">
-              {sessionNotes.length > 0 ? (
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <p className="font-semibold text-gray-800">
-                      {sessionNotes[0].therapist
-                        ? `${sessionNotes[0].therapist.first_name} ${sessionNotes[0].therapist.last_name}`
-                        : "Wellbeing Coach"}
-                    </p>
-                    <div className="flex items-center text-xs text-gray-500 gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {formatDate(sessionNotes[0].date || sessionNotes[0].created_at)}
-                    </div>
-                  </div>
-                  <div className="bg-orange-50 rounded-lg p-4 border border-orange-100 relative">
-                    <p className="text-gray-700 text-sm italic line-clamp-4 leading-relaxed">
-                      "{sessionNotes[0].notes}"
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-6 text-gray-500 italic">
-                  No session notes shared yet.
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Current Medications */}
-          <div className="rounded-xl shadow-lg border border-blue-200 overflow-hidden bg-white">
-            <div className="bg-blue-600 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Activity className="h-5 w-5" /> Your Medications
-              </h2>
-              <Link href="/wellbeing-hub?tab=medications" className="text-blue-100 text-xs hover:underline">
-                Details
-              </Link>
-            </div>
-            <div className="p-6">
-              {medications.length > 0 ? (
-                <div className="space-y-3 max-h-[160px] overflow-y-auto pr-2 custom-scrollbar">
-                  {medications.slice(0, 3).map((med, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-blue-100 transition-colors">
-                      <div className="bg-blue-100 rounded-full p-2 mt-1">
-                        <Pill className="h-4 w-4 text-blue-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-gray-800">{med.medications}</p>
-                        <p className="text-xs text-gray-500">For: {med.condition}</p>
-                      </div>
-                    </div>
-                  ))}
-                  {medications.length > 3 && (
-                    <p className="text-center text-xs text-gray-400 pt-2">
-                      + {medications.length - 3} more medications
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-6 text-gray-500 italic">
-                  No medications recorded.
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>

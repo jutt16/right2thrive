@@ -158,7 +158,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   const [upcomingBooking, setUpcomingBooking] = useState<Booking | null>(null);
   const [isLoadingBookings, setIsLoadingBookings] = useState(true);
   const [activeTab, setActiveTab] = useState(
-    searchParams.get("tab") || "dashboard"
+    searchParams.get("tab") || "assessments"
   );
   const [selectedAssessment, setSelectedAssessment] =
     useState<Assessment | null>(null);
@@ -359,8 +359,8 @@ function WellbeingHubContent({ userData }: { userData: any }) {
     (typeof userData?.first_name === "string" && userData.first_name.trim().length > 0
       ? userData.first_name.trim()
       : typeof userData?.name === "string" && userData.name.trim().length > 0
-        ? userData.name.trim().split(" ")[0]
-        : "there");
+      ? userData.name.trim().split(" ")[0]
+      : "there");
 
   const sessionReminderMessage =
     !isLoadingBookings && upcomingBooking
@@ -370,65 +370,65 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   const gad7ChartData =
     gad7Assessments.length > 0
       ? gad7Assessments
-        .slice()
-        .sort(
-          (a, b) =>
-            new Date(a.created_at).getTime() -
-            new Date(b.created_at).getTime()
-        )
-        .map((assessment) => ({
-          date: new Date(assessment.created_at).toLocaleDateString(
-            "en-GB",
-            {
-              day: "numeric",
-              month: "short",
-            }
-          ),
-          score: assessment.total_score,
-        }))
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.total_score,
+          }))
       : [];
 
   const phq9ChartData =
     phq9Assessments.length > 0
       ? phq9Assessments
-        .slice()
-        .sort(
-          (a, b) =>
-            new Date(a.created_at).getTime() -
-            new Date(b.created_at).getTime()
-        )
-        .map((assessment) => ({
-          date: new Date(assessment.created_at).toLocaleDateString(
-            "en-GB",
-            {
-              day: "numeric",
-              month: "short",
-            }
-          ),
-          score: assessment.total_score,
-        }))
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.total_score,
+          }))
       : [];
 
   const latestGad7 =
     gad7Assessments.length > 0
       ? gad7Assessments
-        .slice()
-        .sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() -
-            new Date(a.created_at).getTime()
-        )[0]
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
       : null;
 
   const latestPhq9 =
     phq9Assessments.length > 0
       ? phq9Assessments
-        .slice()
-        .sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() -
-            new Date(a.created_at).getTime()
-        )[0]
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
       : null;
 
   // --- Update fetchAssessments to include PCL-5 ---
@@ -723,10 +723,11 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                       key={option.value}
                       type="button"
                       onClick={() => handleQuickCheckIn(option.value)}
-                      className={`flex h-full flex-col items-center justify-center gap-2 rounded-xl border p-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${isSelected
+                      className={`flex h-full flex-col items-center justify-center gap-2 rounded-xl border p-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                        isSelected
                           ? "border-teal-500 bg-teal-50 text-teal-700 shadow-sm focus:ring-teal-500 focus:ring-offset-white"
                           : "border-gray-200 text-gray-700 hover:border-teal-400 hover:bg-teal-50 focus:ring-teal-400 focus:ring-offset-white"
-                        }`}
+                      }`}
                       aria-pressed={isSelected}
                     >
                       <span className="text-3xl">{option.emoji}</span>
@@ -897,119 +898,74 @@ function WellbeingHubContent({ userData }: { userData: any }) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {/* Session Notes Section */}
-                {sessionNotes.length > 0 && (
-                  <div className="border-b pb-4">
-                    <h4 className="mb-3 font-semibold text-teal-800 flex items-center gap-2">
-                      <FileText className="h-4 w-4" /> Latest Session Note
-                    </h4>
-                    <div className="rounded-lg bg-orange-50 p-4 border border-orange-100">
-                      <div className="flex justify-between items-start mb-2">
-                        <p className="font-medium text-orange-900">
-                          {sessionNotes[0].therapist
-                            ? `${sessionNotes[0].therapist.first_name} ${sessionNotes[0].therapist.last_name}`
-                            : "Your Wellbeing Coach"}
-                        </p>
-                        <span className="text-xs text-orange-700 font-medium">
-                          {formatDate(sessionNotes[0].date || sessionNotes[0].created_at)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-orange-800 line-clamp-3 italic">
-                        "{sessionNotes[0].notes}"
+                <div className="flex items-center justify-between border-b pb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="rounded-full bg-teal-100 p-2">
+                      <FileText className="h-4 w-4 text-orange-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Completed GAD-7 Assessment</p>
+                      <p className="text-sm text-gray-500">
+                        Score: 8/21 (Moderate anxiety)
                       </p>
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="p-0 h-auto text-orange-700 hover:text-orange-900 mt-2 text-xs"
-                        onClick={() => setActiveTab("session-notes")}
-                      >
-                        View all notes
-                      </Button>
                     </div>
                   </div>
-                )}
-
-                {/* Medications Section */}
-                {medications.length > 0 && (
-                  <div className="border-b pb-4">
-                    <h4 className="mb-3 font-semibold text-teal-800 flex items-center gap-2">
-                      <Activity className="h-4 w-4" /> Your Medications
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {medications.slice(0, 4).map((med) => (
-                        <div key={med.id} className="rounded-lg bg-blue-50 p-3 border border-blue-100">
-                          <p className="text-xs font-bold text-blue-900 uppercase tracking-wider mb-1">
-                            {med.condition}
-                          </p>
-                          <p className="text-sm font-medium text-blue-800">
-                            {med.medications}
-                          </p>
-                          {med.notes && (
-                            <p className="text-xs text-blue-600 mt-1 line-clamp-1 italic">
-                              {med.notes}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    {medications.length > 4 && (
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="p-0 h-auto text-blue-700 hover:text-blue-900 mt-2 text-xs"
-                        onClick={() => setActiveTab("medications")}
-                      >
-                        View all medications
-                      </Button>
-                    )}
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <Clock className="h-4 w-4" />
+                    <span>2 days ago</span>
                   </div>
-                )}
-
-                <h4 className="font-semibold text-teal-800 flex items-center gap-2 pt-2">
-                  <FileText className="h-4 w-4" /> Recent Assessments
-                </h4>
-                {gad7Assessments.slice(0, 2).map((assessment) => (
-                  <div key={`gad7-${assessment.id}`} className="flex items-center justify-between border-b pb-2">
-                    <div className="flex items-center space-x-3">
-                      <div className="rounded-full bg-teal-100 p-2">
-                        <FileText className="h-4 w-4 text-orange-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">Completed GAD-7 Assessment</p>
-                        <p className="text-xs text-gray-500">
-                          Score: {assessment.total_score}/21 ({assessment.severity_level})
-                        </p>
-                      </div>
+                </div>
+                <div className="flex items-center justify-between border-b pb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="rounded-full bg-teal-100 p-2">
+                      <FileText className="h-4 w-4 text-orange-600" />
                     </div>
-                    <div className="flex items-center space-x-2 text-xs text-gray-500">
-                      <Clock className="h-3 w-3" />
-                      <span>{formatDate(assessment.created_at)}</span>
+                    <div>
+                      <p className="font-medium">Completed PHQ-9 Assessment</p>
+                      <p className="text-sm text-gray-500">
+                        Score: 10/27 (Moderate depression)
+                      </p>
                     </div>
                   </div>
-                ))}
-                {phq9Assessments.slice(0, 2).map((assessment) => (
-                  <div key={`phq9-${assessment.id}`} className="flex items-center justify-between border-b pb-2">
-                    <div className="flex items-center space-x-3">
-                      <div className="rounded-full bg-teal-100 p-2">
-                        <FileText className="h-4 w-4 text-orange-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">Completed PHQ-9 Assessment</p>
-                        <p className="text-xs text-gray-500">
-                          Score: {assessment.total_score}/27 ({assessment.severity_level})
-                        </p>
-                      </div>
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <Clock className="h-4 w-4" />
+                    <span>2 days ago</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-b pb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="rounded-full bg-teal-100 p-2">
+                      <FileText className="h-4 w-4 text-orange-600" />
                     </div>
-                    <div className="flex items-center space-x-2 text-xs text-gray-500">
-                      <Clock className="h-3 w-3" />
-                      <span>{formatDate(assessment.created_at)}</span>
+                    <div>
+                      <p className="font-medium">Completed GAD-7 Assessment</p>
+                      <p className="text-sm text-gray-500">
+                        Score: 10/21 (Moderate anxiety)
+                      </p>
                     </div>
                   </div>
-                ))}
-
-                {sessionNotes.length === 0 && medications.length === 0 && gad7Assessments.length === 0 && phq9Assessments.length === 0 && (
-                  <p className="text-center text-gray-500 py-4">No recent activity found</p>
-                )}
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <Clock className="h-4 w-4" />
+                    <span>9 days ago</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="rounded-full bg-teal-100 p-2">
+                      <FileText className="h-4 w-4 text-orange-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Completed PHQ-9 Assessment</p>
+                      <p className="text-sm text-gray-500">
+                        Score: 12/27 (Moderate depression)
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <Clock className="h-4 w-4" />
+                    <span>9 days ago</span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
