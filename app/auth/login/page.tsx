@@ -116,7 +116,7 @@ function LoginForm() {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-16rem)] items-center justify-center px-4 py-12">
       <Card className="mx-auto w-full max-w-md border-2 border-teal-100">
@@ -160,7 +160,7 @@ function LoginForm() {
                   className="w-full rounded-md border border-gray-300 p-2"
                 >
                   <option value="patient">Participant</option>
-                  <option value="therapist">Therapist</option>
+                  <option value="therapist">Wellbeing Coach</option>
                 </select>
               </div>
               <div className="space-y-2">
