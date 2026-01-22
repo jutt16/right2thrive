@@ -75,12 +75,6 @@ export default function About() {
                   className="rounded-3xl object-cover shadow-2xl ring-4 ring-white/30"
                   priority={false}
                 />
-                <div className="absolute -bottom-6 -left-6 rounded-3xl bg-white/90 p-4 shadow-lg backdrop-blur">
-                  <p className="text-sm font-semibold text-[#00990d]">
-                    1,200+ sessions delivered
-                  </p>
-                  <p className="mt-1 text-xs text-gray-600">and growing every month</p>
-                </div>
               </div>
             </div>
           </div>
