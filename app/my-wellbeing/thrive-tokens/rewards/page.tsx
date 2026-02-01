@@ -75,14 +75,14 @@ function RewardsCatalogueContent() {
       .finally(() => setLoading(false));
   }, [isClient]);
 
-  if (!isClient) return null;
-
   useEffect(() => {
     if (redeemed && showRedeemedMsg) {
       const t = setTimeout(() => setShowRedeemedMsg(false), 5000);
       return () => clearTimeout(t);
     }
   }, [redeemed, showRedeemedMsg]);
+
+  if (!isClient) return null;
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
