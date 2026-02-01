@@ -7,7 +7,7 @@ import { ThumbsUp } from "lucide-react";
 import WellbeingOnboarding from "@/components/wellbeing-onboarding";
 
 const wellbeingOptions = [
-  // { label: "My Goals", href: "/my-wellbeing/my-goals" },
+  { label: "My Wellbeing Dashboard", href: "/my-wellbeing/dashboard" },
   { label: "My Weekly Goals", href: "/my-wellbeing/upload-weekly-goals" },
   // { label: "Download", href: "/my-wellbeing/download" },
   { label: "My Wellbeing Plan", href: "/my-wellbeing/wellbeing-plan" },
