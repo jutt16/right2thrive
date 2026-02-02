@@ -130,16 +130,36 @@ export async function getRewards(): Promise<Reward[]> {
   }
 }
 
-export async function getReward(id: number | string): Promise<RewardDetail | null> {
+export type GetRewardResult =
+  | { ok: true; reward: RewardDetail }
+  | { ok: false; error: string; code: "not_found" | "error" };
+
+export async function getReward(id: number | string): Promise<GetRewardResult> {
   try {
     const res = await fetch(`${API_BASE}/api/thrive-tokens/rewards/${id}`, {
       headers: getAuthHeaders(),
     });
     const json: ApiResponse<RewardDetail> = await res.json();
-    if (json.success && json.data) return json.data;
-    return null;
-  } catch {
-    return null;
+
+    if (json.success && json.data) {
+      return { ok: true, reward: json.data };
+    }
+
+    if (res.status === 404 || json.message?.toLowerCase().includes("not found")) {
+      return { ok: false, error: json.message || "Reward not found", code: "not_found" };
+    }
+
+    return {
+      ok: false,
+      error: json.message || "Could not load reward",
+      code: "error",
+    };
+  } catch (e) {
+    return {
+      ok: false,
+      error: "We couldn't load this reward. Please check your connection and try again.",
+      code: "error",
+    };
   }
 }
 

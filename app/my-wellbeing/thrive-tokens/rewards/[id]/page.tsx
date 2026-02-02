@@ -22,6 +22,7 @@ export default function RewardDetailPage() {
   const params = useParams();
   const id = params?.id as string;
   const [reward, setReward] = useState<RewardDetail | null>(null);
+  const [loadError, setLoadError] = useState<{ message: string; code: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [redeeming, setRedeeming] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,9 +37,15 @@ export default function RewardDetailPage() {
 
   useEffect(() => {
     if (!id) return;
+    setLoadError(null);
     getReward(id)
-      .then((data) => {
-        setReward(data ?? null);
+      .then((result) => {
+        if (result.ok) {
+          setReward(result.reward);
+        } else {
+          setLoadError({ message: result.error, code: result.code });
+          setReward(null);
+        }
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -75,9 +82,19 @@ export default function RewardDetailPage() {
   }
 
   if (!reward) {
+    const isNotFound = loadError?.code === "not_found";
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <p className="text-muted-foreground">This reward is not available.</p>
+        <p className="text-muted-foreground">
+          {isNotFound
+            ? "This reward is no longer available."
+            : loadError?.message || "This reward is not available."}
+        </p>
+        {loadError?.code === "error" && (
+          <p className="text-sm text-muted-foreground mt-2">
+            Make sure you're signed in and have a stable connection.
+          </p>
+        )}
         <Button variant="outline" asChild className="mt-4">
           <Link href="/my-wellbeing/thrive-tokens/rewards">Back to rewards</Link>
         </Button>
