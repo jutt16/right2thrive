@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
 
 interface Question {
   id: number;
@@ -25,6 +26,7 @@ export default function Pcl5Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [tokensEarned, setTokensEarned] = useState<number | null>(null);
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -110,6 +112,11 @@ export default function Pcl5Page() {
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Unable to submit");
+      if (typeof data.data?.tokens_awarded === "number") {
+        setTokensEarned(data.data.tokens_awarded);
+      } else if (typeof data.tokens_awarded === "number") {
+        setTokensEarned(data.tokens_awarded);
+      }
       setSuccess(true);
       fetchAssessments();
     } catch (err: any) {
@@ -172,9 +179,12 @@ export default function Pcl5Page() {
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
         {success && (
-          <p className="text-green-600 text-sm">
-            Assessment submitted successfully.
-          </p>
+          <>
+            <p className="text-green-600 text-sm">
+              Assessment submitted successfully.
+            </p>
+            <TokenEarnedAcknowledgment tokensAwarded={tokensEarned} />
+          </>
         )}
 
         <Button

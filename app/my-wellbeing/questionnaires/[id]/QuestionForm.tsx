@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
 
 interface Choice {
   id: number;
@@ -33,6 +34,8 @@ export default function QuestionForm({
   const [responses, setResponses] = useState<Record<number, any>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [tokensEarned, setTokensEarned] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -108,9 +111,15 @@ export default function QuestionForm({
         }
       );
 
-      if (!res.ok) throw new Error("Failed to submit responses");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Failed to submit responses");
 
-      alert("Responses saved successfully ✅");
+      if (typeof data?.data?.tokens_awarded === "number") {
+        setTokensEarned(data.data.tokens_awarded);
+      } else if (typeof data?.tokens_awarded === "number") {
+        setTokensEarned(data.tokens_awarded);
+      }
+      setSubmitted(true);
       setResponses({});
     } catch (err: any) {
       setError(err.message);
@@ -131,6 +140,20 @@ export default function QuestionForm({
         <p className="text-gray-600 mb-6">{questionnaire.description}</p>
       )}
 
+      {submitted ? (
+        <>
+          <p className="text-green-600 text-sm">Responses saved successfully.</p>
+          <TokenEarnedAcknowledgment tokensAwarded={tokensEarned} />
+          <button
+            type="button"
+            onClick={() => setSubmitted(false)}
+            className="text-sm text-muted-foreground underline hover:no-underline"
+          >
+            Submit again
+          </button>
+        </>
+      ) : (
+        <>
       {questionnaire.questions.map((q) => (
         <div key={q.id} className="p-4 border rounded">
           <p className="font-medium mb-2">{q.text}</p>
@@ -201,6 +224,8 @@ export default function QuestionForm({
       >
         {submitting ? "Submitting..." : "Submit"}
       </button>
+        </>
+      )}
     </form>
   );
 }

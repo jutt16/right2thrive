@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
 
 interface Question {
   id: number;
@@ -106,6 +107,7 @@ export default function PHQ9Assessment() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [tokensEarned, setTokensEarned] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [showInitialSelection, setShowInitialSelection] = useState(true);
@@ -292,6 +294,11 @@ export default function PHQ9Assessment() {
       const data = await response.json();
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Failed to submit assessment");
+      }
+      if (typeof data.data?.tokens_awarded === "number") {
+        setTokensEarned(data.data.tokens_awarded);
+      } else if (typeof data.tokens_awarded === "number") {
+        setTokensEarned(data.tokens_awarded);
       }
       setShowResults(true);
     } catch (error) {
@@ -795,6 +802,8 @@ export default function PHQ9Assessment() {
                 will review your assessment and provide appropriate guidance.
               </p>
             </div>
+
+            <TokenEarnedAcknowledgment tokensAwarded={tokensEarned} />
 
             <div className="rounded-md border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
               <p className="font-medium">Important Note</p>
