@@ -93,8 +93,7 @@ export default function Navbar() {
             ["Wellbeing Activities", "/cultural-activities"],
             ["Blog", "/blog"],
             ["Press Release", "/press"],
-            ["Privacy Policy", "/privacy-policy"],
-            ["Privacy Compliance", "/privacy-compliance"],
+            ["My Wellbeing Dashboard", "/my-wellbeing/dashboard"],
           ].map(([label, href]) => (
             <Link
               key={label}
@@ -230,8 +229,7 @@ export default function Navbar() {
                 ["Wellbeing Activities", "/cultural-activities"],
                 ["Blog", "/blog"],
                 ["Press Release", "/press"],
-                ["Privacy Policy", "/privacy-policy"],
-                ["Privacy Compliance", "/privacy-compliance"],
+                ["My Wellbeing Dashboard", "/my-wellbeing/dashboard"],
               ].map(([label, href]) => (
                 <Link
                   key={label}
