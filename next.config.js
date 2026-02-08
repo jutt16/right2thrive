@@ -128,17 +128,6 @@ const nextConfig = {
     ];
   },
 
-  // Redirects for SEO
-  async redirects() {
-    return [
-      {
-        source: '/blog/:slug',
-        destination: '/blog/:slug',
-        permanent: true,
-      },
-    ];
-  },
-
   // Webpack optimization
   webpack: (config, { dev, isServer }) => {
     // Production optimizations
