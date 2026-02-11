@@ -23,8 +23,6 @@ interface ProfileFormData {
   telephone: string;
   mobile: string;
   address: string;
-  city: string;
-  postcode: string;
   country: string;
   employment_status: string;
 }
@@ -76,8 +74,6 @@ export default function Profile() {
     telephone: "",
     mobile: "",
     address: "",
-    city: "",
-    postcode: "",
     country: "",
     employment_status: "",
   });
@@ -122,8 +118,6 @@ export default function Profile() {
           telephone: profile.telephone || "",
           mobile: profile.mobile || "",
           address: profile.address || "",
-          city: profile.city || "",
-          postcode: profile.postcode || "",
           country: profile.country || "",
           employment_status: profile.employment_status || "",
         });
@@ -177,97 +171,54 @@ export default function Profile() {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Missing token");
 
-      // If profile picture is being uploaded, use FormData
+      // Always use FormData for POST request
+      const formDataToSend = new FormData();
+      formDataToSend.append("date_of_birth", formData.date_of_birth || "");
+      formDataToSend.append("gender", formData.gender.toLowerCase() || "");
+      formDataToSend.append("telephone", formData.telephone || "");
+      formDataToSend.append("mobile", formData.mobile || "");
+      formDataToSend.append("address", formData.address || "");
+      formDataToSend.append("country", formData.country || "");
+      formDataToSend.append("employment_status", formData.employment_status || "");
+      
+      // Add profile picture if provided
       if (profilePicture) {
-        const formDataToSend = new FormData();
-        formDataToSend.append("date_of_birth", formData.date_of_birth || "");
-        formDataToSend.append("gender", formData.gender.toLowerCase() || "");
-        formDataToSend.append("telephone", formData.telephone || "");
-        formDataToSend.append("mobile", formData.mobile || "");
-        formDataToSend.append("address", formData.address || "");
-        formDataToSend.append("city", formData.city || "");
-        formDataToSend.append("postcode", formData.postcode || "");
-        formDataToSend.append("country", formData.country || "");
-        formDataToSend.append("employment_status", formData.employment_status || "");
         formDataToSend.append("profile_picture", profilePicture);
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-            body: formDataToSend,
-          }
-        );
-
-        const data: unknown = await response.json();
-
-        if (!response.ok) {
-          const firstError = extractFirstErrorMessage(data);
-          if (firstError) {
-            throw new Error(firstError);
-          }
-
-          throw new Error(extractMessage(data) ?? "Update failed.");
-        }
-
-        toast({
-          variant: "default",
-          title: "Success",
-          description: "Profile updated successfully.",
-        });
-
-        setProfilePicture(null); // Reset file input
-        fetchProfile(); // Refresh
-      } else {
-        // No file upload, use JSON
-        const payload = {
-          date_of_birth: formData.date_of_birth,
-          gender: formData.gender.toLowerCase(), // ✅ force lowercase
-          telephone: formData.telephone,
-          mobile: formData.mobile,
-          address: formData.address,
-          city: formData.city,
-          postcode: formData.postcode,
-          country: formData.country,
-          employment_status: formData.employment_status,
-        };
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-
-        const data: unknown = await response.json();
-
-        if (!response.ok) {
-          const firstError = extractFirstErrorMessage(data);
-          if (firstError) {
-            throw new Error(firstError);
-          }
-
-          throw new Error(extractMessage(data) ?? "Update failed.");
-        }
-
-        toast({
-          variant: "default",
-          title: "Success",
-          description: "Profile updated successfully.",
-        });
-
-        fetchProfile(); // Refresh
       }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          body: formDataToSend,
+        }
+      );
+
+      const data: unknown = await response.json();
+
+      if (!response.ok) {
+        const firstError = extractFirstErrorMessage(data);
+        if (firstError) {
+          throw new Error(firstError);
+        }
+
+        throw new Error(extractMessage(data) ?? "Update failed.");
+      }
+
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Profile updated successfully.",
+      });
+
+      if (profilePicture) {
+        setProfilePicture(null); // Reset file input
+      }
+      fetchProfile(); // Refresh
     } catch (error) {
       toast({
         variant: "destructive",
@@ -375,26 +326,6 @@ export default function Profile() {
                   id="address"
                   name="address"
                   value={formData.address}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="postcode">Postcode</Label>
-                <Input
-                  id="postcode"
-                  name="postcode"
-                  value={formData.postcode}
                   onChange={handleChange}
                 />
               </div>

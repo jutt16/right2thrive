@@ -1,30 +1,18 @@
 # Profile API Backend Updates Required
 
-This document outlines the backend changes needed to support the new profile fields: `city`, `postcode`, and `profile_picture`.
+This document outlines the backend changes needed to support the new profile field: `profile_picture`.
 
 ## Routes (Already Defined)
 ```php
 Route::get('/user', [UserProfileController::class, 'show']);
-Route::put('/user', [UserProfileController::class, 'updateProfile']);
-```
-
-## Database Migration
-
-Add the missing columns to the `profiles` table if they don't exist:
-
-```php
-Schema::table('profiles', function (Blueprint $table) {
-    $table->string('city', 100)->nullable()->after('address');
-    $table->string('postcode', 20)->nullable()->after('city');
-    // profile_picture column should already exist
-});
+Route::post('/user', [UserProfileController::class, 'updateProfile']);
 ```
 
 ## UserProfileController Updates
 
 ### 1. Update `show()` method
 
-Ensure the response includes `city`, `postcode`, and `profile_picture_url`:
+Ensure the response includes `profile_picture_url`:
 
 ```php
 public function show(Request $request)
@@ -51,8 +39,6 @@ public function show(Request $request)
                 'employment_status' => $user->profile->employment_status ?? null,
                 'country' => $user->profile->country ?? null,
                 'address' => $user->profile->address ?? null,
-                'city' => $user->profile->city ?? null, // ✅ Add this
-                'postcode' => $user->profile->postcode ?? null, // ✅ Add this
                 'qualifications' => $user->profile->qualifications ?? null,
                 'experience' => $user->profile->experience ?? null,
                 'profile_picture' => $user->profile->profile_picture ?? null,
@@ -87,8 +73,6 @@ public function updateProfile(Request $request)
         'telephone' => 'nullable|string|max:20',
         'mobile' => 'nullable|string|max:20',
         'address' => 'nullable|string|max:255',
-        'city' => 'nullable|string|max:100', // ✅ Add this
-        'postcode' => 'nullable|string|max:20', // ✅ Add this
         'country' => 'nullable|string|max:100',
         'employment_status' => 'nullable|string|max:100',
         'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // ✅ Add this
@@ -139,8 +123,6 @@ protected $fillable = [
     'employment_status',
     'country',
     'address',
-    'city', // ✅ Add this
-    'postcode', // ✅ Add this
     'qualifications',
     'experience',
     'profile_picture', // ✅ Ensure this exists
@@ -164,20 +146,20 @@ Ensure Laravel storage is properly configured:
 
 ## Testing Checklist
 
-- [ ] GET `/api/user` returns `city`, `postcode` in profile object
 - [ ] GET `/api/user` returns `profile_picture_url` at root level
-- [ ] PUT `/api/user` accepts `city` and `postcode` in JSON body
-- [ ] PUT `/api/user` accepts `profile_picture` as multipart/form-data file
-- [ ] PUT `/api/user` validates image file types (jpeg, png, jpg, gif)
-- [ ] PUT `/api/user` validates image file size (max 2MB)
-- [ ] PUT `/api/user` stores uploaded image in `storage/app/public/profiles/`
-- [ ] PUT `/api/user` deletes old image when new one is uploaded
-- [ ] PUT `/api/user` returns updated profile with `profile_picture_url`
+- [ ] POST `/api/user` accepts all profile fields as multipart/form-data
+- [ ] POST `/api/user` accepts `profile_picture` as multipart/form-data file
+- [ ] POST `/api/user` validates image file types (jpeg, png, jpg, gif)
+- [ ] POST `/api/user` validates image file size (max 2MB)
+- [ ] POST `/api/user` stores uploaded image in `storage/app/public/profiles/`
+- [ ] POST `/api/user` deletes old image when new one is uploaded
+- [ ] POST `/api/user` returns updated profile with `profile_picture_url`
 
 ## Notes
 
-- The frontend sends FormData when `profile_picture` is present, otherwise sends JSON
-- The backend should handle both Content-Type: `application/json` and `multipart/form-data`
+- The frontend always sends FormData (multipart/form-data) for POST requests
+- The backend should handle `multipart/form-data` Content-Type
 - Use Laravel's `$request->hasFile('profile_picture')` to detect file upload
 - Use `Storage::disk('public')->delete()` to remove old images
 - Return full URL using `asset('storage/...')` for profile picture
+- All profile fields are sent as form fields, profile_picture is sent as a file when provided
