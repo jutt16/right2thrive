@@ -1071,6 +1071,29 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </Button>
               </CardFooter>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Risk Assessment</CardTitle>
+                <CardDescription>(Safety & Wellbeing Check)</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  A confidential check to help us understand your current emotional state and ensure you receive the right level of support.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="bg-[#00990d] text-white hover:bg-[#3c362f]"
+                  onClick={() =>
+                    handleTakeAssessment("/wellbeing-hub/risk-assessment")
+                  }
+                >
+                  Start Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
 
           <Card>
