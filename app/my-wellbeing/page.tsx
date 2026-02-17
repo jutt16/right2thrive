@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ThumbsUp } from "lucide-react";
+import { ThumbsUp, ShieldAlert } from "lucide-react";
 import WellbeingOnboarding from "@/components/wellbeing-onboarding";
 
 const wellbeingOptions = [
@@ -16,6 +16,7 @@ const wellbeingOptions = [
   { label: "Nine Symptom Checklist (PHQ-9)", href: "/wellbeing-hub/phq9" },
   { label: "Strength and Difficulties Questionnaire (SDQ)", href: "/my-wellbeing/questionnaires" },
   { label: "PCL-5 Questionnaire", href: "/wellbeing-hub/pcl5" },
+  { label: "Risk Assessment", href: "/wellbeing-hub/risk-assessment" },
 ];
 
 export default function WellbeingHub() {
@@ -107,6 +108,33 @@ export default function WellbeingHub() {
       <WellbeingOnboarding />
       <div className="max-w-3xl mx-auto mt-10 mb-10 px-4">
         {/* Show "Choose Your Wellbeing Coach" card if no therapist assigned */}
+        {/* Risk Assessment - urgent safety check */}
+        <div className="rounded-xl shadow-xl border-2 border-red-300 overflow-hidden mb-6 bg-gradient-to-br from-red-50 to-amber-50">
+          <div className="bg-gradient-to-r from-red-600 to-amber-600 px-6 py-4">
+            <div className="flex items-center gap-3">
+              <ShieldAlert className="h-8 w-8 text-white shrink-0" aria-hidden />
+              <div>
+                <h2 className="text-xl font-bold text-white">Risk Assessment</h2>
+                <p className="text-red-100 text-sm mt-0.5">
+                  Confidential safety & wellbeing check — helps ensure you receive the right support
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6">
+            <p className="text-gray-700 mb-4">
+              This assessment is designed to understand your current emotional state. Your responses are confidential and help your care team provide appropriate support when needed.
+            </p>
+            <Link
+              href="/wellbeing-hub/risk-assessment"
+              className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              <ShieldAlert className="h-5 w-5" />
+              Complete Risk Assessment
+            </Link>
+          </div>
+        </div>
+
         {!hasTherapist && (
           <div className="rounded-xl shadow-xl border border-yellow-400 overflow-hidden mb-6 bg-gradient-to-br from-yellow-50 to-orange-50">
             <div className="bg-gradient-to-r from-yellow-500 to-orange-500 px-6 py-4">

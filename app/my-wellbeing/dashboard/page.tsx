@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Calendar, Sparkles, MessageCircle } from "lucide-react";
+import { Calendar, Sparkles, MessageCircle, ShieldAlert } from "lucide-react";
 import { getThriveDashboard } from "@/lib/thrive-tokens-api";
 import { ThriveTokensCard } from "@/components/thrive-tokens/ThriveTokensCard";
 
@@ -73,6 +73,34 @@ export default function WellbeingDashboardPage() {
       <p className="text-muted-foreground mb-6">
         You're supported here. ThriveTokens are a thank-you for engaging.
       </p>
+
+      {/* Risk Assessment — prominent safety alert */}
+      <section className="mb-8" aria-labelledby="risk-assessment-heading">
+        <h2 id="risk-assessment-heading" className="sr-only">
+          Risk Assessment
+        </h2>
+        <Link
+          href="/wellbeing-hub/risk-assessment"
+          className="block rounded-xl border-2 border-red-300 overflow-hidden bg-gradient-to-br from-red-50 to-amber-50 shadow-md hover:shadow-lg hover:border-red-400 transition-all"
+        >
+          <div className="bg-gradient-to-r from-red-600 to-amber-600 px-6 py-4">
+            <div className="flex items-center gap-3">
+              <ShieldAlert className="h-7 w-7 text-white shrink-0" aria-hidden />
+              <div>
+                <h3 className="text-lg font-bold text-white">Risk Assessment</h3>
+                <p className="text-red-100 text-sm">
+                  Confidential safety & wellbeing check
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="px-6 py-3">
+            <p className="text-sm text-gray-700">
+              Complete this check to help ensure you receive the right support.
+            </p>
+          </div>
+        </Link>
+      </section>
 
       <section className="mb-8" aria-labelledby="tokens-heading">
         <h2 id="tokens-heading" className="sr-only">
