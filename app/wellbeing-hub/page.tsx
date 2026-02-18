@@ -211,8 +211,9 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   const [upcomingBooking, setUpcomingBooking] = useState<Booking | null>(null);
   const [isLoadingBookings, setIsLoadingBookings] = useState(true);
   const [activeTab, setActiveTab] = useState(
-    searchParams.get("tab") || "assessments"
+    searchParams.get("tab") || "dashboard"
   );
+
   const [selectedAssessment, setSelectedAssessment] =
     useState<Assessment | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -223,6 +224,53 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   const [pcl5Assessments, setPcl5Assessments] = useState<Assessment[]>([]);
   const [sdqAssessments, setSdqAssessments] = useState<SdqAssessment[]>([]);
   const [riskAssessments, setRiskAssessments] = useState<RiskAssessment[]>([]);
+
+  const recentActivities = [
+    ...gad7Assessments.map((a) => ({
+      id: `gad7-${a.id}`,
+      type: "GAD-7",
+      score: a.total_score,
+      max: 21,
+      severity: a.severity_level,
+      date: new Date(a.created_at),
+    })),
+    ...phq9Assessments.map((a) => ({
+      id: `phq9-${a.id}`,
+      type: "PHQ-9",
+      score: a.total_score,
+      max: 27,
+      severity: a.severity_level,
+      date: new Date(a.created_at),
+    })),
+    ...pcl5Assessments.map((a) => ({
+      id: `pcl5-${a.id}`,
+      type: "PCL-5",
+      score: a.total_score,
+      max: 80,
+      severity: a.severity_level,
+      date: new Date(a.created_at),
+    })),
+    ...riskAssessments.map((a) => ({
+      id: `risk-${a.id}`,
+      type: "Risk",
+      score: a.score,
+      max: null,
+      severity: a.risk_level,
+      date: new Date(a.created_at),
+    })),
+  ]
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .slice(0, 5);
+
+  const getRelativeTimeString = (date: Date) => {
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 0) return "Today";
+    if (diffInDays === 1) return "Yesterday";
+    return `${diffInDays} days ago`;
+  };
 
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
@@ -414,8 +462,8 @@ function WellbeingHubContent({ userData }: { userData: any }) {
     (typeof userData?.first_name === "string" && userData.first_name.trim().length > 0
       ? userData.first_name.trim()
       : typeof userData?.name === "string" && userData.name.trim().length > 0
-      ? userData.name.trim().split(" ")[0]
-      : "there");
+        ? userData.name.trim().split(" ")[0]
+        : "there");
 
   const sessionReminderMessage =
     !isLoadingBookings && upcomingBooking
@@ -425,166 +473,166 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   const gad7ChartData =
     gad7Assessments.length > 0
       ? gad7Assessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-          )
-          .map((assessment) => ({
-            date: new Date(assessment.created_at).toLocaleDateString(
-              "en-GB",
-              {
-                day: "numeric",
-                month: "short",
-              }
-            ),
-            score: assessment.total_score,
-          }))
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() -
+            new Date(b.created_at).getTime()
+        )
+        .map((assessment) => ({
+          date: new Date(assessment.created_at).toLocaleDateString(
+            "en-GB",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          ),
+          score: assessment.total_score,
+        }))
       : [];
 
   const phq9ChartData =
     phq9Assessments.length > 0
       ? phq9Assessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-          )
-          .map((assessment) => ({
-            date: new Date(assessment.created_at).toLocaleDateString(
-              "en-GB",
-              {
-                day: "numeric",
-                month: "short",
-              }
-            ),
-            score: assessment.total_score,
-          }))
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() -
+            new Date(b.created_at).getTime()
+        )
+        .map((assessment) => ({
+          date: new Date(assessment.created_at).toLocaleDateString(
+            "en-GB",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          ),
+          score: assessment.total_score,
+        }))
       : [];
 
   const latestGad7 =
     gad7Assessments.length > 0
       ? gad7Assessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )[0]
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
+        )[0]
       : null;
 
   const latestPhq9 =
     phq9Assessments.length > 0
       ? phq9Assessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )[0]
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
+        )[0]
       : null;
 
   // Chart data for PCL-5
   const pcl5ChartData =
     pcl5Assessments.length > 0
       ? pcl5Assessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-          )
-          .map((assessment) => ({
-            date: new Date(assessment.created_at).toLocaleDateString(
-              "en-GB",
-              {
-                day: "numeric",
-                month: "short",
-              }
-            ),
-            score: assessment.total_score || 0,
-          }))
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() -
+            new Date(b.created_at).getTime()
+        )
+        .map((assessment) => ({
+          date: new Date(assessment.created_at).toLocaleDateString(
+            "en-GB",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          ),
+          score: assessment.total_score || 0,
+        }))
       : [];
 
   // Chart data for Risk Assessments
   const riskChartData =
     riskAssessments.length > 0
       ? riskAssessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-          )
-          .map((assessment) => ({
-            date: new Date(assessment.created_at).toLocaleDateString(
-              "en-GB",
-              {
-                day: "numeric",
-                month: "short",
-              }
-            ),
-            score: assessment.score,
-            riskLevel: assessment.risk_level,
-          }))
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() -
+            new Date(b.created_at).getTime()
+        )
+        .map((assessment) => ({
+          date: new Date(assessment.created_at).toLocaleDateString(
+            "en-GB",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          ),
+          score: assessment.score,
+          riskLevel: assessment.risk_level,
+        }))
       : [];
 
   // Chart data for SDQ (using completion date)
   const sdqChartData =
     sdqAssessments.length > 0
       ? sdqAssessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(a.completed_at || a.created_at).getTime() -
-              new Date(b.completed_at || b.created_at).getTime()
-          )
-          .map((assessment, index) => ({
-            date: new Date(assessment.completed_at || assessment.created_at).toLocaleDateString(
-              "en-GB",
-              {
-                day: "numeric",
-                month: "short",
-              }
-            ),
-            assessmentNumber: index + 1,
-          }))
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.completed_at || a.created_at).getTime() -
+            new Date(b.completed_at || b.created_at).getTime()
+        )
+        .map((assessment, index) => ({
+          date: new Date(assessment.completed_at || assessment.created_at).toLocaleDateString(
+            "en-GB",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          ),
+          assessmentNumber: index + 1,
+        }))
       : [];
 
   // Latest assessments
   const latestPcl5 =
     pcl5Assessments.length > 0
       ? pcl5Assessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )[0]
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
+        )[0]
       : null;
 
   const latestRisk =
     riskAssessments.length > 0
       ? riskAssessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-          )[0]
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
+        )[0]
       : null;
 
   const latestSdq =
     sdqAssessments.length > 0
       ? sdqAssessments
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(b.completed_at || b.created_at).getTime() -
-              new Date(a.completed_at || a.created_at).getTime()
-          )[0]
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.completed_at || b.created_at).getTime() -
+            new Date(a.completed_at || a.created_at).getTime()
+        )[0]
       : null;
 
   // Improvement calculation functions
@@ -942,11 +990,10 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                       key={option.value}
                       type="button"
                       onClick={() => handleQuickCheckIn(option.value)}
-                      className={`flex h-full flex-col items-center justify-center gap-2 rounded-xl border p-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                        isSelected
-                          ? "border-teal-500 bg-teal-50 text-teal-700 shadow-sm focus:ring-teal-500 focus:ring-offset-white"
-                          : "border-gray-200 text-gray-700 hover:border-teal-400 hover:bg-teal-50 focus:ring-teal-400 focus:ring-offset-white"
-                      }`}
+                      className={`flex h-full flex-col items-center justify-center gap-2 rounded-xl border p-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${isSelected
+                        ? "border-teal-500 bg-teal-50 text-teal-700 shadow-sm focus:ring-teal-500 focus:ring-offset-white"
+                        : "border-gray-200 text-gray-700 hover:border-teal-400 hover:bg-teal-50 focus:ring-teal-400 focus:ring-offset-white"
+                        }`}
                       aria-pressed={isSelected}
                     >
                       <span className="text-3xl">{option.emoji}</span>
@@ -1136,23 +1183,23 @@ function WellbeingHubContent({ userData }: { userData: any }) {
           {(gad7Improvement.trend === "improving" ||
             phq9Improvement.trend === "improving" ||
             pcl5Improvement.trend === "improving") && (
-            <Card className="border border-emerald-100 bg-emerald-50/80">
-              <CardContent className="flex items-center justify-between gap-3 py-6">
-                <div className="flex items-center gap-2">
-                  <TrendingDown className="h-5 w-5 text-emerald-600" />
-                  <p className="text-base font-semibold text-emerald-900">
-                    {gad7Improvement.trend === "improving" &&
-                      `Your anxiety improved by ${gad7Improvement.percentage.toFixed(0)}%! `}
-                    {phq9Improvement.trend === "improving" &&
-                      `Your depression improved by ${phq9Improvement.percentage.toFixed(0)}%! `}
-                    {pcl5Improvement.trend === "improving" &&
-                      `Your PTSD symptoms improved by ${pcl5Improvement.percentage.toFixed(0)}%! `}
-                    Keep up the great work!
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+              <Card className="border border-emerald-100 bg-emerald-50/80">
+                <CardContent className="flex items-center justify-between gap-3 py-6">
+                  <div className="flex items-center gap-2">
+                    <TrendingDown className="h-5 w-5 text-emerald-600" />
+                    <p className="text-base font-semibold text-emerald-900">
+                      {gad7Improvement.trend === "improving" &&
+                        `Your anxiety improved by ${gad7Improvement.percentage.toFixed(0)}%! `}
+                      {phq9Improvement.trend === "improving" &&
+                        `Your depression improved by ${phq9Improvement.percentage.toFixed(0)}%! `}
+                      {pcl5Improvement.trend === "improving" &&
+                        `Your PTSD symptoms improved by ${pcl5Improvement.percentage.toFixed(0)}%! `}
+                      Keep up the great work!
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
           {/* Comprehensive Assessment Graphs */}
           <div className="grid gap-4 md:grid-cols-2">
@@ -1356,74 +1403,30 @@ function WellbeingHubContent({ userData }: { userData: any }) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between border-b pb-2">
-                  <div className="flex items-center space-x-3">
-                    <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-orange-600" />
+                {recentActivities.length === 0 ? (
+                  <p className="text-center text-gray-500 py-4">No recent activity found.</p>
+                ) : (
+                  recentActivities.map((activity) => (
+                    <div key={activity.id} className="flex items-center justify-between border-b pb-2 last:border-0 last:pb-0">
+                      <div className="flex items-center space-x-3">
+                        <div className="rounded-full bg-teal-100 p-2">
+                          <FileText className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Completed {activity.type} Assessment</p>
+                          <p className="text-sm text-gray-500">
+                            Score: {activity.score}{activity.max ? `/${activity.max}` : ""}
+                            {activity.severity ? ` (${activity.severity})` : ""}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-500">
+                        <Clock className="h-4 w-4" />
+                        <span>{getRelativeTimeString(activity.date)}</span>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">Completed GAD-7 Assessment</p>
-                      <p className="text-sm text-gray-500">
-                        Score: 8/21 (Moderate anxiety)
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <Clock className="h-4 w-4" />
-                    <span>2 days ago</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between border-b pb-2">
-                  <div className="flex items-center space-x-3">
-                    <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-orange-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Completed PHQ-9 Assessment</p>
-                      <p className="text-sm text-gray-500">
-                        Score: 10/27 (Moderate depression)
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <Clock className="h-4 w-4" />
-                    <span>2 days ago</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between border-b pb-2">
-                  <div className="flex items-center space-x-3">
-                    <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-orange-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Completed GAD-7 Assessment</p>
-                      <p className="text-sm text-gray-500">
-                        Score: 10/21 (Moderate anxiety)
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <Clock className="h-4 w-4" />
-                    <span>9 days ago</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="rounded-full bg-teal-100 p-2">
-                      <FileText className="h-4 w-4 text-orange-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Completed PHQ-9 Assessment</p>
-                      <p className="text-sm text-gray-500">
-                        Score: 12/27 (Moderate depression)
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <Clock className="h-4 w-4" />
-                    <span>9 days ago</span>
-                  </div>
-                </div>
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>
@@ -1572,6 +1575,28 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </TabsList>
 
                 <TabsContent value="pcl5" className="space-y-4">
+                  {pcl5ChartData.length > 0 && (
+                    <Card className="p-4">
+                      <h3 className="mb-4 text-sm font-medium">PCL-5 Progress Over Time</h3>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsLineChart data={pcl5ChartData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="date" />
+                            <YAxis domain={[0, 80]} />
+                            <RechartsTooltip />
+                            <Line
+                              type="monotone"
+                              dataKey="score"
+                              stroke="#dc2626"
+                              strokeWidth={2}
+                              dot={{ r: 4 }}
+                            />
+                          </RechartsLineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </Card>
+                  )}
                   <div className="rounded-md border">
                     <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
                       <div>Date</div>
@@ -1619,6 +1644,28 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </TabsContent>
 
                 <TabsContent value="gad7" className="space-y-4">
+                  {gad7ChartData.length > 0 && (
+                    <Card className="p-4">
+                      <h3 className="mb-4 text-sm font-medium">GAD-7 Progress Over Time</h3>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsLineChart data={gad7ChartData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="date" />
+                            <YAxis domain={[0, 21]} />
+                            <RechartsTooltip />
+                            <Line
+                              type="monotone"
+                              dataKey="score"
+                              stroke="#0f766e"
+                              strokeWidth={2}
+                              dot={{ r: 4 }}
+                            />
+                          </RechartsLineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </Card>
+                  )}
                   <div className="rounded-md border">
                     <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
                       <div>Date</div>
@@ -1666,6 +1713,28 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </TabsContent>
 
                 <TabsContent value="phq9" className="space-y-4">
+                  {phq9ChartData.length > 0 && (
+                    <Card className="p-4">
+                      <h3 className="mb-4 text-sm font-medium">PHQ-9 Progress Over Time</h3>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsLineChart data={phq9ChartData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="date" />
+                            <YAxis domain={[0, 27]} />
+                            <RechartsTooltip />
+                            <Line
+                              type="monotone"
+                              dataKey="score"
+                              stroke="#2563eb"
+                              strokeWidth={2}
+                              dot={{ r: 4 }}
+                            />
+                          </RechartsLineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </Card>
+                  )}
                   <div className="rounded-md border">
                     <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
                       <div>Date</div>
@@ -1769,6 +1838,22 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 </TabsContent>
 
                 <TabsContent value="risk" className="space-y-4">
+                  {riskChartData.length > 0 && (
+                    <Card className="p-4">
+                      <h3 className="mb-4 text-sm font-medium">Risk Assessment Variation</h3>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsBarChart data={riskChartData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="date" />
+                            <YAxis />
+                            <RechartsTooltip />
+                            <Bar dataKey="score" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                          </RechartsBarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </Card>
+                  )}
                   <div className="rounded-md border">
                     <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
                       <div>Date</div>
