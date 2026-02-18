@@ -25,6 +25,10 @@ import {
   Calendar,
   Clock,
   ArrowRight,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  AlertTriangle,
 } from "lucide-react";
 import {
   LineChart as RechartsLineChart,
@@ -49,12 +53,61 @@ interface AssessmentAnswer {
 interface Assessment {
   id: number;
   user_id: number;
-  therapist_id: number;
+  therapist_id?: number | null;
   total_score: number;
-  severity_level: string;
-  answers: AssessmentAnswer[];
+  severity_level?: string;
+  answers?: AssessmentAnswer[];
   created_at: string;
-  therapist: {
+  therapist?: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  };
+  flagged?: boolean;
+  worst_event?: string;
+  responses?: number[];
+}
+
+interface SdqAssessment {
+  id: number;
+  user_id: number;
+  questionnaire_id: number;
+  completed_at: string;
+  created_at: string;
+  updated_at: string;
+  questionnaire?: {
+    id: number;
+    title: string;
+    description: string;
+  };
+  responses?: Array<{
+    id: number;
+    question_id: number;
+    choice_id?: number;
+    text_response?: string;
+    question?: {
+      id: number;
+      text: string;
+      type: string;
+    };
+    choice?: {
+      id: number;
+      label: string;
+      value: number;
+    };
+  }>;
+}
+
+interface RiskAssessment {
+  id: string;
+  patient_id: number;
+  therapist_id?: number | null;
+  score: number;
+  risk_level: "low" | "moderate" | "high" | "critical";
+  is_acknowledged: boolean;
+  created_at: string;
+  updated_at: string;
+  therapist?: {
     id: number;
     first_name: string;
     last_name: string;
@@ -168,6 +221,8 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   const [phq9Assessments, setPhq9Assessments] = useState<Assessment[]>([]);
   const [sessionNotes, setSessionNotes] = useState<SessionNote[]>([]);
   const [pcl5Assessments, setPcl5Assessments] = useState<Assessment[]>([]);
+  const [sdqAssessments, setSdqAssessments] = useState<SdqAssessment[]>([]);
+  const [riskAssessments, setRiskAssessments] = useState<RiskAssessment[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
@@ -431,7 +486,160 @@ function WellbeingHubContent({ userData }: { userData: any }) {
           )[0]
       : null;
 
-  // --- Update fetchAssessments to include PCL-5 ---
+  // Chart data for PCL-5
+  const pcl5ChartData =
+    pcl5Assessments.length > 0
+      ? pcl5Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.total_score || 0,
+          }))
+      : [];
+
+  // Chart data for Risk Assessments
+  const riskChartData =
+    riskAssessments.length > 0
+      ? riskAssessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          )
+          .map((assessment) => ({
+            date: new Date(assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            score: assessment.score,
+            riskLevel: assessment.risk_level,
+          }))
+      : [];
+
+  // Chart data for SDQ (using completion date)
+  const sdqChartData =
+    sdqAssessments.length > 0
+      ? sdqAssessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(a.completed_at || a.created_at).getTime() -
+              new Date(b.completed_at || b.created_at).getTime()
+          )
+          .map((assessment, index) => ({
+            date: new Date(assessment.completed_at || assessment.created_at).toLocaleDateString(
+              "en-GB",
+              {
+                day: "numeric",
+                month: "short",
+              }
+            ),
+            assessmentNumber: index + 1,
+          }))
+      : [];
+
+  // Latest assessments
+  const latestPcl5 =
+    pcl5Assessments.length > 0
+      ? pcl5Assessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
+      : null;
+
+  const latestRisk =
+    riskAssessments.length > 0
+      ? riskAssessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0]
+      : null;
+
+  const latestSdq =
+    sdqAssessments.length > 0
+      ? sdqAssessments
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.completed_at || b.created_at).getTime() -
+              new Date(a.completed_at || a.created_at).getTime()
+          )[0]
+      : null;
+
+  // Improvement calculation functions
+  const calculateImprovement = (
+    assessments: Array<{ total_score?: number; score?: number; created_at: string }>,
+    isLowerBetter: boolean = true
+  ): { percentage: number; trend: "improving" | "declining" | "stable" } => {
+    if (assessments.length < 2) {
+      return { percentage: 0, trend: "stable" };
+    }
+
+    const sorted = assessments
+      .slice()
+      .sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+    const firstScore = first.total_score ?? first.score ?? 0;
+    const lastScore = last.total_score ?? last.score ?? 0;
+
+    if (firstScore === 0) {
+      return { percentage: 0, trend: "stable" };
+    }
+
+    const change = lastScore - firstScore;
+    const percentage = Math.abs((change / firstScore) * 100);
+
+    if (isLowerBetter) {
+      // Lower scores are better (anxiety, depression, PTSD)
+      if (change < 0) {
+        return { percentage, trend: "improving" };
+      } else if (change > 0) {
+        return { percentage, trend: "declining" };
+      }
+    } else {
+      // Higher scores are better (some assessments)
+      if (change > 0) {
+        return { percentage, trend: "improving" };
+      } else if (change < 0) {
+        return { percentage, trend: "declining" };
+      }
+    }
+
+    return { percentage: 0, trend: "stable" };
+  };
+
+  const gad7Improvement = calculateImprovement(gad7Assessments, true);
+  const phq9Improvement = calculateImprovement(phq9Assessments, true);
+  const pcl5Improvement = calculateImprovement(pcl5Assessments, true);
+  const riskImprovement = calculateImprovement(riskAssessments, true);
+
+  // --- Fetch all assessments including PCL-5, SDQ, and Risk ---
   const fetchAssessments = async () => {
     if (!isClient) return;
     setIsLoading(true);
@@ -439,7 +647,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const [gad7Res, phq9Res, pcl5Res] = await Promise.all([
+      const [gad7Res, phq9Res, pcl5Res, sdqRes, riskRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
@@ -449,12 +657,20 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pcl5/assessments`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sdq/assessments`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/patient/risk-assessments`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
 
-      const [gad7Data, phq9Data, pcl5Data] = await Promise.all([
-        gad7Res.json(),
-        phq9Res.json(),
-        pcl5Res.json(),
+      const [gad7Data, phq9Data, pcl5Data, sdqData, riskData] = await Promise.all([
+        gad7Res.json().catch(() => ({ success: false })),
+        phq9Res.json().catch(() => ({ success: false })),
+        pcl5Res.json().catch(() => ({ success: false })),
+        sdqRes.json().catch(() => ({ success: false })),
+        riskRes.json().catch(() => ({ success: false })),
       ]);
 
       // Normalise different possible response shapes:
@@ -474,19 +690,22 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       const gad7List = normaliseAssessments(gad7Data);
       const phq9List = normaliseAssessments(phq9Data);
       const pcl5List = normaliseAssessments(pcl5Data);
+      const sdqList = normaliseAssessments(sdqData);
+      const riskList = normaliseAssessments(riskData);
 
       setGad7Assessments(gad7List as Assessment[]);
       setPhq9Assessments(phq9List as Assessment[]);
       setPcl5Assessments(pcl5List as Assessment[]);
+      setSdqAssessments(sdqList as SdqAssessment[]);
+      setRiskAssessments(riskList as RiskAssessment[]);
 
       if (process.env.NODE_ENV !== "production") {
         console.log("Assessments fetched", {
-          gad7Raw: gad7Data,
-          phq9Raw: phq9Data,
-          pcl5Raw: pcl5Data,
           gad7Count: gad7List.length,
           phq9Count: phq9List.length,
           pcl5Count: pcl5List.length,
+          sdqCount: sdqList.length,
+          riskCount: riskList.length,
         });
       }
     } catch (err) {
@@ -746,7 +965,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
             )}
           </Card>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -756,11 +975,30 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {latestGad7 ? `${latestGad7.total_score}/21` : ""}
+                  {latestGad7 ? `${latestGad7.total_score}/21` : "-"}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {latestGad7 ? latestGad7.severity_level : "No assessments yet"}
                 </p>
+                {gad7Improvement.trend !== "stable" && gad7Assessments.length >= 2 && (
+                  <div className="mt-2 flex items-center gap-1 text-xs">
+                    {gad7Improvement.trend === "improving" ? (
+                      <>
+                        <TrendingDown className="h-3 w-3 text-green-600" />
+                        <span className="text-green-600">
+                          {gad7Improvement.percentage.toFixed(0)}% improvement
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp className="h-3 w-3 text-red-600" />
+                        <span className="text-red-600">
+                          {gad7Improvement.percentage.toFixed(0)}% increase
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card>
@@ -772,49 +1010,151 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {latestPhq9 ? `${latestPhq9.total_score}/27` : ""}
+                  {latestPhq9 ? `${latestPhq9.total_score}/27` : "-"}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {latestPhq9
                     ? latestPhq9.severity_level
                     : "No assessments yet"}
                 </p>
+                {phq9Improvement.trend !== "stable" && phq9Assessments.length >= 2 && (
+                  <div className="mt-2 flex items-center gap-1 text-xs">
+                    {phq9Improvement.trend === "improving" ? (
+                      <>
+                        <TrendingDown className="h-3 w-3 text-green-600" />
+                        <span className="text-green-600">
+                          {phq9Improvement.percentage.toFixed(0)}% improvement
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp className="h-3 w-3 text-red-600" />
+                        <span className="text-red-600">
+                          {phq9Improvement.percentage.toFixed(0)}% increase
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Assessments Completed
+                  Latest PCL-5 Score
+                </CardTitle>
+                <Activity className="h-4 w-4 text-teal-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {latestPcl5 ? `${latestPcl5.total_score || 0}/80` : "-"}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {latestPcl5
+                    ? latestPcl5.flagged
+                      ? "Flagged"
+                      : "Not flagged"
+                    : "No assessments yet"}
+                </p>
+                {pcl5Improvement.trend !== "stable" && pcl5Assessments.length >= 2 && (
+                  <div className="mt-2 flex items-center gap-1 text-xs">
+                    {pcl5Improvement.trend === "improving" ? (
+                      <>
+                        <TrendingDown className="h-3 w-3 text-green-600" />
+                        <span className="text-green-600">
+                          {pcl5Improvement.percentage.toFixed(0)}% improvement
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp className="h-3 w-3 text-red-600" />
+                        <span className="text-red-600">
+                          {pcl5Improvement.percentage.toFixed(0)}% increase
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Latest Risk Level
+                </CardTitle>
+                <AlertTriangle className="h-4 w-4 text-teal-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold capitalize">
+                  {latestRisk ? latestRisk.risk_level : "-"}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {latestRisk
+                    ? `Score: ${latestRisk.score}`
+                    : "No assessments yet"}
+                </p>
+                {riskImprovement.trend !== "stable" && riskAssessments.length >= 2 && (
+                  <div className="mt-2 flex items-center gap-1 text-xs">
+                    {riskImprovement.trend === "improving" ? (
+                      <>
+                        <TrendingDown className="h-3 w-3 text-green-600" />
+                        <span className="text-green-600">
+                          {riskImprovement.percentage.toFixed(0)}% improvement
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp className="h-3 w-3 text-red-600" />
+                        <span className="text-red-600">
+                          {riskImprovement.percentage.toFixed(0)}% increase
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  SDQ Assessments
                 </CardTitle>
                 <FileText className="h-4 w-4 text-teal-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">4</div>
-                <p className="text-xs text-muted-foreground">Last 30 days</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Next Assessment
-                </CardTitle>
-                <Calendar className="h-4 w-4 text-teal-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">2 days</div>
-                <p className="text-xs text-muted-foreground">Weekly check-in</p>
+                <div className="text-2xl font-bold">
+                  {sdqAssessments.length}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Total completed
+                </p>
               </CardContent>
             </Card>
           </div>
 
-          <Card className="border border-emerald-100 bg-emerald-50/80">
-            <CardContent className="flex items-center justify-between gap-3 py-6">
-              <p className="text-base font-semibold text-emerald-900">
-                Your anxiety improved by 30% this month! Keep up the great work ??
-              </p>
-            </CardContent>
-          </Card>
+          {/* Improvement Messages */}
+          {(gad7Improvement.trend === "improving" ||
+            phq9Improvement.trend === "improving" ||
+            pcl5Improvement.trend === "improving") && (
+            <Card className="border border-emerald-100 bg-emerald-50/80">
+              <CardContent className="flex items-center justify-between gap-3 py-6">
+                <div className="flex items-center gap-2">
+                  <TrendingDown className="h-5 w-5 text-emerald-600" />
+                  <p className="text-base font-semibold text-emerald-900">
+                    {gad7Improvement.trend === "improving" &&
+                      `Your anxiety improved by ${gad7Improvement.percentage.toFixed(0)}%! `}
+                    {phq9Improvement.trend === "improving" &&
+                      `Your depression improved by ${phq9Improvement.percentage.toFixed(0)}%! `}
+                    {pcl5Improvement.trend === "improving" &&
+                      `Your PTSD symptoms improved by ${pcl5Improvement.percentage.toFixed(0)}%! `}
+                    Keep up the great work!
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
+          {/* Comprehensive Assessment Graphs */}
           <div className="grid gap-4 md:grid-cols-2">
             <Card className="col-span-1">
               <CardHeader>
@@ -869,7 +1209,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <RechartsBarChart
+                    <RechartsLineChart
                       data={phq9ChartData}
                       margin={{ left: 12, right: 12, top: 12, bottom: 12 }}
                     >
@@ -877,9 +1217,85 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                       <XAxis dataKey="date" />
                       <YAxis domain={[0, 27]} />
                       <RechartsTooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#2563eb"
+                        strokeWidth={2}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    </RechartsLineChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+            <Card className="col-span-1">
+              <CardHeader>
+                <CardTitle>PCL-5 Progress</CardTitle>
+                <CardDescription>
+                  Your PTSD symptoms over time
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {pcl5ChartData.length === 0 ? (
+                  <div className="flex h-full items-center justify-center">
+                    <p className="text-sm text-gray-500">
+                      No PCL-5 data available yet. Complete an assessment to see
+                      your progress.
+                    </p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsLineChart
+                      data={pcl5ChartData}
+                      margin={{ left: 12, right: 12, top: 12, bottom: 12 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" />
+                      <YAxis domain={[0, 80]} />
+                      <RechartsTooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#dc2626"
+                        strokeWidth={2}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    </RechartsLineChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+            <Card className="col-span-1">
+              <CardHeader>
+                <CardTitle>Risk Assessment Progress</CardTitle>
+                <CardDescription>
+                  Your risk levels over time
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {riskChartData.length === 0 ? (
+                  <div className="flex h-full items-center justify-center">
+                    <p className="text-sm text-gray-500">
+                      No risk assessment data available yet. Complete an assessment to see
+                      your progress.
+                    </p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsBarChart
+                      data={riskChartData}
+                      margin={{ left: 12, right: 12, top: 12, bottom: 12 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <RechartsTooltip />
                       <Bar
                         dataKey="score"
-                        fill="#2563eb"
+                        fill="#f59e0b"
                         radius={[4, 4, 0, 0]}
                       />
                     </RechartsBarChart>
@@ -888,6 +1304,48 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </CardContent>
             </Card>
           </div>
+
+          {/* SDQ Assessments Card */}
+          {sdqAssessments.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>SDQ Assessments</CardTitle>
+                <CardDescription>
+                  Your Strengths and Difficulties Questionnaire completions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {sdqAssessments
+                    .slice()
+                    .sort(
+                      (a, b) =>
+                        new Date(b.completed_at || b.created_at).getTime() -
+                        new Date(a.completed_at || a.created_at).getTime()
+                    )
+                    .slice(0, 5)
+                    .map((assessment) => (
+                      <div
+                        key={assessment.id}
+                        className="flex items-center justify-between rounded-md border p-3"
+                      >
+                        <div>
+                          <p className="font-medium">
+                            {assessment.questionnaire?.title || "SDQ Assessment"}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {formatDate(assessment.completed_at || assessment.created_at)}
+                          </p>
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          {assessment.responses?.length || 0} responses
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>
@@ -1105,10 +1563,12 @@ function WellbeingHubContent({ userData }: { userData: any }) {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="gad7" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-5">
                   <TabsTrigger value="gad7">GAD-7</TabsTrigger>
                   <TabsTrigger value="phq9">PHQ-9</TabsTrigger>
                   <TabsTrigger value="pcl5">PCL-5</TabsTrigger>
+                  <TabsTrigger value="sdq">SDQ</TabsTrigger>
+                  <TabsTrigger value="risk">Risk</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="pcl5" className="space-y-4">
@@ -1247,6 +1707,109 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                             </div>
                           </div>
                         ))
+                      )}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="sdq" className="space-y-4">
+                  <div className="rounded-md border">
+                    <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
+                      <div>Date</div>
+                      <div>Questionnaire</div>
+                      <div>Responses</div>
+                      <div>Actions</div>
+                    </div>
+                    <div className="divide-y">
+                      {isLoading ? (
+                        <div className="p-4 text-center">
+                          Loading assessments...
+                        </div>
+                      ) : sdqAssessments.length === 0 ? (
+                        <div className="p-4 text-center">
+                          No SDQ assessments found
+                        </div>
+                      ) : (
+                        sdqAssessments
+                          .slice()
+                          .sort(
+                            (a, b) =>
+                              new Date(b.completed_at || b.created_at).getTime() -
+                              new Date(a.completed_at || a.created_at).getTime()
+                          )
+                          .map((assessment) => (
+                            <div
+                              key={assessment.id}
+                              className="grid grid-cols-4 gap-4 p-4"
+                            >
+                              <div>
+                                {formatDate(assessment.completed_at || assessment.created_at)}
+                              </div>
+                              <div>
+                                {assessment.questionnaire?.title || "SDQ Assessment"}
+                              </div>
+                              <div>{assessment.responses?.length || 0} responses</div>
+                              <div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    // SDQ details can be viewed via questionnaire page
+                                    router.push(`/my-wellbeing/questionnaires/${assessment.questionnaire_id}`);
+                                  }}
+                                >
+                                  View Details
+                                </Button>
+                              </div>
+                            </div>
+                          ))
+                      )}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="risk" className="space-y-4">
+                  <div className="rounded-md border">
+                    <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
+                      <div>Date</div>
+                      <div>Score</div>
+                      <div>Risk Level</div>
+                      <div>Status</div>
+                    </div>
+                    <div className="divide-y">
+                      {isLoading ? (
+                        <div className="p-4 text-center">
+                          Loading assessments...
+                        </div>
+                      ) : riskAssessments.length === 0 ? (
+                        <div className="p-4 text-center">
+                          No risk assessments found
+                        </div>
+                      ) : (
+                        riskAssessments
+                          .slice()
+                          .sort(
+                            (a, b) =>
+                              new Date(b.created_at).getTime() -
+                              new Date(a.created_at).getTime()
+                          )
+                          .map((assessment) => (
+                            <div
+                              key={assessment.id}
+                              className="grid grid-cols-4 gap-4 p-4"
+                            >
+                              <div>{formatDate(assessment.created_at)}</div>
+                              <div>{assessment.score}</div>
+                              <div className="capitalize">{assessment.risk_level}</div>
+                              <div>
+                                {assessment.is_acknowledged ? (
+                                  <span className="text-green-600">Acknowledged</span>
+                                ) : (
+                                  <span className="text-amber-600">Pending</span>
+                                )}
+                              </div>
+                            </div>
+                          ))
                       )}
                     </div>
                   </div>
@@ -1488,17 +2051,19 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                   </p>
                 </div>
               </div>
-              <div>
-                <p className="text-sm font-medium mb-2">Answers</p>
-                <ul className="list-disc pl-6 text-sm text-gray-600">
-                  {selectedAssessment.answers.map((ans, idx) => (
-                    <li key={idx}>
-                      {ans.question_text}:{" "}
-                      <span className="font-semibold">{ans.answer_text}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {selectedAssessment.answers && selectedAssessment.answers.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mb-2">Answers</p>
+                  <ul className="list-disc pl-6 text-sm text-gray-600">
+                    {(selectedAssessment.answers || []).map((ans, idx) => (
+                      <li key={idx}>
+                        {ans.question_text}:{" "}
+                        <span className="font-semibold">{ans.answer_text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>
