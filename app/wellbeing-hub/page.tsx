@@ -722,10 +722,13 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       ]);
 
       // Normalise different possible response shapes:
+      // - Direct array: [...]
       // - { success: true, assessments: [...] }
       // - { success: true, data: [...]} or { success: true, data: { assessments: [...] } }
       const normaliseAssessments = (raw: any): any[] => {
         if (!raw) return [];
+        if (Array.isArray(raw)) return raw;
+
         const ok = raw.success === true || raw.status === true;
         if (!ok) return [];
 
