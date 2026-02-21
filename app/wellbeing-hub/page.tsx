@@ -265,6 +265,14 @@ function WellbeingHubContent({ userData }: { userData: any }) {
     .sort((a, b) => b.date.getTime() - a.date.getTime())
     .slice(0, 5);
 
+  const getPcl5Severity = (score: number): string => {
+    if (score <= 20) return "Minimal";
+    if (score < 33) return "Mild";
+    if (score < 50) return "Moderate";
+    if (score < 65) return "Severe";
+    return "Very severe";
+  };
+
   const getRelativeTimeString = (date: Date) => {
     const now = new Date();
     const diffInMs = now.getTime() - date.getTime();
@@ -1672,7 +1680,8 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                             <div>{formatDate(assessment.created_at)}</div>
                             <div>{assessment.total_score}/80</div>
                             <div className="capitalize">
-                              {assessment.severity_level}
+                              {assessment.severity_level ??
+                                getPcl5Severity(assessment.total_score ?? 0)}
                             </div>
                             <div>
                               <Button
@@ -2239,7 +2248,8 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 <div>
                   <p className="text-sm font-medium">Severity Level</p>
                   <p className="text-sm text-gray-600 capitalize">
-                    {selectedAssessment.severity_level}
+                    {selectedAssessment.severity_level ??
+                      getPcl5Severity(selectedAssessment.total_score ?? 0)}
                   </p>
                 </div>
               </div>
