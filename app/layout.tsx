@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import Footer from "@/components/footer";
+import ConditionalFooter from "@/components/conditional-footer";
 import Script from "next/script";
 import Analytics from "@/components/analytics"; // ✅ This is critical!
 import PerformanceMonitor from "@/components/performance-monitor";
@@ -211,7 +211,7 @@ export default function RootLayout({
             </Suspense>
             <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
             <FloatingChatWrapper />
-            <Footer />
+            <ConditionalFooter />
             <Suspense fallback={null}>
               <CookieConsent />
             </Suspense>

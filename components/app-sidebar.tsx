@@ -19,6 +19,12 @@ import {
   LifeBuoy,
   LogOut,
   Sparkles,
+  Home,
+  FileStack,
+  Newspaper,
+  Users,
+  Download,
+  Activity,
 } from "lucide-react";
 import {
   Sidebar,
@@ -36,6 +42,15 @@ import {
 import Image from "next/image";
 
 const SIDEBAR_NAV = {
+  site: [
+    { label: "Home", href: "/", icon: Home },
+    { label: "About Us", href: "/about", icon: Users },
+    { label: "Wellbeing Activities", href: "/cultural-activities", icon: Activity },
+    { label: "Blog", href: "/blog", icon: FileStack },
+    { label: "Press Release", href: "/press", icon: Newspaper },
+    { label: "Wellbeing Team", href: "/wellbeing-team", icon: Users },
+    { label: "Download App", href: "/app-release.apk", icon: Download },
+  ],
   main: [
     { label: "My Dashboard", href: "/my-wellbeing/dashboard", icon: LayoutDashboard },
     { label: "My Wellbeing Space", href: "/my-wellbeing", icon: Heart },
@@ -101,7 +116,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+    <Sidebar collapsible="icon" className="z-50 border-r border-sidebar-border bg-white dark:bg-sidebar">
       <SidebarHeader className="border-b border-sidebar-border">
         <Link href="/my-wellbeing/dashboard" className="flex items-center gap-3 px-2 py-3">
           <Image
@@ -123,6 +138,33 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Site</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {SIDEBAR_NAV.site.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton asChild isActive={item.href !== "/app-release.apk" && isActive(item.href)}>
+                    {item.href === "/app-release.apk" ? (
+                      <a href="/app-release.apk" download>
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        <span>{item.label}</span>
+                      </a>
+                    ) : (
+                      <Link href={item.href}>
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        <span>{item.label}</span>
+                      </Link>
+                    )}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
         <SidebarGroup>
           <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarGroupContent>
