@@ -164,11 +164,11 @@ interface Booking {
 }
 
 const QUICK_CHECK_IN_OPTIONS = [
-  { value: "great", emoji: "??", label: "Great" },
-  { value: "okay", emoji: "??", label: "Okay" },
-  { value: "down", emoji: "??", label: "Down" },
-  { value: "anxious", emoji: "??", label: "Anxious" },
-  { value: "frustrated", emoji: "??", label: "Frustrated" },
+  { value: "great", emoji: "😊", label: "Great" },
+  { value: "okay", emoji: "🙂", label: "Okay" },
+  { value: "down", emoji: "😔", label: "Down" },
+  { value: "anxious", emoji: "😰", label: "Anxious" },
+  { value: "frustrated", emoji: "😤", label: "Frustrated" },
 ] as const;
 
 export default function WellbeingHub() {
