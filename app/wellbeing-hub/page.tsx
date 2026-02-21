@@ -216,6 +216,9 @@ function WellbeingHubContent({ userData }: { userData: any }) {
 
   const [selectedAssessment, setSelectedAssessment] =
     useState<Assessment | null>(null);
+  const [selectedSdqAssessment, setSelectedSdqAssessment] =
+    useState<SdqAssessment | null>(null);
+  const [sdqDetailsLoading, setSdqDetailsLoading] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const [gad7Assessments, setGad7Assessments] = useState<Assessment[]>([]);
@@ -382,6 +385,50 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   };
 
   useEffect(() => setIsClient(true), []);
+
+  // Fetch full SDQ assessment with responses when opening details (list may omit response data)
+  useEffect(() => {
+    if (!selectedSdqAssessment || !isClient) return;
+    const hasResponses =
+      selectedSdqAssessment.responses &&
+      selectedSdqAssessment.responses.length > 0 &&
+      selectedSdqAssessment.responses.some(
+        (r) => r.question?.text || r.choice?.label || (r.text_response != null && r.text_response !== "")
+      );
+    if (hasResponses) return;
+
+    let cancelled = false;
+    setSdqDetailsLoading(true);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setSdqDetailsLoading(false);
+      return;
+    }
+
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sdq/assessments/${selectedSdqAssessment.id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+      .then((res) => (res.ok ? res.json() : null))
+      .then((raw: any) => {
+        if (cancelled) return;
+        const data = raw?.data ?? raw;
+        const responses = data?.responses;
+        if (responses && Array.isArray(responses) && responses.length > 0) {
+          setSelectedSdqAssessment((prev) =>
+            prev ? { ...prev, responses } : null
+          );
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setSdqDetailsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedSdqAssessment?.id, isClient]);
 
   useEffect(() => {
     if (isClient) {
@@ -1826,8 +1873,9 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => {
-                                    // SDQ details can be viewed via questionnaire page
-                                    router.push(`/my-wellbeing/questionnaires/${assessment.questionnaire_id}`);
+                                    setSelectedAssessment(null);
+                                    setSelectedSdqAssessment(assessment);
+                                    setIsDetailsOpen(true);
                                   }}
                                 >
                                   View Details
@@ -2108,16 +2156,72 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       </Tabs>
 
       {/* Assessment Details Modal */}
-      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-3xl">
+      <Dialog
+        open={isDetailsOpen}
+        onOpenChange={(open) => {
+          setIsDetailsOpen(open);
+          if (!open) {
+            setSelectedAssessment(null);
+            setSelectedSdqAssessment(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {selectedAssessment?.therapist
-                ? `Assessment by ${selectedAssessment.therapist.first_name} ${selectedAssessment.therapist.last_name}`
-                : "Assessment Details"}
+              {selectedSdqAssessment
+                ? (selectedSdqAssessment.questionnaire?.title || "SDQ Assessment")
+                : selectedAssessment?.therapist
+                  ? `Assessment by ${selectedAssessment.therapist.first_name} ${selectedAssessment.therapist.last_name}`
+                  : "Assessment Details"}
             </DialogTitle>
           </DialogHeader>
-          {selectedAssessment && (
+          {selectedSdqAssessment && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium">Date</p>
+                  <p className="text-sm text-gray-600">
+                    {formatDate(selectedSdqAssessment.completed_at || selectedSdqAssessment.created_at)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Questionnaire</p>
+                  <p className="text-sm text-gray-600">
+                    {selectedSdqAssessment.questionnaire?.title || "SDQ Assessment"}
+                  </p>
+                </div>
+              </div>
+              {selectedSdqAssessment.responses && selectedSdqAssessment.responses.length > 0 ? (
+                <div>
+                  <p className="text-sm font-medium mb-2">Submitted Answers</p>
+                  <ul className="space-y-3">
+                    {selectedSdqAssessment.responses.map((r, idx) => (
+                      <li key={r.id ?? idx} className="border-b border-gray-100 pb-2 last:border-0">
+                        <p className="text-sm font-medium text-gray-800">
+                          {r.question?.text ?? `Question ${idx + 1}`}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {r.text_response != null && r.text_response !== ""
+                            ? r.text_response
+                            : r.choice != null
+                              ? r.choice.label
+                              : r.choice_id != null
+                                ? `Choice ID: ${r.choice_id}`
+                                : "—"}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : sdqDetailsLoading ? (
+                <p className="text-sm text-gray-500">Loading response details...</p>
+              ) : (
+                <p className="text-sm text-gray-500">No response details available for this assessment.</p>
+              )}
+            </div>
+          )}
+          {selectedAssessment && !selectedSdqAssessment && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
