@@ -59,11 +59,11 @@ export default function DashboardLayout({
     <SidebarProvider defaultOpen={true}>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-14 shrink-0 items-center gap-2 border-b border-sidebar-border bg-background/95 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="h-6" />
-          <span className="text-sm font-medium text-muted-foreground">
-            Right2Thrive Wellbeing
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-sidebar-border bg-background/95 px-4">
+          <SidebarTrigger className="-ml-1" aria-label="Toggle sidebar" />
+          <Separator orientation="vertical" className="h-5" />
+          <span className="text-sm font-medium text-muted-foreground truncate">
+            My Wellbeing
           </span>
         </header>
         <main className="flex-1 overflow-auto p-4 md:p-6">

@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Script from "next/script";
 import Analytics from "@/components/analytics"; // ✅ This is critical!
 import PerformanceMonitor from "@/components/performance-monitor";
 import CookieConsent from "@/components/gdpr-cookie-consent";
 import FloatingChatWrapper from "@/components/FloatingChatWrapper";
+import AppShell from "@/components/app-shell";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -200,10 +200,9 @@ export default function RootLayout({
             <a href="#main-content" className="skip-link">
               Skip to main content
             </a>
-            <div className="bg-red-600 px-4 py-2 text-center text-sm font-semibold text-white">
-              Need immediate support? Call 116 123 | Text SHOUT to 85258 | Live chat available
-            </div>
-            <Navbar />
+            <Suspense fallback={<div className="h-16" />}>
+              <AppShell />
+            </Suspense>
             <Suspense fallback={null}>
               <Analytics />
             </Suspense>
