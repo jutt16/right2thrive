@@ -17,7 +17,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, ShieldAlert } from "lucide-react";
-import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
 
 interface RiskQuestionOption {
   value: string;
@@ -487,15 +486,8 @@ export default function RiskAssessmentPage() {
 
         <CardContent>
           <div className="space-y-6">
-            <div className="flex items-start justify-between gap-3">
-              <div className="text-lg font-medium text-[#ff961b] flex-1">
-                {currentQuestion?.question}
-              </div>
-              <TextToSpeechButton
-                text={currentQuestion?.question ?? ""}
-                label="Listen to question"
-                className="shrink-0"
-              />
+            <div className="text-lg font-medium text-[#ff961b]">
+              {currentQuestion?.question}
             </div>
 
             {currentQuestion?.type === "yes_no" && (

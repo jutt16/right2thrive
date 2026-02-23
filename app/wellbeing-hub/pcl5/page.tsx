@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
-import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
 
 interface Question {
   id: number;
@@ -152,16 +151,9 @@ export default function Pcl5Page() {
 
         {questions.map((q, idx) => (
           <div key={q.id} className="border-b pb-4 mb-4">
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <p className="font-medium flex-1">
-                {idx + 1}. {q.question_text}
-              </p>
-              <TextToSpeechButton
-                text={q.question_text}
-                label="Listen to question"
-                className="shrink-0"
-              />
-            </div>
+            <p className="font-medium mb-2">
+              {idx + 1}. {q.question_text}
+            </p>
             <div className="flex flex-wrap gap-2">
               {[
                 { value: 0, label: "Not at all" },
