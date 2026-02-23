@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
+import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
 
 interface Choice {
   id: number;
@@ -156,7 +157,14 @@ export default function QuestionForm({
         <>
       {questionnaire.questions.map((q) => (
         <div key={q.id} className="p-4 border rounded">
-          <p className="font-medium mb-2">{q.text}</p>
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <p className="font-medium flex-1">{q.text}</p>
+            <TextToSpeechButton
+              text={q.text}
+              label="Listen to question"
+              className="shrink-0"
+            />
+          </div>
 
           {q.type === "text" && (
             <textarea
