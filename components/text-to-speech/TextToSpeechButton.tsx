@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Volume2, Loader2 } from "lucide-react";
+import { Volume2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -19,8 +19,8 @@ interface TextToSpeechButtonProps {
 }
 
 /**
- * Button that reads the given text aloud using OpenAI Text-to-Speech.
- * Per OpenAI usage policies: the voice is AI-generated (we show this in a tooltip).
+ * Button that reads the given text aloud using the browser's built-in Web Speech API.
+ * No API keys or server required—works offline with the device's voice.
  */
 export function TextToSpeechButton({
   text,
@@ -30,69 +30,59 @@ export function TextToSpeechButton({
   label = "Listen",
 }: TextToSpeechButtonProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [supported, setSupported] = useState(true);
 
-  const stopCurrentPlayback = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
+  useEffect(() => {
+    if (typeof window !== "undefined" && !("speechSynthesis" in window)) {
+      setSupported(false);
+    }
+  }, []);
+
+  const stop = useCallback(() => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
     }
     setIsPlaying(false);
   }, []);
 
-  const speak = useCallback(async () => {
-    if (!text?.trim()) return;
+  const speak = useCallback(() => {
+    if (!text?.trim() || !supported) return;
 
     if (isPlaying) {
-      stopCurrentPlayback();
+      stop();
       return;
     }
 
-    setIsLoading(true);
     setError(null);
 
     try {
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text.trim() }),
-      });
+      const utterance = new SpeechSynthesisUtterance(text.trim());
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+      utterance.lang = "en-GB";
 
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData?.error || `Request failed (${res.status})`);
-      }
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audioRef.current = audio;
-
-      audio.onended = () => {
-        URL.revokeObjectURL(url);
-        stopCurrentPlayback();
-      };
-      audio.onerror = () => {
-        URL.revokeObjectURL(url);
-        setError("Playback failed");
-        stopCurrentPlayback();
+      utterance.onend = () => setIsPlaying(false);
+      utterance.onerror = () => {
+        setError("Voice not available");
+        setIsPlaying(false);
       };
 
       setIsPlaying(true);
-      setIsLoading(false);
-      await audio.play();
+      window.speechSynthesis.speak(utterance);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not play audio");
-      setIsLoading(false);
-      stopCurrentPlayback();
+      setError(e instanceof Error ? e.message : "Could not speak");
+      setIsPlaying(false);
     }
-  }, [text, isPlaying, stopCurrentPlayback]);
+  }, [text, isPlaying, supported, stop]);
 
   const trimmedText = text?.trim();
-  const disabled = !trimmedText || isLoading;
+  const disabled = !trimmedText || !supported;
+
+  if (!supported) {
+    return null;
+  }
 
   const button = (
     <Button
@@ -105,11 +95,7 @@ export function TextToSpeechButton({
       aria-label={label}
       title={error ?? (isPlaying ? "Stop" : label)}
     >
-      {isLoading ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        <Volume2 className="h-4 w-4" />
-      )}
+      <Volume2 className="h-4 w-4" />
     </Button>
   );
 
@@ -120,7 +106,7 @@ export function TextToSpeechButton({
         <TooltipContent side="top" className="max-w-xs">
           <p>{error ?? (isPlaying ? "Stop" : label)}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            AI-generated voice
+            Uses your device&apos;s built-in voice
           </p>
         </TooltipContent>
       </Tooltip>
