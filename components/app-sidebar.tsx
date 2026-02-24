@@ -71,6 +71,7 @@ const SIDEBAR_NAV = {
   engagement: [
     { label: "Thrive Tokens", href: "/my-wellbeing/thrive-tokens", icon: Coins },
     { label: "Reflect After Session", href: "/my-wellbeing/reflect", icon: MessageCircle },
+    { label: "Voice Call", href: "/voice-call", icon: Phone },
   ],
   booking: [
     { label: "My Bookings", href: "/my-bookings", icon: Calendar },

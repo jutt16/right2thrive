@@ -10,6 +10,7 @@ const DASHBOARD_ROUTES = [
   "/my-bookings",
   "/complaints",
   "/chat",
+  "/voice-call",
 ];
 
 function isDashboardRoute(pathname: string) {

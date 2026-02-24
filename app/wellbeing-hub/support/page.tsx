@@ -1,5 +1,6 @@
 import { generateMetadata as generateSEOMetadata } from "@/lib/seo-utils";
 import Link from "next/link";
+import { Phone } from "lucide-react";
 
 export const metadata = generateSEOMetadata({
   title: "Support Services - Right2Thrive UK | Mental Health Support Resources",
@@ -75,7 +76,25 @@ export default function SupportServices() {
             </div>
           </div>
 
-          {/* Right2Thrive Services */}
+          {/* Voice Call Support */}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Phone className="h-6 w-6 text-teal-600" />
+              Voice Call Support
+            </h2>
+            <p className="mb-4 text-gray-700">
+              Need to talk? Use our AI voice support for general wellbeing questions. Have a natural conversation anytime.
+            </p>
+            <Link
+              href="/voice-call"
+              className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-white font-medium hover:bg-teal-700 transition-colors"
+            >
+              <Phone className="h-4 w-4" />
+              Start voice call
+            </Link>
+          </div>
+
+          {/* Right2Thrive UK Services */}
           <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Right2Thrive UK Services
