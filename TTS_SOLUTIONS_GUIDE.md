@@ -2,6 +2,8 @@
 
 Documentation and resources for the best text-to-speech options for web apps.
 
+> **This project uses ElevenLabs.** See **[ELEVENLABS_SETUP_GUIDE.md](./ELEVENLABS_SETUP_GUIDE.md)** for setup instructions.
+
 ---
 
 ## Comparison at a Glance

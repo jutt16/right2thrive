@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Send, ArrowLeft } from "lucide-react";
+import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -362,7 +363,18 @@ export default function ChatPage() {
                         : "bg-white text-gray-900 shadow-sm rounded-bl-md"
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm whitespace-pre-wrap flex-1">{msg.message}</p>
+                      {!isOwnMessage && (
+                        <TextToSpeechButton
+                          text={msg.message}
+                          label="Listen to message"
+                          size="icon"
+                          variant="ghost"
+                          className="shrink-0 -mr-1 -mt-1"
+                        />
+                      )}
+                    </div>
                     <p
                       className={`mt-1 text-xs ${
                         isOwnMessage ? "text-white/70" : "text-gray-400"

@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
+import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
 
 interface Question {
   id: number;
@@ -301,8 +302,15 @@ export default function PHQ9Assessment() {
 
           <CardContent>
             <div className="space-y-6">
-              <div className="text-lg font-medium text-[#ff961b]">
-                {assessmentData.questions[currentQuestion].question_text}
+              <div className="flex items-start justify-between gap-3">
+                <div className="text-lg font-medium text-[#ff961b] flex-1">
+                  {assessmentData.questions[currentQuestion].question_text}
+                </div>
+                <TextToSpeechButton
+                  text={assessmentData.questions[currentQuestion].question_text}
+                  label="Listen to question"
+                  className="shrink-0"
+                />
               </div>
               <RadioGroup
                 value={answers[currentQuestion].toString()}

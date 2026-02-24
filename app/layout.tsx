@@ -9,6 +9,7 @@ import Analytics from "@/components/analytics"; // ✅ This is critical!
 import PerformanceMonitor from "@/components/performance-monitor";
 import CookieConsent from "@/components/gdpr-cookie-consent";
 import FloatingChatWrapper from "@/components/FloatingChatWrapper";
+import VoiceCallAgent from "@/components/VoiceCallAgent";
 import AppShell from "@/components/app-shell";
 import { Suspense } from "react";
 
@@ -211,6 +212,7 @@ export default function RootLayout({
             </Suspense>
             <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
             <FloatingChatWrapper />
+            <VoiceCallAgent />
             <ConditionalFooter />
             <Suspense fallback={null}>
               <CookieConsent />
