@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getApiUrl } from "@/lib/api-client";
-
 interface Questionnaire {
   id: number;
   title: string;
@@ -29,7 +27,7 @@ export default function QuestionnairesPage() {
     myHeaders.append("Authorization", `Bearer ${token}`);
     myHeaders.append("Accept", "application/json");
 
-    fetch(getApiUrl("/api/questionnaires"), {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/questionnaires`, {
       method: "GET",
       headers: myHeaders,
     })

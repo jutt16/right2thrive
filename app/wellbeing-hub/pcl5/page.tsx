@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
 import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
-import { getApiUrl } from "@/lib/api-client";
-
 interface Question {
   id: number;
   question_text: string;
@@ -36,7 +34,7 @@ export default function Pcl5Page() {
   const fetchQuestions = async () => {
     try {
       const res = await fetch(
-        getApiUrl("/api/pcl5/questions"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/pcl5/questions`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -56,7 +54,7 @@ export default function Pcl5Page() {
     setRefreshing(true);
     try {
       const res = await fetch(
-        getApiUrl("/api/pcl5/assessments"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/pcl5/assessments`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -99,7 +97,7 @@ export default function Pcl5Page() {
 
     try {
       const res = await fetch(
-        getApiUrl("/api/pcl5/assessments"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/pcl5/assessments`,
         {
           method: "POST",
           headers: {

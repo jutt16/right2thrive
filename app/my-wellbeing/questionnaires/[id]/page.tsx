@@ -1,9 +1,7 @@
 import QuestionForm from "./QuestionForm";
-import { getApiUrl } from "@/lib/api-client";
-
 async function getQuestionnaire(id: string, token: string) {
   const res = await fetch(
-    getApiUrl(`/api/questionnaires/${id}`),
+    `${process.env.NEXT_PUBLIC_API_URL}/api/questionnaires/${id}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

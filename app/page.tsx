@@ -25,8 +25,6 @@ import { getIconComponent } from "@/lib/iconMapper";
 import { EnhancedForm } from "@/components/enhanced-form";
 import { useAnalytics, AnalyticsPageTracker } from "@/lib/analytics";
 import { TherapistSelection } from "@/components/TherapistSelection";
-import { getApiUrl } from "@/lib/api-client";
-
 export default function Home() {
   const { isAuthenticated } = useAuthStatus();
   const analytics = useAnalytics();
@@ -35,7 +33,7 @@ export default function Home() {
   const handleFormSubmit = async (data: Record<string, string>) => {
     try {
       const response = await fetch(
-        getApiUrl("/api/contact/message"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/contact/message`,
         {
           method: "POST",
           headers: {

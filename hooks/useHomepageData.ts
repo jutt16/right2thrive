@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { getApiUrl } from "@/lib/api-client";
-
 interface HomepageData {
   hero: {
     id: number;
@@ -90,7 +88,7 @@ export function useHomepageData(): UseHomepageDataReturn {
       setError(null);
 
       const response = await fetch(
-        getApiUrl("/api/homepage/all")
+        `${process.env.NEXT_PUBLIC_API_URL}/api/homepage/all`
       );
 
       if (!response.ok) {

@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getApiUrl } from "@/lib/api-client";
-
 type Status = "idle" | "loading" | "sent" | "error";
 
 export default function ExpressInterestForm() {
@@ -47,7 +45,7 @@ export default function ExpressInterestForm() {
 
     try {
       const res = await fetch(
-        getApiUrl("/api/contact/message"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/contact/message`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -42,8 +42,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useRouter } from "next/navigation";
-import { getApiUrl } from "@/lib/api-client";
-
 interface AssessmentAnswer {
   question_id: number;
   question_text: string;
@@ -415,7 +413,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
     }
 
     fetch(
-      getApiUrl(`/api/sdq/assessments/${selectedSdqAssessment.id}`),
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sdq/assessments/${selectedSdqAssessment.id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
       .then((res) => (res.ok ? res.json() : null))
@@ -470,7 +468,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         }
 
         const res = await fetch(
-          getApiUrl("/api/bookings"),
+          `${process.env.NEXT_PUBLIC_API_URL}/api/bookings`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -752,19 +750,19 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       if (!token) return;
 
       const [gad7Res, phq9Res, pcl5Res, sdqRes, riskRes] = await Promise.all([
-        fetch(getApiUrl("/api/assessments/gad7"), {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(getApiUrl("/api/assessments/phq9"), {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(getApiUrl("/api/pcl5/assessments"), {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pcl5/assessments`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(getApiUrl("/api/sdq/assessments"), {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sdq/assessments`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(getApiUrl("/api/patient/risk-assessments"), {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/patient/risk-assessments`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -834,7 +832,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
   //         headers: { Authorization: `Bearer ${token}` },
   //       }),
-  //       fetch(getApiUrl("/api/assessments/phq9"), {
+  //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
   //         headers: { Authorization: `Bearer ${token}` },
   //       }),
   //     ]);
@@ -861,7 +859,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       if (!token) return;
 
       const res = await fetch(
-        getApiUrl("/api/session-notes"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/session-notes`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -882,7 +880,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       if (!token) return;
 
       const res = await fetch(
-        getApiUrl("/api/medications"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/medications`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

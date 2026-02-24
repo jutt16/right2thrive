@@ -8,7 +8,6 @@ import { Menu, X, Instagram, Twitter, User, Heart, LogOut, MessageSquareWarning,
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { getApiUrl } from "@/lib/api-client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,7 +34,7 @@ export default function Navbar() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        getApiUrl("/api/logout"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/logout`,
         {
           method: "POST",
           headers: {

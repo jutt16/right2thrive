@@ -22,8 +22,6 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { getApiUrl } from "@/lib/api-client";
-
 type GoalRow = {
   number: number;
   goal?: string | null;
@@ -135,7 +133,7 @@ export default function WeeklyGoalsPage() {
   const fetchTherapistDetails = async (therapistId: string) => {
     setIsLoadingTherapistDetails(true);
     try {
-      const res = await fetch(getApiUrl(`/api/therapists/${therapistId}`));
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/therapists/${therapistId}`);
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message || 'Failed to fetch therapist details');
       setSelectedTherapistDetails(data.data?.therapist ?? null);
@@ -197,7 +195,7 @@ export default function WeeklyGoalsPage() {
         return;
       }
       const payload = { therapist_id: Number(selectedTherapist), goals: rows.map(({ number, goal, how, outcome }) => ({ number, goal, how, outcome })), reflection };
-      const response = await fetch(getApiUrl("/api/weekly-goals"), {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/weekly-goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(payload),
@@ -225,7 +223,7 @@ export default function WeeklyGoalsPage() {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('You are not logged in.');
 
-      const res = await fetch(getApiUrl("/api/weekly-goals"), {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/weekly-goals`, {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
       const text = await res.text();

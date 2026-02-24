@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { getApiUrl } from "@/lib/api-client";
 
 interface ProfileFormData {
   first_name: string;
@@ -92,7 +91,7 @@ export default function Profile() {
         return;
       }
 
-      const res = await fetch(getApiUrl("/api/user"), {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",

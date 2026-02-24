@@ -15,8 +15,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, CheckCircle, Eye, EyeOff } from "lucide-react"
-import { getApiUrl } from "@/lib/api-client"
-
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("")
   const [token, setToken] = useState("")
@@ -45,7 +43,7 @@ export default function ResetPasswordPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(getApiUrl("/api/reset-password"), {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

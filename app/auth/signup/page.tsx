@@ -30,8 +30,6 @@ import {
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Progress } from "@/components/ui/progress"
-import { getApiUrl } from "@/lib/api-client"
-
 // --- Options Constants ---
 const GENDER_OPTIONS = [
   "Female", "Male", "Non Binary", "Transfeminine", "Transmasculine",
@@ -201,7 +199,7 @@ export default function SignupPage() {
 
     try {
       const response = await fetch(
-        getApiUrl("/api/register"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

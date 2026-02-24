@@ -16,8 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getApiUrl } from "@/lib/api-client";
-
 interface Therapist {
     id: number;
     name: string;
@@ -92,7 +90,7 @@ export function TherapistSelection() {
         setAssigningId(therapistId);
 
         try {
-            const res = await fetch(getApiUrl("/api/therapists/assign"), {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/api/therapists/assign`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,

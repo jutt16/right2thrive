@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import StructuredData from "@/components/structured-data";
 import { generateLocalBusinessStructuredData, generateFAQStructuredData } from "@/lib/seo-utils";
-import { getApiUrl } from "@/lib/api-client";
-
 const faqData = [
   {
     question: "What services does Right2Thrive UK offer?",
@@ -48,7 +46,7 @@ export default function Contact() {
     const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
     try {
-      const res = await fetch(getApiUrl("/api/contact"), {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -57,16 +57,6 @@ const nextConfig = {
   },
   // Enable compression
   compress: true,
-  // Proxy API calls to avoid CORS (browser -> same origin -> proxy -> backend)
-  async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://admin.right2thriveuk.com";
-    return [
-      {
-        source: "/api/backend/:path*",
-        destination: `${apiUrl}/api/:path*`,
-      },
-    ];
-  },
   // Enable experimental features for better performance
   experimental: {
     optimizeCss: true,

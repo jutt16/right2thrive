@@ -17,8 +17,6 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
 import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
-import { getApiUrl } from "@/lib/api-client";
-
 interface Question {
   id: number;
   question_text: string;
@@ -116,7 +114,7 @@ export default function PHQ9Assessment() {
     const fetchQuestions = async () => {
       try {
         const response = await fetch(
-          getApiUrl("/api/questions/phq9")
+          `${process.env.NEXT_PUBLIC_API_URL}/api/questions/phq9`
         );
         const data = await response.json();
 
@@ -177,7 +175,7 @@ export default function PHQ9Assessment() {
         : { answers: formattedAnswers };
 
       const response = await fetch(
-        getApiUrl("/api/assessments/phq9"),
+        `${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`,
         {
           method: "POST",
           headers: {
