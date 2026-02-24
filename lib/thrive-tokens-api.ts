@@ -90,7 +90,7 @@ interface ApiResponse<T> {
 
 export async function getThriveDashboard(): Promise<DashboardData | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/thrive-tokens/dashboard`, {
+    const res = await fetch(getApiUrl("/api/thrive-tokens/dashboard"), {
       headers: getAuthHeaders(),
     });
     const json: ApiResponse<DashboardData> = await res.json();
@@ -117,7 +117,7 @@ export async function getThriveOverview(limit = 20): Promise<OverviewData | null
 
 export async function getRewards(): Promise<Reward[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/thrive-tokens/rewards`, {
+    const res = await fetch(getApiUrl("/api/thrive-tokens/rewards"), {
       headers: getAuthHeaders(),
     });
     const json: ApiResponse<{ rewards: Reward[] }> = await res.json();
@@ -165,7 +165,7 @@ export async function redeemReward(
   id: number | string
 ): Promise<{ redemption: RedemptionResponse; new_balance: number } | { error: string }> {
   try {
-    const res = await fetch(`${API_BASE}/api/thrive-tokens/rewards/${id}/redeem`, {
+    const res = await fetch(getApiUrl(`/api/thrive-tokens/rewards/${id}/redeem`), {
       method: "POST",
       headers: getAuthHeaders(),
     });
