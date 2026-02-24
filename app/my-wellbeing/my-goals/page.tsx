@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { FileDown, Eye, ChevronDown, ChevronUp } from 'lucide-react';
+import { getApiUrl } from "@/lib/api-client";
 
 type GoalRow = {
   number: number;
@@ -38,7 +39,7 @@ export default function Download() {
           return;
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/weekly-goals`, {
+        const res = await fetch(getApiUrl("/api/weekly-goals"), {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

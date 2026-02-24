@@ -5,6 +5,7 @@ import { Calendar, Clock, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { getApiUrl } from "@/lib/api-client";
 
 interface Availability {
   date: string;
@@ -93,7 +94,7 @@ export default function NewBookingPage() {
     setTherapistError("");
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/therapists/${id}`
+        getApiUrl(`/api/therapists/${id}`)
       );
       const json = await res.json();
       if (!res.ok || !json.success) {
@@ -115,7 +116,7 @@ export default function NewBookingPage() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/therapist/${id}/availability`,
+        getApiUrl(`/api/therapist/${id}/availability`),
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await res.json();
@@ -185,7 +186,7 @@ export default function NewBookingPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings`,
+        getApiUrl("/api/bookings"),
         {
           method: "POST",
           headers: {

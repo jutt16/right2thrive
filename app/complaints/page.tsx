@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { getApiUrl } from "@/lib/api-client";
 
 interface Complaint {
   id: number;
@@ -24,7 +25,7 @@ export default function ComplaintsPage() {
     setRefreshing(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/complaints`,
+        getApiUrl("/api/complaints"),
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +62,7 @@ export default function ComplaintsPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/complaints`,
+        getApiUrl("/api/complaints"),
         {
           method: "POST",
           headers: {

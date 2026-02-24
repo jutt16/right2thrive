@@ -17,6 +17,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
 import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
+import { getApiUrl } from "@/lib/api-client";
 
 interface Question {
   id: number;
@@ -115,7 +116,7 @@ export default function GAD7Assessment() {
     const fetchQuestions = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/questions/gad7`
+          getApiUrl("/api/questions/gad7")
         );
         const data = await response.json();
 
@@ -183,7 +184,7 @@ export default function GAD7Assessment() {
       });
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`,
+        getApiUrl("/api/assessments/gad7"),
         {
           method: "POST",
           headers: {

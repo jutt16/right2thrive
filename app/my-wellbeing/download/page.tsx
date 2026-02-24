@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FileDown } from "lucide-react";
+import { getApiUrl } from "@/lib/api-client";
 
 interface Plan {
   therapistName: string | null;
@@ -29,7 +30,7 @@ export default function Download() {
     myHeaders.append("Accept", "application/json");
 
     fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/patients/${userId}/wellbeing-plan`,
+      getApiUrl(`/api/patients/${userId}/wellbeing-plan`),
       {
         method: "GET",
         headers: myHeaders,

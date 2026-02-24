@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CalendarCheck, PlusCircle, Star, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import { getApiUrl } from "@/lib/api-client";
 
 // Interfaces
 interface Therapist {
@@ -69,7 +70,7 @@ export default function MyBookingsPage() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings`, {
+    fetch(getApiUrl("/api/bookings"), {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -104,7 +105,7 @@ export default function MyBookingsPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${joiningBooking.id}/can-join`,
+        getApiUrl(`/api/bookings/${joiningBooking.id}/can-join`),
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -120,7 +121,7 @@ export default function MyBookingsPage() {
       }
 
       await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${joiningBooking.id}/mark-attendance`,
+        getApiUrl(`/api/bookings/${joiningBooking.id}/mark-attendance`),
         {
           method: "PATCH",
           headers: {
@@ -151,7 +152,7 @@ export default function MyBookingsPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${feedbackBooking.id}/feedback`,
+        getApiUrl(`/api/bookings/${feedbackBooking.id}/feedback`),
         {
           method: "POST",
           headers: {

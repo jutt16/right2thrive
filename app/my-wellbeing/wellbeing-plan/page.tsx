@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getApiUrl } from "@/lib/api-client";
 
 const steps = [
   "start",
@@ -92,7 +93,7 @@ export default function WellbeingPlan() {
     setError("");
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/therapists/${id}`
+        getApiUrl(`/api/therapists/${id}`)
       );
       const data = await res.json();
       if (!res.ok || !data.success) {
@@ -194,7 +195,7 @@ export default function WellbeingPlan() {
       const payload = { ...formData, therapist: Number(selectedTherapist) };
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/wellbeing-forms`,
+        getApiUrl("/api/wellbeing-forms"),
         {
           method: "POST",
           headers: {

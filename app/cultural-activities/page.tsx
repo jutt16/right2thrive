@@ -2,6 +2,7 @@ import { generateMetadata as generateSEOMetadata } from "@/lib/seo-utils";
 import StructuredData from "@/components/structured-data";
 import { generateServiceStructuredData } from "@/lib/seo-utils";
 import ExpressInterestForm from "./ExpressInterestForm";
+import { getApiUrl } from "@/lib/api-client";
 
 // Force dynamic rendering since we're using no-store cache
 export const dynamic = 'force-dynamic';
@@ -143,7 +144,7 @@ function getGoogleMapsUrl(latitude: number, longitude: number): string {
 
 async function getEvents(): Promise<Event[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events`, {
+    const res = await fetch(getApiUrl("/api/events"), {
       cache: "no-store",
     });
 

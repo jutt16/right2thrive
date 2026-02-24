@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { CheckCircle } from "lucide-react";
+import { getApiUrl } from "@/lib/api-client";
 
 export default function WeeklyProgressForm() {
   const [step, setStep] = useState(0);
@@ -53,7 +54,7 @@ export default function WeeklyProgressForm() {
     setTherapistError("");
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/therapists/${id}`
+        getApiUrl(`/api/therapists/${id}`)
       );
       const json = await res.json();
       if (!res.ok || !json.success) {
@@ -130,7 +131,7 @@ export default function WeeklyProgressForm() {
       };
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/weekly-progress`,
+        getApiUrl("/api/weekly-progress"),
         {
           method: "POST",
           headers: {

@@ -92,7 +92,7 @@ export default function Profile() {
         return;
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+      const res = await fetch(getApiUrl("/api/user"), {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -188,7 +188,7 @@ export default function Profile() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+        getApiUrl("/api/user"),
         {
           method: "POST",
           headers: {

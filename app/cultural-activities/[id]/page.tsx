@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import { generateMetadata as generateSEOMetadata } from "@/lib/seo-utils";
 import Link from "next/link";
+import { getApiUrl } from "@/lib/api-client";
 import { Calendar, MapPin, PoundSterling, ExternalLink, ArrowLeft, Clock, Users, User } from "lucide-react";
 
 function formatDate(dateString: string): string {
@@ -127,7 +128,7 @@ async function getEvent(idOrSlug: string): Promise<Event | null> {
     }
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/events/${numericId}`,
+      getApiUrl(`/api/events/${numericId}`),
       {
         cache: "no-store",
       }

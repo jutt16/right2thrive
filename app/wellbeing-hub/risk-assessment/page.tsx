@@ -18,6 +18,7 @@ import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, ShieldAlert } from "lucide-react";
 import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
+import { getApiUrl } from "@/lib/api-client";
 
 interface RiskQuestionOption {
   value: string;
@@ -143,7 +144,7 @@ export default function RiskAssessmentPage() {
     const fetchQuestions = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/patient/risk-questions`,
+          getApiUrl("/api/patient/risk-questions"),
           { headers: getAuthHeaders() }
         );
 
@@ -255,7 +256,7 @@ export default function RiskAssessmentPage() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/patient/risk-assessments`,
+        getApiUrl("/api/patient/risk-assessments"),
         {
           method: "POST",
           headers: getAuthHeaders(),

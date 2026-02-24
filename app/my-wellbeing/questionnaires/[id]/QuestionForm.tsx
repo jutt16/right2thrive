@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { TokenEarnedAcknowledgment } from "@/components/thrive-tokens/TokenEarnedAcknowledgment";
 import { TextToSpeechButton } from "@/components/text-to-speech/TextToSpeechButton";
+import { getApiUrl } from "@/lib/api-client";
 
 interface Choice {
   id: number;
@@ -48,7 +49,7 @@ export default function QuestionForm({
     }
 
     fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/questionnaires/${questionnaireId}`,
+      getApiUrl(`/api/questionnaires/${questionnaireId}`),
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -101,7 +102,7 @@ export default function QuestionForm({
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/questionnaires/${questionnaireId}/submit`,
+        getApiUrl(`/api/questionnaires/${questionnaireId}/submit`),
         {
           method: "POST",
           headers: {

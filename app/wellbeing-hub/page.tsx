@@ -752,16 +752,16 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       if (!token) return;
 
       const [gad7Res, phq9Res, pcl5Res, sdqRes, riskRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
+        fetch(getApiUrl("/api/assessments/gad7"), {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
+        fetch(getApiUrl("/api/assessments/phq9"), {
           headers: { Authorization: `Bearer ${token}` },
         }),
         fetch(getApiUrl("/api/pcl5/assessments"), {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sdq/assessments`, {
+        fetch(getApiUrl("/api/sdq/assessments"), {
           headers: { Authorization: `Bearer ${token}` },
         }),
         fetch(getApiUrl("/api/patient/risk-assessments"), {
@@ -834,7 +834,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`, {
   //         headers: { Authorization: `Bearer ${token}` },
   //       }),
-  //       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`, {
+  //       fetch(getApiUrl("/api/assessments/phq9"), {
   //         headers: { Authorization: `Bearer ${token}` },
   //       }),
   //     ]);
@@ -861,7 +861,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       if (!token) return;
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/session-notes`,
+        getApiUrl("/api/session-notes"),
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -882,7 +882,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
       if (!token) return;
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/medications`,
+        getApiUrl("/api/medications"),
         {
           headers: { Authorization: `Bearer ${token}` },
         }

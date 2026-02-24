@@ -1,12 +1,10 @@
 /**
  * ThriveTokens API client
  * Wellbeing-first token system. No gamification, no pressure.
+ * Uses getApiUrl for CORS-safe proxy in browser.
  */
 
-const API_BASE =
-  typeof window !== "undefined"
-    ? process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
-    : process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { getApiUrl } from "./api-client";
 
 function getAuthHeaders(): HeadersInit {
   if (typeof window === "undefined") return {};
@@ -106,7 +104,7 @@ export async function getThriveDashboard(): Promise<DashboardData | null> {
 export async function getThriveOverview(limit = 20): Promise<OverviewData | null> {
   try {
     const res = await fetch(
-      `${API_BASE}/api/thrive-tokens/overview?limit=${Math.min(limit, 50)}`,
+      getApiUrl(`/api/thrive-tokens/overview?limit=${Math.min(limit, 50)}`),
       { headers: getAuthHeaders() }
     );
     const json: ApiResponse<OverviewData> = await res.json();
@@ -136,7 +134,7 @@ export type GetRewardResult =
 
 export async function getReward(id: number | string): Promise<GetRewardResult> {
   try {
-    const res = await fetch(`${API_BASE}/api/thrive-tokens/rewards/${id}`, {
+    const res = await fetch(getApiUrl(`/api/thrive-tokens/rewards/${id}`), {
       headers: getAuthHeaders(),
     });
     const json: ApiResponse<RewardDetail> = await res.json();
@@ -188,7 +186,7 @@ export async function submitReflection(params: {
   idempotency_key: string;
 }): Promise<ReflectionResponse | { error: string }> {
   try {
-    const res = await fetch(`${API_BASE}/api/thrive-tokens/reflections`, {
+    const res = await fetch(getApiUrl("/api/thrive-tokens/reflections"), {
       method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(params),
