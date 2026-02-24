@@ -10,7 +10,7 @@ const AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID;
 
 export default function VoiceCallPage() {
   const router = useRouter();
-  const isAuthenticated = useAuthStatus();
+  const { isAuthenticated, isHydrated } = useAuthStatus();
 
   useEffect(() => {
     if (typeof window === "undefined" || !AGENT_ID) return;
@@ -43,13 +43,18 @@ export default function VoiceCallPage() {
   }, []);
 
   useEffect(() => {
+    if (!isHydrated) return;
     if (!isAuthenticated && typeof window !== "undefined") {
       router.push("/auth/login");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isHydrated, router]);
 
-  if (!isAuthenticated) {
-    return null;
+  if (!isHydrated || !isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
   }
 
   return (

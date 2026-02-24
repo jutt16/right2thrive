@@ -8,7 +8,7 @@ import useAuthStatus from "@/hooks/useAuthStatus";
 
 export default function FloatingChatButton() {
   const pathname = usePathname();
-  const isAuthenticated = useAuthStatus();
+  const { isAuthenticated } = useAuthStatus();
   
   if (pathname === "/chat") return null;
   if (!isAuthenticated) return null;

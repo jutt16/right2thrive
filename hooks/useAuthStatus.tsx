@@ -7,14 +7,13 @@ export default function useAuthStatus() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // Mark as hydrated first
     setIsHydrated(true);
-    
-    // Then check for token
     const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
   }, []);
 
-  // Return false during SSR and initial hydration to prevent mismatch
-  return isHydrated ? isAuthenticated : false;
+  return {
+    isAuthenticated: isHydrated ? isAuthenticated : false,
+    isHydrated,
+  };
 }

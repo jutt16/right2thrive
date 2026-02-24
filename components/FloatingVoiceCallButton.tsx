@@ -9,7 +9,7 @@ const AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID;
 
 export default function FloatingVoiceCallButton() {
   const pathname = usePathname();
-  const isAuthenticated = useAuthStatus();
+  const { isAuthenticated } = useAuthStatus();
 
   if (pathname === "/voice-call") return null;
   if (!isAuthenticated) return null;
