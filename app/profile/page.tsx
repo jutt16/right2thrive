@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { getApiUrl } from "@/lib/api-client";
 
 interface ProfileFormData {
   first_name: string;
