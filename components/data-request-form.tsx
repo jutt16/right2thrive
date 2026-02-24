@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { getApiUrl } from "@/lib/api-client"
 import { 
   FileText, 
   Download, 
@@ -58,7 +59,7 @@ export default function DataRequestForm({ onSuccess }: DataRequestFormProps) {
     setError("")
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/data-request`, {
+      const response = await fetch(getApiUrl("/api/data-request"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
+import { getApiUrl } from "@/lib/api-client";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare global {
@@ -58,8 +59,6 @@ export default function ChatPage() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const echoRef = useRef<any>(null);
-
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -116,7 +115,7 @@ export default function ChatPage() {
     const initializeChat = async () => {
       try {
         // Get or create chat
-        const chatResponse = await fetch(`${API_URL}/api/chat/get-or-create`, {
+        const chatResponse = await fetch(getApiUrl("/api/chat/get-or-create"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -131,7 +130,7 @@ export default function ChatPage() {
 
           // Fetch messages
           const messagesResponse = await fetch(
-            `${API_URL}/api/chat/${chatData.chat.id}/messages`,
+            getApiUrl(`/api/chat/${chatData.chat.id}/messages`),
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -153,7 +152,7 @@ export default function ChatPage() {
     };
 
     initializeChat();
-  }, [therapist, API_URL]);
+  }, [therapist]);
 
   // Setup Laravel Reverb real-time connection
   useEffect(() => {
@@ -184,7 +183,7 @@ export default function ChatPage() {
       wssPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT) || 443,
       forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === "https",
       enabledTransports: ["ws", "wss"],
-      authEndpoint: `${API_URL}/api/broadcasting/auth`,
+      authEndpoint: `${typeof window !== "undefined" ? window.location.origin : ""}${getApiUrl("/api/broadcasting/auth")}`,
       auth: {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -218,7 +217,7 @@ export default function ChatPage() {
       echo.leave(`chat.${chatId}`);
       echo.disconnect();
     };
-  }, [chatId, API_URL]);
+  }, [chatId]);
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -235,7 +234,7 @@ export default function ChatPage() {
     setNewMessage(""); // Clear immediately for better UX
 
     try {
-      const response = await fetch(`${API_URL}/api/chat/send`, {
+      const response = await fetch(getApiUrl("/api/chat/send"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getApiUrl } from "@/lib/api-client";
 
 function VerifyEmailForm() {
   const [otp, setOtp] = useState("");
@@ -63,7 +64,7 @@ function VerifyEmailForm() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/verify-email`,
+        getApiUrl("/api/verify-email"),
         {
           method: "POST",
           headers: {
@@ -117,7 +118,7 @@ function VerifyEmailForm() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/resend-otp`,
+        getApiUrl("/api/resend-otp"),
         {
           method: "POST",
           headers: {

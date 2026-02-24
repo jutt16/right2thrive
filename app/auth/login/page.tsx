@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getApiUrl } from "@/lib/api-client";
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -61,7 +62,7 @@ function LoginForm() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
+        getApiUrl("/api/login"),
         {
           method: "POST",
           headers: {

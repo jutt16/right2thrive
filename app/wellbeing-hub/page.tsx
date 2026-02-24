@@ -42,6 +42,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useRouter } from "next/navigation";
+import { getApiUrl } from "@/lib/api-client";
 
 interface AssessmentAnswer {
   question_id: number;
@@ -414,7 +415,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
     }
 
     fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/sdq/assessments/${selectedSdqAssessment.id}`,
+      getApiUrl(`/api/sdq/assessments/${selectedSdqAssessment.id}`),
       { headers: { Authorization: `Bearer ${token}` } }
     )
       .then((res) => (res.ok ? res.json() : null))

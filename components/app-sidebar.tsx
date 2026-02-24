@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getApiUrl } from "@/lib/api-client";
 import {
   LayoutDashboard,
   Heart,
@@ -100,7 +101,7 @@ export function AppSidebar() {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/logout`, {
+      await fetch(getApiUrl("/api/logout"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
