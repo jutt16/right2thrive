@@ -57,6 +57,8 @@ export default function ChatPage() {
   const [error, setError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const echoRef = useRef<any>(null);
 
