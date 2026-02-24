@@ -32,6 +32,14 @@ function LoginForm() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.replace("/my-wellbeing");
+      return;
+    }
+  }, [router]);
+
+  useEffect(() => {
     const message = searchParams.get("message");
     if (message === "email-verified") {
       setSuccessMessage("Email verified successfully! You can now log in.");

@@ -27,7 +27,7 @@ import { useAnalytics, AnalyticsPageTracker } from "@/lib/analytics";
 import { TherapistSelection } from "@/components/TherapistSelection";
 
 export default function Home() {
-  const isAuthenticated = useAuthStatus();
+  const { isAuthenticated } = useAuthStatus();
   const analytics = useAnalytics();
   const { data: homepageData, loading, error } = useHomepageData();
 

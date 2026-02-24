@@ -42,7 +42,7 @@ export function HeroVariant({ variant, isAuthenticated }: HeroVariantProps) {
 
 export function ABTestHero() {
   const [variant, setVariant] = useState<"single" | "split">("single");
-  const isAuthenticated = useAuthStatus();
+  const { isAuthenticated } = useAuthStatus();
 
   useEffect(() => {
     // Simple A/B test logic - could be enhanced with proper analytics
