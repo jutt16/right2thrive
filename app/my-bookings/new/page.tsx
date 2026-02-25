@@ -241,9 +241,6 @@ export default function NewBookingPage() {
             {!loadingTherapist && therapistId && (
               <>
                 <p>
-                  <strong>Email:</strong> {therapistDetails?.email ?? "N/A"}
-                </p>
-                <p>
                   <strong>Gender:</strong>{" "}
                   {therapistDetails?.profile?.gender ?? "N/A"}
                 </p>
@@ -251,27 +248,6 @@ export default function NewBookingPage() {
                   <strong>Cultural Background:</strong>{" "}
                   {therapistDetails?.profile?.cultural_background ?? "N/A"}
                 </p>
-                {therapistDetails?.profile?.telephone && (
-                  <p>
-                    <strong>Telephone:</strong>{" "}
-                    {therapistDetails.profile.telephone}
-                  </p>
-                )}
-                {therapistDetails?.profile?.mobile && (
-                  <p>
-                    <strong>Mobile:</strong> {therapistDetails.profile.mobile}
-                  </p>
-                )}
-                {therapistDetails?.profile?.address && (
-                  <p>
-                    <strong>Address:</strong> {therapistDetails.profile.address}
-                  </p>
-                )}
-                {therapistDetails?.profile?.country && (
-                  <p>
-                    <strong>Country:</strong> {therapistDetails.profile.country}
-                  </p>
-                )}
                 {therapistDetails?.profile?.qualifications && (
                   <p>
                     <strong>Qualifications:</strong>{" "}

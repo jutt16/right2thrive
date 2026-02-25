@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import {
   User2,
-  Mail,
   Globe,
   VenetianMask,
   Phone,
@@ -287,7 +286,6 @@ export default function WeeklyGoalsPage() {
             {isLoadingTherapistDetails ? <p className="text-gray-500">Loading therapist details…</p> : selectedTherapist ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div className="flex items-center gap-2"><User2 className="w-4 h-4 text-blue-600" /><span><strong>Name:</strong> {getTherapistDisplayName(selectedTherapistDetails)}</span></div>
-                <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-blue-600" /><span><strong>Email:</strong> {selectedTherapistDetails?.email ?? 'N/A'}</span></div>
                 <div className="flex items-center gap-2"><VenetianMask className="w-4 h-4 text-blue-600" /><span><strong>Gender:</strong> {selectedTherapistDetails?.profile?.gender ?? 'N/A'}</span></div>
                 <div className="flex items-center gap-2"><Globe className="w-4 h-4 text-blue-600" /><span><strong>Culture:</strong> {selectedTherapistDetails?.profile?.cultural_background ?? 'N/A'}</span></div>
               </div>
