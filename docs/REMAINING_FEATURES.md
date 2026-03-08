@@ -21,10 +21,10 @@
 
 | Item | Description | Status |
 |------|-------------|--------|
-| **Strengths assessment** | Dedicated strengths-based assessment | ⚠️ Partial (SDQ touches on strengths) |
+| **Strengths assessment** | Strengths-based assessment | ✅ Done via SDQ (Strengths and Difficulties Questionnaire) at `/my-wellbeing/questionnaires` |
 | **SMART Goals** | Explicit SMART goal framing in wellbeing plan | ⚠️ Goals exist but SMART structure not explicit |
 
-**Suggestion:** Add a strengths questionnaire or integrate SMART prompts (Specific, Measurable, Achievable, Relevant, Time-bound) into goal-setting flows.
+**Suggestion:** Integrate SMART prompts (Specific, Measurable, Achievable, Relevant, Time-bound) into goal-setting flows. No separate strengths assessment needed—SDQ covers this.
 
 ---
 

@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getSmartGoalTemplates } from '@/lib/smart-goal-api';
+import type { SmartGoalTemplate } from '@/lib/smart-goal-api';
 import {
   User2,
   Globe,
@@ -26,6 +28,11 @@ type GoalRow = {
   goal?: string | null;
   how?: string | null;
   outcome?: string | null;
+  specific?: string | null;
+  measurable?: string | null;
+  achievable?: string | null;
+  relevant?: string | null;
+  time_bound?: string | null;
 };
 
 type WeeklyGoal = {
@@ -68,6 +75,11 @@ interface WeeklyGoalRow {
   goal: string;
   how: string;
   outcome: string;
+  specific?: string;
+  measurable?: string;
+  achievable?: string;
+  relevant?: string;
+  time_bound?: string;
 }
 
 const MAX_ROWS = 20;
@@ -86,6 +98,11 @@ export default function WeeklyGoalsPage() {
     goal: '',
     how: '',
     outcome: '',
+    specific: '',
+    measurable: '',
+    achievable: '',
+    relevant: '',
+    time_bound: '',
   })));
   const [reflection, setReflection] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,6 +114,10 @@ export default function WeeklyGoalsPage() {
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const [loadingGoals, setLoadingGoals] = useState(true);
   const [goalsError, setGoalsError] = useState<string | null>(null);
+
+  // SMART goal templates (prompts)
+  const [smartTemplates, setSmartTemplates] = useState<SmartGoalTemplate[]>([]);
+  const [smartExpanded, setSmartExpanded] = useState<Record<number, boolean>>({});
 
   // -------------------- Therapist Setup --------------------
   useEffect(() => {
@@ -158,7 +179,7 @@ export default function WeeklyGoalsPage() {
       return next;
     });
   };
-  const addRow = () => setRows(prev => prev.length >= MAX_ROWS ? prev : [...prev, { number: prev.length + 1, goal: '', how: '', outcome: '' }]);
+  const addRow = () => setRows(prev => prev.length >= MAX_ROWS ? prev : [...prev, { number: prev.length + 1, goal: '', how: '', outcome: '', specific: '', measurable: '', achievable: '', relevant: '', time_bound: '' }]);
   const removeRowByIndex = (idx: number) => setRows(prev => {
     if (prev.length <= MIN_ROWS) return prev;
     const next = prev.filter((_, i) => i !== idx).map((r, i) => ({ ...r, number: i + 1 }));
@@ -180,7 +201,7 @@ export default function WeeklyGoalsPage() {
       return;
     }
 
-    const hasAnyInput = rows.some(r => r.goal.trim() || r.how.trim() || r.outcome.trim()) || reflection.trim();
+    const hasAnyInput = rows.some(r => r.goal.trim() || r.how.trim() || r.outcome.trim() || r.specific?.trim() || r.measurable?.trim() || r.achievable?.trim() || r.relevant?.trim() || r.time_bound?.trim()) || reflection.trim();
     if (!hasAnyInput) {
       setSubmitError('Please fill at least one goal or the reflection.');
       return;
@@ -193,7 +214,18 @@ export default function WeeklyGoalsPage() {
         setSubmitError('You must be logged in to submit.');
         return;
       }
-      const payload = { therapist_id: Number(selectedTherapist), goals: rows.map(({ number, goal, how, outcome }) => ({ number, goal, how, outcome })), reflection };
+      const payload = {
+        therapist_id: Number(selectedTherapist),
+        goals: rows.map(({ number, goal, how, outcome, specific, measurable, achievable, relevant, time_bound }) => ({
+          number, goal, how, outcome,
+          specific: specific || null,
+          measurable: measurable || null,
+          achievable: achievable || null,
+          relevant: relevant || null,
+          time_bound: time_bound || null,
+        })),
+        reflection,
+      };
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/weekly-goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -203,7 +235,7 @@ export default function WeeklyGoalsPage() {
       if (!response.ok || !data.success) throw new Error(data.message || 'Failed to submit weekly goals.');
 
       setSubmitSuccess('Weekly goals submitted successfully!');
-      setRows(prev => prev.map(r => ({ ...r, goal: '', how: '', outcome: '' })));
+      setRows(prev => prev.map(r => ({ ...r, goal: '', how: '', outcome: '', specific: '', measurable: '', achievable: '', relevant: '', time_bound: '' })));
       setReflection('');
       fetchGoals(); // refresh the list
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -240,7 +272,13 @@ export default function WeeklyGoalsPage() {
 
   useEffect(() => { fetchGoals(); }, []);
 
+  useEffect(() => {
+    getSmartGoalTemplates().then(setSmartTemplates).catch(() => {});
+  }, []);
+
   const toggleExpand = (id: number) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+  const toggleSmartExpand = (rowNum: number) => setSmartExpanded(prev => ({ ...prev, [rowNum]: !prev[rowNum] }));
+  const getPrompt = (cat: string) => smartTemplates.find(t => t.category === cat)?.prompt ?? '';
 
   const fmt = (iso?: string | null) => {
     if (!iso) return '—';
@@ -307,17 +345,39 @@ export default function WeeklyGoalsPage() {
             </thead>
             <tbody>
               {rows.map((row, idx) => (
-                <tr key={row.number} className="align-top">
-                  <td className="border-t border-gray-200 px-3 py-3 text-sm text-gray-700">
-                    <div className="flex items-center gap-2">
-                      <span className="inline-block min-w-[1.25rem]">{row.number}</span>
-                      <button type="button" onClick={() => removeRowByIndex(idx)} className="inline-flex items-center justify-center rounded-full border border-gray-300 w-7 h-7 hover:bg-gray-50 active:scale-95 transition disabled:opacity-50" disabled={rows.length <= MIN_ROWS}><Minus className="w-4 h-4" /></button>
-                    </div>
-                  </td>
-                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.goal} onChange={e => updateRow(idx, 'goal')(e.target.value)} /></td>
-                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.how} onChange={e => updateRow(idx, 'how')(e.target.value)} /></td>
-                  <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.outcome} onChange={e => updateRow(idx, 'outcome')(e.target.value)} /></td>
-                </tr>
+                <React.Fragment key={row.number}>
+                  <tr className="align-top">
+                    <td className="border-t border-gray-200 px-3 py-3 text-sm text-gray-700">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-block min-w-[1.25rem]">{row.number}</span>
+                        <button type="button" onClick={() => removeRowByIndex(idx)} className="inline-flex items-center justify-center rounded-full border border-gray-300 w-7 h-7 hover:bg-gray-50 active:scale-95 transition disabled:opacity-50" disabled={rows.length <= MIN_ROWS}><Minus className="w-4 h-4" /></button>
+                      </div>
+                    </td>
+                    <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.goal} onChange={e => updateRow(idx, 'goal')(e.target.value)} /></td>
+                    <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.how} onChange={e => updateRow(idx, 'how')(e.target.value)} /></td>
+                    <td className="border-t border-gray-200 px-3 py-2"><textarea rows={3} onInput={(e) => autoResize(e.currentTarget)} placeholder="Write your answer…" className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" value={row.outcome} onChange={e => updateRow(idx, 'outcome')(e.target.value)} /></td>
+                  </tr>
+                  {smartTemplates.length > 0 && (
+                    <tr>
+                      <td colSpan={4} className="border-t-0 px-3 py-2 bg-cyan-50/50">
+                        <button type="button" onClick={() => toggleSmartExpand(row.number)} className="text-sm font-medium text-cyan-700 hover:text-cyan-800 flex items-center gap-1">
+                          {smartExpanded[row.number] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          SMART details (optional)
+                        </button>
+                        {smartExpanded[row.number] && (
+                          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {(['specific', 'measurable', 'achievable', 'relevant', 'time_bound'] as const).map(cat => (
+                              <div key={cat}>
+                                <label className="block text-xs font-medium text-gray-600 mb-1 capitalize">{cat.replace('_', ' ')}</label>
+                                <input type="text" placeholder={getPrompt(cat)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400" value={row[cat] ?? ''} onChange={e => updateRow(idx, cat)(e.target.value)} />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
@@ -398,6 +458,29 @@ export default function WeeklyGoalsPage() {
                           </tbody>
                         </table>
                       </div>
+                      {((item.goals || []).some((r: GoalRow) => r.specific || r.measurable || r.achievable || r.relevant || r.time_bound)) && (
+                        <div className="mt-4 p-3 bg-cyan-50 rounded-lg">
+                          <h4 className="text-sm font-semibold text-cyan-800 mb-2">SMART Details</h4>
+                          <div className="space-y-2">
+                            {(item.goals || []).map((r: GoalRow, i: number) => {
+                              const hasSmart = r.specific || r.measurable || r.achievable || r.relevant || r.time_bound;
+                              if (!hasSmart) return null;
+                              return (
+                                <div key={r.number} className="text-sm">
+                                  {r.goal && <p className="font-medium text-gray-700 mb-1">Goal {r.number}: {r.goal}</p>}
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600">
+                                    {r.specific && <p><span className="font-medium">Specific:</span> {r.specific}</p>}
+                                    {r.measurable && <p><span className="font-medium">Measurable:</span> {r.measurable}</p>}
+                                    {r.achievable && <p><span className="font-medium">Achievable:</span> {r.achievable}</p>}
+                                    {r.relevant && <p><span className="font-medium">Relevant:</span> {r.relevant}</p>}
+                                    {r.time_bound && <p><span className="font-medium">Time-bound:</span> {r.time_bound}</p>}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                       <div className="mt-4">
                         <h4 className="text-sm font-semibold text-gray-800 mb-1">Weekly Reflection</h4>
                         <p className="text-sm text-gray-700 whitespace-pre-wrap">{item.reflection || <span className="text-gray-400">—</span>}</p>

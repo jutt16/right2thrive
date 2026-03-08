@@ -57,44 +57,37 @@
 
 ## 2. Strengths Assessment & SMART Goals
 
-### 2.1 Admin
+> **Note:** Strengths assessment is **already implemented** via the SDQ (Strengths and Difficulties Questionnaire). SDQ includes prosocial/strengths items (e.g. “I try to be nice to other people”, “I am helpful”, “I often volunteer to help others”) and is available at `/my-wellbeing/questionnaires`. Therapists can view SDQ results via the therapist portal. No separate strengths tables or APIs are needed.
+
+### 2.1 Admin (SMART Goals only)
 
 | Task | Description |
 |------|-------------|
-| **Strengths questions** | CRUD for strengths questionnaire (similar to GAD7/PHQ9) |
-| **SMART goal templates** | Manage SMART prompts/templates for goals |
-| **Display order** | Order questions and templates |
+| **SMART goal templates** | Manage SMART prompts/templates for goals (Specific, Measurable, Achievable, Relevant, Time-bound) |
+| **Display order** | Order templates |
 
-### 2.2 Therapist
+### 2.2 Therapist (SMART Goals only)
 
 | Task | Description |
 |------|-------------|
-| **View strengths** | See patient strengths assessment results |
-| **View SMART goals** | See patient goals with SMART structure |
+| **View SMART goals** | See patient goals with SMART structure (if extended) |
 | **Add SMART prompts** | Optional: add notes/prompts for patient goals |
 
-### 2.3 Backend (Laravel)
+### 2.3 Backend (Laravel) – SMART Goals only
 
 | Task | Description |
 |------|-------------|
-| **Migration** | `strengths_questions`, `strengths_assessments`, `strengths_answers` |
-| **Migration** | Add `is_smart` or SMART fields to `weekly_goals` / wellbeing plan goals |
-| **Models** | `StrengthsQuestion`, `StrengthsAssessment`, `StrengthsAnswer` |
-| **Service** | Strengths scoring logic |
+| **Migration** | Add SMART fields to `weekly_goals` / wellbeing plan goals (`specific`, `measurable`, `achievable`, `relevant`, `time_bound` or similar) |
+| **Optional** | `smart_goal_templates` table for admin-managed prompts |
 
-### 2.4 APIs Needed
+### 2.4 APIs Needed (SMART Goals only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `GET` | `/api/strengths/questions` | Patient | Get strengths questions |
-| `POST` | `/api/strengths/assessments` | Patient | Submit strengths assessment |
-| `GET` | `/api/strengths/assessments` | Patient | List own assessments |
-| `GET` | `/api/therapist/patients/{id}/strengths` | Therapist | Patient strengths |
-| `GET` | `/api/admin/strengths/questions` | Admin | List questions |
-| `POST` | `/api/admin/strengths/questions` | Admin | Create question |
-| `PUT` | `/api/admin/strengths/questions/{id}` | Admin | Update question |
 | `PATCH` | `/api/weekly-goals/{id}` | Patient | Update goal with SMART fields (extend existing) |
 | `PATCH` | `/api/wellbeing-forms` | Patient | Add SMART fields to goals step |
+| `GET` | `/api/admin/smart-goal-templates` | Admin | List templates (optional) |
+| `POST` | `/api/admin/smart-goal-templates` | Admin | Create template (optional) |
 
 ---
 
@@ -420,7 +413,7 @@
 | `/api/journey-stages` | GET | Stages for onboarding |
 | `/api/user/journey-stage` | GET, PUT | Patient stage |
 | `/api/therapist/patients/{id}/journey-stage` | GET, PUT | Therapist sets stage |
-| `/api/strengths/*` | Various | Strengths assessment |
+| `/api/admin/smart-goal-templates` | Optional | SMART prompts (strengths covered by SDQ) |
 | `/api/social-prescribing` | GET | Social prescribing services |
 | `/api/admin/social-prescribing` | CRUD | Manage services |
 | `/api/admin/thrive-tokens/rewards` | Extend | Add category, featured |
@@ -441,7 +434,7 @@
 | Migration | Tables |
 |-----------|--------|
 | Journey stages | `journey_stages`, `user_journey_stages` |
-| Strengths | `strengths_questions`, `strengths_assessments`, `strengths_answers` |
+| SMART goals | Add columns to `weekly_goals`; optional `smart_goal_templates` (strengths = SDQ) |
 | Meeting preferences | Add columns to `users` / `profiles` |
 | Treatment phases | `patient_treatment_phases`, `outcome_measure_completions` |
 | Relapse prevention | `relapse_prevention_sections`, `patient_relapse_plans` (optional) |
@@ -460,6 +453,6 @@
 4. **Rewards layout** – Admin + API extensions  
 5. **Journey stages** – Onboarding personalisation  
 6. **Social prescribing** – New feature  
-7. **Strengths + SMART goals** – Enhance goals  
+7. **SMART goals** – Add SMART prompts to wellbeing plan & weekly goals (strengths = SDQ)  
 8. **Meeting preferences** – Small extension  
 9. **Pre-session checklist + symptom journal** – UX improvements  
