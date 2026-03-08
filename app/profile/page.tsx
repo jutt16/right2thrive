@@ -25,6 +25,9 @@ interface ProfileFormData {
   address: string;
   country: string;
   employment_status: string;
+  preferred_meeting_type: string;
+  preferred_language: string;
+  environment_notes: string;
 }
 
 const extractFirstErrorMessage = (data: unknown): string | null => {
@@ -76,6 +79,9 @@ export default function Profile() {
     address: "",
     country: "",
     employment_status: "",
+    preferred_meeting_type: "",
+    preferred_language: "",
+    environment_notes: "",
   });
 
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
@@ -120,6 +126,9 @@ export default function Profile() {
           address: profile.address || "",
           country: profile.country || "",
           employment_status: profile.employment_status || "",
+          preferred_meeting_type: user.preferred_meeting_type || "",
+          preferred_language: user.preferred_language || "",
+          environment_notes: user.environment_notes || "",
         });
         
         // Set profile picture preview if available
@@ -180,6 +189,9 @@ export default function Profile() {
       formDataToSend.append("address", formData.address || "");
       formDataToSend.append("country", formData.country || "");
       formDataToSend.append("employment_status", formData.employment_status || "");
+      formDataToSend.append("preferred_meeting_type", formData.preferred_meeting_type || "");
+      formDataToSend.append("preferred_language", formData.preferred_language || "");
+      formDataToSend.append("environment_notes", formData.environment_notes || "");
       
       // Add profile picture if provided
       if (profilePicture) {
@@ -359,6 +371,68 @@ export default function Profile() {
                     <SelectItem value="Retired">Retired</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="border-t pt-6 mt-4">
+                <h3 className="text-lg font-medium mb-4 text-[#ff961b]">
+                  Meeting Preferences
+                </h3>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="preferred_meeting_type">
+                      Preferred Meeting Type
+                    </Label>
+                    <Select
+                      value={formData.preferred_meeting_type}
+                      onValueChange={(value) =>
+                        handleSelectChange("preferred_meeting_type", value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select meeting type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="online">Online</SelectItem>
+                        <SelectItem value="in-person">In-person</SelectItem>
+                        <SelectItem value="phone">Phone</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="preferred_language">
+                      Preferred Therapy Language
+                    </Label>
+                    <Input
+                      id="preferred_language"
+                      name="preferred_language"
+                      value={formData.preferred_language}
+                      onChange={handleChange}
+                      placeholder="e.g. English"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="environment_notes">
+                      Environment Notes
+                    </Label>
+                    <textarea
+                      id="environment_notes"
+                      name="environment_notes"
+                      value={formData.environment_notes}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          environment_notes: e.target.value.slice(0, 1000),
+                        }))
+                      }
+                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      placeholder="e.g. Quiet space preferred, group sessions"
+                      maxLength={1000}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {formData.environment_notes.length}/1000 characters
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="grid gap-2">

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 interface Availability {
   date: string;
-  slots: { start_time: string; end_time: string }[];
+  slots: { start_time: string; end_time: string; meeting_type?: string }[];
 }
 
 interface TherapistProfile {
@@ -41,7 +41,7 @@ export default function NewBookingPage() {
   const [availability, setAvailability] = useState<Availability[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [slotsForSelectedDate, setSlotsForSelectedDate] = useState<
-    { start_time: string; end_time: string }[]
+    { start_time: string; end_time: string; meeting_type?: string }[]
   >([]);
   const [selectedSlot, setSelectedSlot] = useState<{
     start: string;
@@ -49,6 +49,10 @@ export default function NewBookingPage() {
   } | null>(null);
   const [customStartTime, setCustomStartTime] = useState("");
   const [customEndTime, setCustomEndTime] = useState("");
+
+  const [preferredMeetingType, setPreferredMeetingType] = useState<
+    string | null
+  >(null);
 
   // Read therapist from localStorage (therapist or auth.therapist)
   useEffect(() => {
@@ -77,7 +81,13 @@ export default function NewBookingPage() {
       const idStr = String(stored.id);
       setTherapistId(idStr);
       fetchTherapistDetails(idStr);
-      fetchAvailability(idStr);
+      fetchUserMeetingPreference()
+        .then((type) => {
+          setPreferredMeetingType(type ?? null);
+          return type;
+        })
+        .catch(() => null)
+        .then((type) => fetchAvailability(idStr, type));
     } else {
       setLoadingTherapist(false);
       setTherapistError(
@@ -109,14 +119,38 @@ export default function NewBookingPage() {
     }
   };
 
-  // fetch availability for therapist
-  const fetchAvailability = async (id: string) => {
+  // fetch user's preferred meeting type from profile
+  const fetchUserMeetingPreference = async (): Promise<string | null> => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
     try {
-      const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/therapist/${id}/availability`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+        { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } }
       );
+      const json = await res.json();
+      if (json?.success && json?.data?.preferred_meeting_type) {
+        return json.data.preferred_meeting_type;
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  };
+
+  // fetch availability for therapist (supports meeting_type filter)
+  const fetchAvailability = async (
+    id: string,
+    meetingType?: string | null
+  ) => {
+    try {
+      const url = new URL(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/therapist/${id}/availability`
+      );
+      if (meetingType) {
+        url.searchParams.set("meeting_type", meetingType);
+      }
+      const res = await fetch(url.toString());
       const data = await res.json();
       if (data?.success) {
         setAvailability(data.data || []);
@@ -295,6 +329,11 @@ export default function NewBookingPage() {
         <>
           <h3 className="text-md font-medium mt-8 mb-2">
             Available Slots on {selectedDate}
+            {preferredMeetingType && (
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                (filtered by {preferredMeetingType})
+              </span>
+            )}
           </h3>
           <div className="flex flex-wrap gap-3 mb-4">
             {slotsForSelectedDate.map((s, idx) => (
@@ -311,6 +350,11 @@ export default function NewBookingPage() {
               >
                 <Clock className="mr-2 h-4 w-4" />
                 {s.start_time} - {s.end_time}
+                {s.meeting_type && (
+                  <span className="ml-1.5 text-xs opacity-80">
+                    ({s.meeting_type})
+                  </span>
+                )}
               </Button>
             ))}
           </div>
