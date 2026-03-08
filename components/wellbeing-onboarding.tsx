@@ -9,7 +9,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Heart, Target, FileText, TrendingUp, ClipboardList, CheckCircle2, ArrowRight, X } from "lucide-react";
+import { Heart, Target, FileText, TrendingUp, ClipboardList, CheckCircle2, ArrowRight, X, Compass } from "lucide-react";
+import { getJourneyStages, getCurrentJourneyStage, setJourneyStage } from "@/lib/journey-stages-api";
+import type { JourneyStage } from "@/lib/journey-stages-api";
 
 interface OnboardingStep {
   number: number;
@@ -54,14 +56,33 @@ const onboardingSteps: OnboardingStep[] = [
 export default function WellbeingOnboarding() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [stages, setStages] = useState<JourneyStage[]>([]);
+  const [currentStage, setCurrentStage] = useState<JourneyStage | null>(null);
+  const [stageLoading, setStageLoading] = useState(true);
+  const [stageSaving, setStageSaving] = useState(false);
 
   useEffect(() => {
     // Always show the onboarding guide when the My Wellbeing page loads
-    // (do not persist completion in localStorage so it appears on every login/visit)
     setTimeout(() => {
       setIsOpen(true);
     }, 500);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      setStageLoading(false);
+      return;
+    }
+    Promise.all([getJourneyStages(), getCurrentJourneyStage()])
+      .then(([stageList, userStage]) => {
+        setStages(stageList);
+        setCurrentStage(userStage?.stage ?? null);
+      })
+      .catch(() => setStages([]))
+      .finally(() => setStageLoading(false));
+  }, [isOpen]);
 
   const handleNext = () => {
     if (currentStep < onboardingSteps.length - 1) {
@@ -85,10 +106,23 @@ export default function WellbeingOnboarding() {
     setIsOpen(false);
   };
 
+  const handleSelectStage = async (stage: JourneyStage) => {
+    setStageSaving(true);
+    const result = await setJourneyStage(stage.id);
+    setStageSaving(false);
+    if ("error" in result) return;
+    setCurrentStage(stage);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("journeyStageUpdated"));
+    }
+    handleNext();
+  };
+
   if (!isOpen) return null;
 
-  const currentStepData = onboardingSteps[currentStep];
-  const isLastStep = currentStep === onboardingSteps.length - 1;
+  const isJourneyStageStep = currentStep === 0;
+  const currentStepData = onboardingSteps[Math.max(0, currentStep - 1)]; // step 0 = journey, steps 1-5 = onboarding 0-4
+  const isLastStep = currentStep === 5; // 6 steps total (0-5)
   const isFirstStep = currentStep === 0;
 
   return (
@@ -135,14 +169,12 @@ export default function WellbeingOnboarding() {
         </DialogHeader>
 
         <div className="mt-6 space-y-6">
-          {/* Step Indicator */}
+          {/* Step Indicator - step 0 = journey stage, steps 1-5 = feature tour */}
           <div className="flex items-center justify-center gap-2">
-            {onboardingSteps.map((step, index) => (
+            {[0, 1, 2, 3, 4, 5].map((index) => (
               <div
-                key={step.number}
-                className={`flex items-center ${
-                  index < onboardingSteps.length - 1 ? "flex-1" : ""
-                }`}
+                key={index}
+                className={`flex items-center ${index < 5 ? "flex-1" : ""}`}
               >
                 <div
                   className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
@@ -156,15 +188,13 @@ export default function WellbeingOnboarding() {
                   {index < currentStep ? (
                     <CheckCircle2 className="h-5 w-5" />
                   ) : (
-                    <span className="font-semibold">{step.number}</span>
+                    <span className="font-semibold">{index + 1}</span>
                   )}
                 </div>
-                {index < onboardingSteps.length - 1 && (
+                {index < 5 && (
                   <div
                     className={`flex-1 h-1 mx-2 transition-all ${
-                      index < currentStep
-                        ? "bg-green-500"
-                        : "bg-gray-200"
+                      index < currentStep ? "bg-green-500" : "bg-gray-200"
                     }`}
                   />
                 )}
@@ -174,19 +204,67 @@ export default function WellbeingOnboarding() {
 
           {/* Step Content */}
           <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-lg p-8 border border-cyan-200">
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="p-4 bg-white rounded-full shadow-md">
-                {currentStepData.icon}
+            {isJourneyStageStep ? (
+              <div className="space-y-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="p-4 bg-white rounded-full shadow-md">
+                    <Compass className="h-8 w-8 text-cyan-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-800 mt-4 mb-2">
+                    Where are you in your journey?
+                  </h3>
+                  <p className="text-gray-600 max-w-xl">
+                    The Transtheoretical Model helps us personalise your experience. Choose the stage that best describes where you are right now.
+                  </p>
+                </div>
+                {stageLoading ? (
+                  <p className="text-center text-gray-500">Loading…</p>
+                ) : currentStage ? (
+                  <div className="text-center">
+                    <p className="text-lg font-medium text-cyan-700 mb-2">
+                      You&apos;re at: <strong>{currentStage.name}</strong>
+                    </p>
+                    <p className="text-sm text-gray-600 mb-4">{currentStage.description}</p>
+                    <Button onClick={handleNext} className="bg-cyan-600 hover:bg-cyan-700">
+                      Continue <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : stages.length > 0 ? (
+                  <div className="grid gap-3 max-h-64 overflow-y-auto">
+                    {stages.map((stage) => (
+                      <button
+                        key={stage.id}
+                        type="button"
+                        onClick={() => handleSelectStage(stage)}
+                        disabled={stageSaving}
+                        className="text-left p-4 rounded-lg border-2 border-gray-200 hover:border-cyan-500 hover:bg-white/80 transition-all bg-white"
+                      >
+                        <span className="font-semibold text-gray-800">{stage.name}</span>
+                        <p className="text-sm text-gray-600 mt-1">{stage.description}</p>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <Button onClick={handleNext} variant="outline">
+                    Skip for now <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
               </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                  {currentStepData.number}. {currentStepData.title}
-                </h3>
-                <p className="text-gray-600 text-lg leading-relaxed max-w-xl">
-                  {currentStepData.description}
-                </p>
+            ) : (
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="p-4 bg-white rounded-full shadow-md">
+                  {currentStepData.icon}
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                    {currentStepData.number}. {currentStepData.title}
+                  </h3>
+                  <p className="text-gray-600 text-lg leading-relaxed max-w-xl">
+                    {currentStepData.description}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Navigation Buttons */}

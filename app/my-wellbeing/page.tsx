@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ThumbsUp, ShieldAlert } from "lucide-react";
+import { ThumbsUp, ShieldAlert, Compass } from "lucide-react";
 import WellbeingOnboarding from "@/components/wellbeing-onboarding";
+import { getCurrentJourneyStage } from "@/lib/journey-stages-api";
+import type { UserJourneyStageData } from "@/lib/journey-stages-api";
 
 const wellbeingOptions = [
   { label: "My Wellbeing Dashboard", href: "/my-wellbeing/dashboard" },
@@ -23,6 +25,7 @@ export default function WellbeingHub() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [hasTherapist, setHasTherapist] = useState(true);
+  const [journeyStage, setJourneyStage] = useState<UserJourneyStageData | null>(null);
 
   useEffect(() => {
     setIsClient(true); // make sure we're on the client before using localStorage
@@ -46,6 +49,20 @@ export default function WellbeingHub() {
       setHasTherapist(!!parsedUser.therapist_id);
     }
   }, [router]);
+
+  useEffect(() => {
+    if (!isClient) return;
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const fetchStage = () => {
+      getCurrentJourneyStage()
+        .then((data) => data && setJourneyStage(data))
+        .catch(() => {});
+    };
+    fetchStage();
+    window.addEventListener("journeyStageUpdated", fetchStage);
+    return () => window.removeEventListener("journeyStageUpdated", fetchStage);
+  }, [isClient]);
 
   // Re-check therapist status when page becomes visible or when returning from another page
   useEffect(() => {
@@ -134,6 +151,27 @@ export default function WellbeingHub() {
             </Link>
           </div>
         </div>
+
+        {journeyStage && (
+          <div className="rounded-xl shadow-lg border border-cyan-300 overflow-hidden mb-6 bg-gradient-to-br from-cyan-50 to-teal-50">
+            <div className="bg-gradient-to-r from-cyan-600 to-teal-600 px-6 py-4">
+              <div className="flex items-center gap-3">
+                <Compass className="h-8 w-8 text-white shrink-0" aria-hidden />
+                <div>
+                  <h2 className="text-xl font-bold text-white">Your Journey Stage</h2>
+                  <p className="text-cyan-100 text-sm mt-0.5">
+                    {journeyStage.stage.name} — {journeyStage.stage.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {journeyStage.stage.content && (
+              <div className="p-4">
+                <p className="text-gray-700 text-sm">{journeyStage.stage.content}</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {!hasTherapist && (
           <div className="rounded-xl shadow-xl border border-yellow-400 overflow-hidden mb-6 bg-gradient-to-br from-yellow-50 to-orange-50">
