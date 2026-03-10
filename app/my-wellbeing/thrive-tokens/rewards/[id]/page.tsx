@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Gift } from "lucide-react";
+import { Gift, Star, Tag } from "lucide-react";
 
 export default function RewardDetailPage() {
   const router = useRouter();
@@ -103,11 +103,32 @@ export default function RewardDetailPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-medium text-foreground mb-2">{reward.name}</h1>
-      <p className="text-lg text-muted-foreground mb-6">
-        {reward.cost} ThriveTokens
-      </p>
+    <div className="min-h-screen bg-gray-50/80">
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <Link
+          href="/my-wellbeing/thrive-tokens/rewards"
+          className="inline-flex items-center gap-1 text-sm text-[#00990d] hover:text-[#007a0a] font-medium mb-6"
+        >
+          ← Back to rewards
+        </Link>
+        <div className="flex flex-wrap items-center gap-2 mb-2">
+          {reward.category && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-sm text-gray-600">
+              <Tag className="h-3.5 w-3.5" aria-hidden />
+              {reward.category}
+            </span>
+          )}
+          {(reward.is_featured ?? false) && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-0.5 text-xs font-semibold text-white">
+              <Star className="h-3 w-3" aria-hidden />
+              Featured
+            </span>
+          )}
+        </div>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{reward.name}</h1>
+        <p className="text-lg font-semibold text-[#00990d] mb-6">
+          {reward.cost} ThriveTokens
+        </p>
 
       {reward.image_url ? (
         <div className="aspect-video w-full bg-muted rounded-lg overflow-hidden mb-6">
@@ -145,7 +166,7 @@ export default function RewardDetailPage() {
         <Button
           onClick={handleRedeemClick}
           disabled={redeeming || !reward.can_afford}
-          className="flex-1"
+          className="flex-1 bg-[#00990d] hover:bg-[#007a0a]"
         >
           {redeeming ? "Processing…" : "Redeem reward"}
         </Button>
@@ -176,6 +197,7 @@ export default function RewardDetailPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 }

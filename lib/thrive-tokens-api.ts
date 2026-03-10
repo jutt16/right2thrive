@@ -60,6 +60,10 @@ export interface Reward {
   icon: string | null;
   can_afford: boolean;
   remaining: number;
+  /** From formatReward(); string or null. Optional for backward compatibility. */
+  category?: string | null;
+  /** From formatReward(); featured rewards. Optional for backward compatibility. */
+  is_featured?: boolean;
 }
 
 export interface RewardDetail extends Reward {
