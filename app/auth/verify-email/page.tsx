@@ -29,6 +29,8 @@ function VerifyEmailForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const showResendHint = searchParams.get("resend") === "1";
+
   useEffect(() => {
     // Get email from URL params or localStorage
     const emailParam = searchParams.get("email");
@@ -49,7 +51,7 @@ function VerifyEmailForm() {
     setSuccess(false);
 
     if (!otp || otp.length !== 6) {
-      setError("Please enter a valid 6-digit OTP");
+      setError("Please enter a valid 6-digit code");
       return;
     }
 
@@ -77,27 +79,25 @@ function VerifyEmailForm() {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Verification failed");
-      }
-
       if (data.success) {
         setSuccess(true);
-        // Clear pending email from localStorage
+        setError("");
         localStorage.removeItem("pendingVerificationEmail");
-        
-        // Redirect to login after a short delay
         setTimeout(() => {
           router.push("/auth/login?message=email-verified");
         }, 2000);
-      } else {
-        throw new Error(data.message || "Verification failed");
+        return;
       }
+
+      setError(
+        data.message ||
+          "Invalid or expired verification code. Please check the code or request a new one."
+      );
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Invalid OTP. Please try again."
+          : "Verification failed. Please try again."
       );
     } finally {
       setIsLoading(false);
@@ -106,7 +106,7 @@ function VerifyEmailForm() {
 
   const handleResendOtp = async () => {
     if (!email) {
-      setError("Email is required to resend OTP");
+      setError("Email is required to resend the code");
       return;
     }
 
@@ -130,21 +130,21 @@ function VerifyEmailForm() {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to resend OTP");
-      }
-
       if (data.success) {
         setResendSuccess(true);
         setTimeout(() => setResendSuccess(false), 5000);
-      } else {
-        throw new Error(data.message || "Failed to resend OTP");
+        return;
       }
+
+      setError(
+        data.message ||
+          "We could not send the verification code. Please check your email address or try again later."
+      );
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to resend OTP. Please try again."
+          : "We could not send the verification code. Please try again later."
       );
     } finally {
       setIsResending(false);
@@ -199,6 +199,15 @@ function VerifyEmailForm() {
             </div>
           ) : (
             <form onSubmit={handleVerify}>
+              {showResendHint && (
+                <Alert className="mb-4 bg-amber-50 border-amber-200 text-amber-900">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription>
+                    We couldn&apos;t send the verification email. Click &quot;Resend code&quot; below to receive a new code.
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {error && (
                 <Alert className="mb-4" variant="destructive">
                   <AlertCircle className="h-4 w-4" />
@@ -268,7 +277,7 @@ function VerifyEmailForm() {
                         Sending...
                       </>
                     ) : (
-                      "Resend OTP"
+                      "Resend code"
                     )}
                   </Button>
                 </div>

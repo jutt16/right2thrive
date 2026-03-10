@@ -22,7 +22,7 @@ export function TokenProgressVisual({ balance, className = "" }: TokenProgressVi
       aria-hidden
     >
       <div
-        className="h-full rounded-full bg-brand-teal/60 transition-all duration-500 ease-out"
+        className="h-full rounded-full bg-[#00990d]/70 transition-all duration-500 ease-out"
         style={{ width: `${Math.max(fillPercent, 5)}%` }}
       />
     </div>

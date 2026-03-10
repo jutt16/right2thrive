@@ -78,6 +78,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
+  const [emailVerificationSent, setEmailVerificationSent] = useState(true)
   const [errors, setErrors] = useState<FormErrors>({})
 
   // Form State
@@ -190,12 +191,20 @@ export default function SignupPage() {
     window.scrollTo(0, 0)
   }
 
+  // Map API error keys to form field names
+  const apiErrorToFormKey: Record<string, string> = {
+    first_name: "firstName",
+    last_name: "lastName",
+    password_confirmation: "confirmPassword",
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validateStep(3)) return
 
     setIsLoading(true)
     setError("")
+    setErrors({})
 
     try {
       const response = await fetch(
@@ -226,19 +235,34 @@ export default function SignupPage() {
 
       const data = await response.json()
 
-      if (!response.ok) throw new Error(data.message || "Registration failed")
-
       if (data.success) {
         setSuccess(true)
+        setError("")
+        const emailSent = data.email_verification_sent !== false
+        setEmailVerificationSent(emailSent)
         localStorage.setItem("pendingVerificationEmail", formData.email)
+        const delay = emailSent ? 2000 : 1500
         setTimeout(() => {
-          router.push(`/auth/verify-email?email=${encodeURIComponent(formData.email)}`)
-        }, 2000)
-      } else {
-        throw new Error(data.message || "Registration failed")
+          router.push(`/auth/verify-email?email=${encodeURIComponent(formData.email)}${!emailSent ? "&resend=1" : ""}`)
+        }, delay)
+        return
+      }
+
+      // Validation or server error: use API message and errors
+      const message = data.message || "Registration failed. Please try again or contact support if the problem continues."
+      setError(message)
+
+      if (data.errors && typeof data.errors === "object") {
+        const formErrors: FormErrors = {}
+        for (const [key, messages] of Object.entries(data.errors)) {
+          const arr = Array.isArray(messages) ? messages : [String(messages)]
+          const formKey = apiErrorToFormKey[key] ?? key
+          if (arr[0]) formErrors[formKey] = arr[0]
+        }
+        setErrors(formErrors)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed")
+      setError(err instanceof Error ? err.message : "Registration failed. Please try again or contact support if the problem continues.")
     } finally {
       setIsLoading(false)
     }
@@ -293,8 +317,13 @@ export default function SignupPage() {
               >
                 <CheckCircle className="h-10 w-10 text-green-600" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Account Created!</h3>
-              <p className="text-gray-600 mb-6">Redirecting you to verification...</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Account created</h3>
+              <p className="text-gray-600 mb-2">
+                {emailVerificationSent
+                  ? "Redirecting you to verify your email..."
+                  : "We couldn't send the verification email. You'll be able to request a new code on the next page."}
+              </p>
+              <p className="text-sm text-gray-500 mb-6">Taking you to verification...</p>
               <Loader2 className="mx-auto h-8 w-8 animate-spin text-green-600" />
             </div>
           ) : (
