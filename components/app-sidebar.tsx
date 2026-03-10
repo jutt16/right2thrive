@@ -84,6 +84,7 @@ const SIDEBAR_NAV = {
   resources: [
     { label: "Resources", href: "/wellbeing-hub/resources", icon: BookOpen },
     { label: "Support", href: "/wellbeing-hub/support", icon: LifeBuoy },
+    { label: "Relapse Prevention", href: "/wellbeing-hub/relapse-prevention", icon: ShieldAlert },
   ],
 };
 

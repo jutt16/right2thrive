@@ -19,6 +19,7 @@ const wellbeingOptions = [
   { label: "Strength and Difficulties Questionnaire (SDQ)", href: "/my-wellbeing/questionnaires" },
   { label: "PCL-5 Questionnaire", href: "/wellbeing-hub/pcl5" },
   { label: "Risk Assessment", href: "/wellbeing-hub/risk-assessment" },
+  { label: "Relapse Prevention", href: "/wellbeing-hub/relapse-prevention" },
 ];
 
 export default function WellbeingHub() {

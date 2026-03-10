@@ -1,16 +1,19 @@
 # Right2Thrive – Remaining Features: Admin, Therapist & Backend Implementation
 
-*Implementation guide for Admin panel, Therapist portal, and Laravel API based on [REMAINING_FEATURES.md](./REMAINING_FEATURES.md)*
+*Implementation guide for Admin panel, Therapist portal, and Laravel backend based on [REMAINING_FEATURES.md](./REMAINING_FEATURES.md)*
 
 ---
 
 ## Overview
 
-| Role | Scope |
-|------|-------|
-| **Admin** | Content management, configuration, user management, Thrive Tokens rules/rewards |
-| **Therapist** | Patient view, assessments, treatment phase, outcome reminders, notes |
-| **Backend (Laravel)** | API endpoints, database migrations, business logic, integrations |
+| Role | Scope | Stack |
+|------|-------|-------|
+| **Admin** | Content management, configuration, user management, Thrive Tokens rules/rewards | Laravel web routes + Blade views |
+| **Therapist** | Patient view, assessments, treatment phase, outcome reminders, notes | Laravel web routes + Blade views |
+| **Backend (Laravel)** | Database migrations, business logic, integrations; **web routes** for admin/therapist; **APIs** for patient only | Laravel |
+| **Patient** | Patient-facing app (onboarding, assessments, goals, etc.) | Consumes **APIs only** (separate frontend) |
+
+**Architecture:** Admin and Therapist are part of this Laravel project and use traditional web routes with Blade views. Only the patient-facing side uses REST APIs (consumed by a separate patient app).
 
 ---
 
@@ -40,18 +43,31 @@
 | **Models** | `JourneyStage`, `UserJourneyStage` |
 | **Seeders** | Default stages (pre-contemplation, contemplation, etc.) |
 
-### 1.4 APIs Needed
+### 1.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/journey-stages` | `admin.journey-stages.index` | List all stages |
+| `GET` | `/admin/journey-stages/create` | `admin.journey-stages.create` | Create stage form |
+| `POST` | `/admin/journey-stages` | Redirect | Store stage |
+| `GET` | `/admin/journey-stages/{id}/edit` | `admin.journey-stages.edit` | Edit stage form |
+| `PUT` | `/admin/journey-stages/{id}` | Redirect | Update stage |
+
+### 1.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/patients/{id}` | Patient profile (extend) | Show patient stage on profile |
+| `GET` | `/therapist/patients/{id}/journey-stage` | `therapist.patients.journey-stage` | View/update patient stage |
+| `PUT` | `/therapist/patients/{id}/journey-stage` | Redirect | Update patient stage |
+
+### 1.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `GET` | `/api/journey-stages` | Public/Patient | List stages for onboarding |
 | `GET` | `/api/user/journey-stage` | Patient | Current stage |
 | `PUT` | `/api/user/journey-stage` | Patient | Self-set stage (e.g. during onboarding) |
-| `GET` | `/api/therapist/patients/{id}/journey-stage` | Therapist | Patient stage |
-| `PUT` | `/api/therapist/patients/{id}/journey-stage` | Therapist | Update patient stage |
-| `GET` | `/api/admin/journey-stages` | Admin | List all stages |
-| `POST` | `/api/admin/journey-stages` | Admin | Create stage |
-| `PUT` | `/api/admin/journey-stages/{id}` | Admin | Update stage |
 
 ---
 
@@ -80,14 +96,28 @@
 | **Migration** | Add SMART fields to `weekly_goals` / wellbeing plan goals (`specific`, `measurable`, `achievable`, `relevant`, `time_bound` or similar) |
 | **Optional** | `smart_goal_templates` table for admin-managed prompts |
 
-### 2.4 APIs Needed (SMART Goals only)
+### 2.4 Admin Web Routes (Blade) – SMART Goals only
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/smart-goal-templates` | `admin.smart-goal-templates.index` | List templates (optional) |
+| `GET` | `/admin/smart-goal-templates/create` | `admin.smart-goal-templates.create` | Create template form |
+| `POST` | `/admin/smart-goal-templates` | Redirect | Store template |
+| `GET` | `/admin/smart-goal-templates/{id}/edit` | `admin.smart-goal-templates.edit` | Edit template form |
+| `PUT` | `/admin/smart-goal-templates/{id}` | Redirect | Update template |
+
+### 2.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/patients/{id}` | Patient profile (extend) | View patient SMART goals |
+
+### 2.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `PATCH` | `/api/weekly-goals/{id}` | Patient | Update goal with SMART fields (extend existing) |
 | `PATCH` | `/api/wellbeing-forms` | Patient | Add SMART fields to goals step |
-| `GET` | `/api/admin/smart-goal-templates` | Admin | List templates (optional) |
-| `POST` | `/api/admin/smart-goal-templates` | Admin | Create template (optional) |
 
 ---
 
@@ -114,13 +144,26 @@
 | **Migration** | Add to `users` or `profiles`: `preferred_meeting_type`, `preferred_language`, `environment_notes` |
 | **Migration** | Add to therapist availability: `meeting_type` (online/in-person) |
 
-### 3.4 APIs Needed
+### 3.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/meeting-types` | `admin.meeting-types.index` | Manage meeting type options |
+| `GET` | `/admin/environment-options` | `admin.environment-options.index` | Manage environment options (optional) |
+
+### 3.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/patients/{id}` | Patient profile (extend) | Include patient meeting preferences when viewing |
+| `GET` | `/therapist/availability` | `therapist.availability.index` | Set availability per meeting type (online vs in-person) |
+
+### 3.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `PUT` | `/api/user` | Patient | Add `preferred_meeting_type`, `environment_notes` (extend existing) |
 | `GET` | `/api/user` | Patient | Return preferences (extend existing) |
-| `GET` | `/api/therapist/patients/{id}` | Therapist | Include patient preferences (extend existing) |
 | `GET` | `/api/therapist/{id}/availability` | Patient | Support `?meeting_type=online` filter (extend existing) |
 
 ---
@@ -153,17 +196,28 @@
 | **Jobs** | Scheduled job to send reminders for due assessments |
 | **Logic** | Flag when assessments due at current phase |
 
-### 4.4 APIs Needed
+### 4.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/treatment-phases/config` | `admin.treatment-phases.config` | View/edit phase config (e.g. mid-point = session 4) |
+| `PUT` | `/admin/treatment-phases/config` | Redirect | Update phase config |
+| `GET` | `/admin/outcome-reminder-templates` | `admin.outcome-reminder-templates.index` | Manage reminder templates |
+
+### 4.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/outcome-measures-due` | `therapist.outcome-measures.index` | List patients with assessments due |
+| `GET` | `/therapist/patients/{id}/treatment-phase` | `therapist.patients.treatment-phase` | View patient phase + completion status |
+| `PUT` | `/therapist/patients/{id}/treatment-phase` | Redirect | Set phase (baseline/midpoint/end) |
+| `POST` | `/therapist/patients/{id}/send-assessment-reminder` | Redirect | Send reminder |
+
+### 4.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `GET` | `/api/patient/outcome-measures/status` | Patient | Current phase, what's due, what's done |
-| `GET` | `/api/therapist/patients/{id}/treatment-phase` | Therapist | Patient phase + completion status |
-| `PUT` | `/api/therapist/patients/{id}/treatment-phase` | Therapist | Set phase (baseline/midpoint/end) |
-| `POST` | `/api/therapist/patients/{id}/send-assessment-reminder` | Therapist | Send reminder |
-| `GET` | `/api/therapist/outcome-measures-due` | Therapist | List patients with assessments due |
-| `GET` | `/api/admin/treatment-phases/config` | Admin | Get phase config |
-| `PUT` | `/api/admin/treatment-phases/config` | Admin | Update phase config (e.g. mid-point = session 4) |
 
 ---
 
@@ -192,18 +246,31 @@
 | **Migration** | Optional: `patient_relapse_plans` (patient_id, early_signs, coping_strategies, emergency_contacts) |
 | **Seeder** | Default content (early warning signs, coping strategies, crisis links) |
 
-### 5.4 APIs Needed
+### 5.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/relapse-prevention` | `admin.relapse-prevention.index` | List sections |
+| `GET` | `/admin/relapse-prevention/create` | `admin.relapse-prevention.create` | Create section form |
+| `POST` | `/admin/relapse-prevention` | Redirect | Store section |
+| `GET` | `/admin/relapse-prevention/{id}/edit` | `admin.relapse-prevention.edit` | Edit section form |
+| `PUT` | `/admin/relapse-prevention/{id}` | Redirect | Update section |
+| `DELETE` | `/admin/relapse-prevention/{id}` | Redirect | Soft delete section |
+
+### 5.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/relapse-prevention` | `therapist.relapse-prevention.index` | View content for reference |
+| `GET` | `/therapist/patients/{id}/relapse-plan` | `therapist.patients.relapse-plan` | View patient plan |
+
+### 5.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `GET` | `/api/relapse-prevention` | Patient | List sections (or single page content) |
-| `GET` | `/api/admin/relapse-prevention` | Admin | List sections |
-| `POST` | `/api/admin/relapse-prevention` | Admin | Create section |
-| `PUT` | `/api/admin/relapse-prevention/{id}` | Admin | Update section |
-| `DELETE` | `/api/admin/relapse-prevention/{id}` | Admin | Soft delete section |
 | `GET` | `/api/patient/relapse-plan` | Patient | Own relapse plan (if custom) |
 | `PUT` | `/api/patient/relapse-plan` | Patient | Save own relapse plan |
-| `GET` | `/api/therapist/patients/{id}/relapse-plan` | Therapist | View patient plan |
 
 ---
 
@@ -234,18 +301,31 @@
 | **Migration** | `social_prescribing_referrals` (patient_id, service_id, referred_by, status, notes) |
 | **Models** | `SocialPrescribingService`, `SocialPrescribingReferral` |
 
-### 6.4 APIs Needed
+### 6.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/social-prescribing` | `admin.social-prescribing.index` | List all services |
+| `GET` | `/admin/social-prescribing/create` | `admin.social-prescribing.create` | Create service form |
+| `POST` | `/admin/social-prescribing` | Redirect | Store service |
+| `GET` | `/admin/social-prescribing/{id}/edit` | `admin.social-prescribing.edit` | Edit service form |
+| `PUT` | `/admin/social-prescribing/{id}` | Redirect | Update service |
+
+### 6.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/social-prescribing` | `therapist.social-prescribing.index` | Browse services directory |
+| `GET` | `/therapist/social-prescribing-referrals` | `therapist.social-prescribing.referrals` | List own referrals |
+| `GET` | `/therapist/patients/{id}/social-prescribing-referral` | `therapist.patients.social-prescribing-referral` | Create referral form |
+| `POST` | `/therapist/patients/{id}/social-prescribing-referral` | Redirect | Create referral |
+
+### 6.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `GET` | `/api/social-prescribing` | Patient | List services (filter by category, area) |
 | `GET` | `/api/social-prescribing/{id}` | Patient | Service detail |
-| `GET` | `/api/admin/social-prescribing` | Admin | List all services |
-| `POST` | `/api/admin/social-prescribing` | Admin | Create service |
-| `PUT` | `/api/admin/social-prescribing/{id}` | Admin | Update service |
-| `GET` | `/api/therapist/social-prescribing` | Therapist | List services |
-| `POST` | `/api/therapist/patients/{id}/social-prescribing-referral` | Therapist | Create referral |
-| `GET` | `/api/therapist/social-prescribing-referrals` | Therapist | List own referrals |
 
 ---
 
@@ -271,16 +351,23 @@
 | Task | Description |
 |------|-------------|
 | **Migration** | Add `category`, `display_order`, `is_featured` to `rewards` if not present |
-| **Extend** | Ensure `GET /api/thrive-tokens/rewards` returns category, featured flag |
+| **Extend** | Ensure `GET /api/thrive-tokens/rewards` returns category, featured flag (patient API) |
 
-### 7.4 APIs Needed
+### 7.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/thrive-tokens/rewards` | `admin.thrive-tokens.rewards.index` | List rewards (with category filter, grid/list) |
+| `GET` | `/admin/thrive-tokens/rewards/create` | `admin.thrive-tokens.rewards.create` | Create reward form |
+| `POST` | `/admin/thrive-tokens/rewards` | Redirect | Store reward (accept `category`, `is_featured`) |
+| `GET` | `/admin/thrive-tokens/rewards/{id}/edit` | `admin.thrive-tokens.rewards.edit` | Edit reward form |
+| `PUT` | `/admin/thrive-tokens/rewards/{id}` | Redirect | Update reward (accept `category`, `is_featured`) |
+
+### 7.5 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `GET` | `/api/thrive-tokens/rewards` | Patient | Add `category`, `is_featured` to response (extend existing) |
-| `GET` | `/api/admin/thrive-tokens/rewards` | Admin | Add category filter (extend existing) |
-| `POST` | `/api/admin/thrive-tokens/rewards` | Admin | Accept `category`, `is_featured` (extend existing) |
-| `PUT` | `/api/admin/thrive-tokens/rewards/{id}` | Admin | Accept `category`, `is_featured` (extend existing) |
 
 ---
 
@@ -308,7 +395,7 @@
 | **Response** | Ensure API returns `{ success: false, message: "..." }` with specific reason |
 | **CORS** | Verify CORS allows frontend origin |
 
-### 8.4 APIs Needed
+### 8.4 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
@@ -342,14 +429,25 @@
 | **Integration** | If AI: integrate with OpenAI/other for baseline generation (future) |
 | **Documentation** | Document current flow (self-completed vs AI) |
 
-### 9.4 APIs Needed
+### 9.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/assessments/config` | `admin.assessments.config` | Toggle AI-assisted vs clinician-led; manage AI prompts |
+
+### 9.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/patients/{id}/assessments` | `therapist.patients.assessments` | View assessments (include `source` in data) |
+
+### 9.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `POST` | `/api/assessments/gad7` | Patient | Add `source` in request/response (extend existing) |
 | `POST` | `/api/assessments/phq9` | Patient | Add `source` (extend existing) |
 | `POST` | `/api/pcl5/assessments` | Patient | Add `source` (extend existing) |
-| `GET` | `/api/therapist/patients/{id}/assessments` | Therapist | Include `source` in assessment data |
 
 ---
 
@@ -377,7 +475,22 @@
 | **Migration** | `symptom_journal_entries` (patient_id, date, mood, symptoms JSON, notes) |
 | **Logic** | Copy link: frontend only (use `navigator.clipboard`); ensure booking has shareable link |
 
-### 10.4 APIs Needed
+### 10.4 Admin Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/admin/pre-session-checklist/config` | `admin.pre-session-checklist.config` | Manage checklist items |
+| `PUT` | `/admin/pre-session-checklist/config` | Redirect | Update checklist items |
+| `GET` | `/admin/symptom-journal/config` | `admin.symptom-journal.config` | Configure mood/symptom options (optional) |
+
+### 10.5 Therapist Web Routes (Blade)
+
+| Method | Route | View | Description |
+|--------|-------|------|-------------|
+| `GET` | `/therapist/patients/{id}/pre-session-checklist` | `therapist.patients.pre-session-checklist` | View patient checklist |
+| `GET` | `/therapist/patients/{id}/symptom-journal` | `therapist.patients.symptom-journal` | View patient journal |
+
+### 10.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
@@ -386,46 +499,52 @@
 | `POST` | `/api/pre-session-checklist` | Patient | Submit checklist |
 | `GET` | `/api/symptom-journal` | Patient | List entries (with date filter) |
 | `POST` | `/api/symptom-journal` | Patient | Create entry |
-| `GET` | `/api/therapist/patients/{id}/pre-session-checklist` | Therapist | View patient checklist |
-| `GET` | `/api/therapist/patients/{id}/symptom-journal` | Therapist | View patient journal |
-| `GET` | `/api/admin/pre-session-checklist/config` | Admin | Get checklist items |
-| `PUT` | `/api/admin/pre-session-checklist/config` | Admin | Update checklist items |
 
 ---
 
-## Summary: New API Endpoints by Priority
+## Summary: Routes by Role
 
-### High Priority
+### Patient APIs (REST – patient app only)
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/register` | POST | Fix registration (existing) |
-| `/api/patient/outcome-measures/status` | GET | Outcome measures status |
-| `/api/therapist/patients/{id}/treatment-phase` | GET, PUT | Treatment phase |
-| `/api/therapist/outcome-measures-due` | GET | Patients due assessments |
-| `/api/relapse-prevention` | GET | Relapse prevention content |
-| `/api/admin/relapse-prevention` | GET, POST, PUT, DELETE | Manage content |
+| Priority | Endpoint | Method | Purpose |
+|----------|----------|--------|---------|
+| High | `/api/register` | POST | Fix registration (existing) |
+| High | `/api/patient/outcome-measures/status` | GET | Outcome measures status |
+| High | `/api/relapse-prevention` | GET | Relapse prevention content |
+| Medium | `/api/journey-stages` | GET | Stages for onboarding |
+| Medium | `/api/user/journey-stage` | GET, PUT | Patient stage |
+| Medium | `/api/social-prescribing` | GET | Social prescribing services |
+| Medium | `/api/thrive-tokens/rewards` | GET | Add category, featured (extend) |
+| Lower | `/api/user` | PUT | Add meeting preferences (extend) |
+| Lower | `/api/pre-session-checklist` | GET, POST | Pre-session checklist |
+| Lower | `/api/symptom-journal` | GET, POST | Symptom journal |
 
-### Medium Priority
+### Admin Web Routes (Blade views)
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/journey-stages` | GET | Stages for onboarding |
-| `/api/user/journey-stage` | GET, PUT | Patient stage |
-| `/api/therapist/patients/{id}/journey-stage` | GET, PUT | Therapist sets stage |
-| `/api/admin/smart-goal-templates` | Optional | SMART prompts (strengths covered by SDQ) |
-| `/api/social-prescribing` | GET | Social prescribing services |
-| `/api/admin/social-prescribing` | CRUD | Manage services |
-| `/api/admin/thrive-tokens/rewards` | Extend | Add category, featured |
+| Priority | Route | Purpose |
+|----------|-------|---------|
+| High | `/admin/relapse-prevention` | CRUD relapse prevention content |
+| Medium | `/admin/journey-stages` | CRUD journey stages |
+| Medium | `/admin/social-prescribing` | CRUD social prescribing services |
+| Medium | `/admin/treatment-phases/config` | Phase config (baseline, mid-point, end) |
+| Medium | `/admin/thrive-tokens/rewards` | Manage rewards (category, featured) |
+| Lower | `/admin/smart-goal-templates` | Optional SMART prompts |
+| Lower | `/admin/pre-session-checklist/config` | Checklist items |
+| Lower | `/admin/meeting-types` | Meeting type options |
+| Lower | `/admin/assessments/config` | AI vs clinician-led toggle |
 
-### Lower Priority
+### Therapist Web Routes (Blade views)
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/user` | PUT | Add meeting preferences (extend) |
-| `/api/pre-session-checklist` | GET, POST | Pre-session checklist |
-| `/api/symptom-journal` | GET, POST | Symptom journal |
-| `/api/admin/journey-stages` | CRUD | Manage stages |
+| Priority | Route | Purpose |
+|----------|-------|---------|
+| High | `/therapist/outcome-measures-due` | Patients with assessments due |
+| High | `/therapist/patients/{id}/treatment-phase` | View/set treatment phase |
+| Medium | `/therapist/patients/{id}/journey-stage` | View/update patient stage |
+| Medium | `/therapist/patients/{id}/relapse-plan` | View patient relapse plan |
+| Medium | `/therapist/social-prescribing` | Browse services, create referrals |
+| Lower | `/therapist/patients/{id}/assessments` | View assessments (with source) |
+| Lower | `/therapist/patients/{id}/pre-session-checklist` | View patient checklist |
+| Lower | `/therapist/patients/{id}/symptom-journal` | View patient journal |
 
 ---
 
@@ -447,12 +566,12 @@
 
 ## Implementation Order Suggestion
 
-1. **Registration fix** – Unblock users  
-2. **Outcome measures at 3 points** – Core clinical requirement  
-3. **Relapse prevention** – Content + API  
-4. **Rewards layout** – Admin + API extensions  
-5. **Journey stages** – Onboarding personalisation  
-6. **Social prescribing** – New feature  
-7. **SMART goals** – Add SMART prompts to wellbeing plan & weekly goals (strengths = SDQ)  
-8. **Meeting preferences** – Small extension  
-9. **Pre-session checklist + symptom journal** – UX improvements  
+1. **Registration fix** – Unblock users (patient API)  
+2. **Outcome measures at 3 points** – Core clinical requirement (admin/therapist Blade + patient API)  
+3. **Relapse prevention** – Admin Blade CRUD + patient API  
+4. **Rewards layout** – Admin Blade views + patient API extensions  
+5. **Journey stages** – Admin/therapist Blade + patient API for onboarding  
+6. **Social prescribing** – Admin/therapist Blade + patient API  
+7. **SMART goals** – Admin Blade (optional) + patient API extensions  
+8. **Meeting preferences** – Admin/therapist Blade + patient API extension  
+9. **Pre-session checklist + symptom journal** – Admin/therapist Blade + patient API  
