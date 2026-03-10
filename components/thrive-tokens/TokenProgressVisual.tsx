@@ -1,29 +1,31 @@
 "use client";
 
-/**
- * Soft, abstract progress visual (wave/plant feel).
- * No pressure, no urgency.
- */
+import { motion } from "framer-motion";
+import { springSmooth } from "@/lib/motion-variants";
 
 interface TokenProgressVisualProps {
   balance: number;
   className?: string;
 }
 
-export function TokenProgressVisual({ balance, className = "" }: TokenProgressVisualProps) {
-  // Soft visual: balance contributes to a gentle "fill" (max 100 tokens for visual scale)
+export function TokenProgressVisual({
+  balance,
+  className = "",
+}: TokenProgressVisualProps) {
   const visualScale = Math.min(balance, 100);
-  const fillPercent = visualScale;
+  const fillPercent = Math.max(visualScale, 5);
 
   return (
     <div
-      className={`h-2 w-full rounded-full bg-muted overflow-hidden ${className}`}
+      className={`h-2.5 w-full rounded-full bg-slate-100 overflow-hidden ${className}`}
       role="presentation"
       aria-hidden
     >
-      <div
-        className="h-full rounded-full bg-[#00990d]/70 transition-all duration-500 ease-out"
-        style={{ width: `${Math.max(fillPercent, 5)}%` }}
+      <motion.div
+        className="h-full rounded-full bg-[#00990d]"
+        initial={false}
+        animate={{ width: `${fillPercent}%` }}
+        transition={springSmooth}
       />
     </div>
   );
