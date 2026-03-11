@@ -167,12 +167,13 @@ export default function PHQ9Assessment() {
         {} as Record<number, number>
       );
 
-      const requestBody = selectedTherapist
-        ? {
-            answers: formattedAnswers,
-            therapist_id: parseInt(selectedTherapist),
-          }
-        : { answers: formattedAnswers };
+      const requestBody = {
+        answers: formattedAnswers,
+        source: "self" as const,
+        ...(selectedTherapist
+          ? { therapist_id: parseInt(selectedTherapist) }
+          : {}),
+      };
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/assessments/phq9`,

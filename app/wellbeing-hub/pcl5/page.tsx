@@ -107,6 +107,7 @@ export default function Pcl5Page() {
           body: JSON.stringify({
             worst_event: worstEvent,
             responses: responses as number[],
+            source: "self",
           }),
         }
       );

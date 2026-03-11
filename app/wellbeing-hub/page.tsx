@@ -49,6 +49,9 @@ interface AssessmentAnswer {
   answer_text: string;
 }
 
+/** Assessment source: self (patient), ai (AI baseline), clinician (clinician-led/override). */
+type AssessmentSource = "self" | "ai" | "clinician";
+
 interface Assessment {
   id: number;
   user_id: number;
@@ -65,6 +68,8 @@ interface Assessment {
   flagged?: boolean;
   worst_event?: string;
   responses?: number[];
+  /** How this assessment was created (point 9). Default "self". */
+  source?: AssessmentSource;
 }
 
 interface SdqAssessment {
@@ -2251,6 +2256,18 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                       getPcl5Severity(selectedAssessment.total_score ?? 0)}
                   </p>
                 </div>
+                {selectedAssessment.source && selectedAssessment.source !== "self" && (
+                  <div>
+                    <p className="text-sm font-medium">Source</p>
+                    <p className="text-sm text-gray-600 capitalize">
+                      {selectedAssessment.source === "ai"
+                        ? "AI baseline"
+                        : selectedAssessment.source === "clinician"
+                          ? "Clinician"
+                          : selectedAssessment.source}
+                    </p>
+                  </div>
+                )}
               </div>
               {selectedAssessment.answers && selectedAssessment.answers.length > 0 && (
                 <div>

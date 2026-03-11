@@ -166,20 +166,13 @@ export default function GAD7Assessment() {
         {} as Record<number, number>
       );
 
-      const requestBody = selectedTherapist
-        ? {
-            answers: formattedAnswers,
-            therapist_id: parseInt(selectedTherapist),
-          }
-        : { answers: formattedAnswers };
-
-      // Right before fetch
-      console.log("SUBMIT PAYLOAD", {
-        answers: formattedAnswers, // should be {1:0,2:1,...,7:3}
-        therapist_id: selectedTherapist
-          ? Number.parseInt(selectedTherapist)
-          : undefined,
-      });
+      const requestBody = {
+        answers: formattedAnswers,
+        source: "self" as const,
+        ...(selectedTherapist
+          ? { therapist_id: parseInt(selectedTherapist) }
+          : {}),
+      };
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/assessments/gad7`,
