@@ -21,6 +21,8 @@ const wellbeingOptions = [
   { label: "Risk Assessment", href: "/wellbeing-hub/risk-assessment" },
   { label: "Relapse Prevention", href: "/wellbeing-hub/relapse-prevention" },
   { label: "Social Prescribing", href: "/wellbeing-hub/social-prescribing" },
+  { label: "Pre-session checklist", href: "/my-wellbeing/pre-session-checklist" },
+  { label: "Symptom journal", href: "/my-wellbeing/symptom-journal" },
 ];
 
 export default function WellbeingHub() {

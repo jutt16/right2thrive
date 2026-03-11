@@ -8,7 +8,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarCheck, PlusCircle, Star, MessageSquare } from "lucide-react";
+import { CalendarCheck, PlusCircle, Star, MessageSquare, Link2, Check, ClipboardList } from "lucide-react";
 import Link from "next/link";
 // Interfaces
 interface Therapist {
@@ -62,6 +62,7 @@ export default function MyBookingsPage() {
   const [error, setError] = useState("");
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [copiedBookingId, setCopiedBookingId] = useState<number | null>(null);
 
   // ✅ Fetch bookings
   useEffect(() => {
@@ -89,6 +90,28 @@ export default function MyBookingsPage() {
     }
     return () => clearInterval(timer);
   }, [remainingTime]);
+
+  // Copy meeting link to clipboard (GET booking if meeting_link not in list)
+  const handleCopyLink = async (booking: Booking) => {
+    let link = booking.meeting_link;
+    if (!link) {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${booking.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      link = data?.data?.meeting_link ?? data?.meeting_link ?? null;
+    }
+    if (!link) return;
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopiedBookingId(booking.id);
+      setTimeout(() => setCopiedBookingId(null), 2000);
+    } catch {
+      // fallback: some browsers need user gesture
+    }
+  };
 
   // ✅ Join Now Logic
   const handleJoinClick = (booking: Booking) => {
@@ -198,12 +221,24 @@ export default function MyBookingsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">My Bookings</h1>
-        <Link href="/my-bookings/new">
-          <Button className="flex items-center space-x-2">
-            <PlusCircle className="h-4 w-4" />
-            <span>New Booking</span>
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          {bookings.some(
+            (b) => b.status === "confirmed" && (b.date >= new Date().toISOString().slice(0, 10))
+          ) && (
+            <Link href="/my-wellbeing/pre-session-checklist">
+              <Button variant="outline" className="flex items-center space-x-2">
+                <ClipboardList className="h-4 w-4" />
+                <span>Pre-session checklist</span>
+              </Button>
+            </Link>
+          )}
+          <Link href="/my-bookings/new">
+            <Button className="flex items-center space-x-2">
+              <PlusCircle className="h-4 w-4" />
+              <span>New Booking</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Bookings */}
@@ -244,15 +279,31 @@ export default function MyBookingsPage() {
                   {booking.therapist.first_name} {booking.therapist.last_name}
                 </p>
 
-                {/* ✅ Join Now Button */}
-                {booking.status === "confirmed" && booking.meeting_link && (
-                  <Button
-                    className="mt-2 w-full"
-                    variant="outline"
-                    onClick={() => handleJoinClick(booking)}
-                  >
-                    Join Now
-                  </Button>
+                {/* Join / Copy link */}
+                {booking.status === "confirmed" && (
+                  <div className="mt-2 flex gap-2">
+                    {booking.meeting_link && (
+                      <Button
+                        className="flex-1"
+                        variant="outline"
+                        onClick={() => handleJoinClick(booking)}
+                      >
+                        Join Now
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleCopyLink(booking)}
+                      title="Copy meeting link"
+                    >
+                      {copiedBookingId === booking.id ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <Link2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 )}
 
                 {/* ✅ Feedback */}

@@ -76,6 +76,10 @@ const SIDEBAR_NAV = {
   ],
   booking: [
     { label: "My Bookings", href: "/my-bookings", icon: Calendar },
+    { label: "Pre-session checklist", href: "/my-wellbeing/pre-session-checklist", icon: ClipboardList },
+  ],
+  journal: [
+    { label: "Symptom journal", href: "/my-wellbeing/symptom-journal", icon: BookOpen },
   ],
   account: [
     { label: "Profile", href: "/profile", icon: User },
@@ -252,6 +256,24 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {SIDEBAR_NAV.booking.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton asChild isActive={isActive(item.href)}>
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Journal</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {SIDEBAR_NAV.journal.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton asChild isActive={isActive(item.href)}>
                     <Link href={item.href}>
