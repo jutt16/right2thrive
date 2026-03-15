@@ -12,6 +12,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
@@ -916,34 +922,19 @@ function WellbeingHubContent({ userData }: { userData: any }) {
 
   return (
     <div className="container mx-auto min-w-0 max-w-full px-3 sm:px-4 py-6 sm:py-8">
-      <Tabs
-        defaultValue={activeTab}
-        className="space-y-4 min-w-0"
-        onValueChange={setActiveTab}
+      <Accordion
+        type="single"
+        value={activeTab}
+        onValueChange={(v) => setActiveTab(v || "dashboard")}
+        collapsible
+        className="space-y-0 min-w-0 rounded-lg border border-border bg-card overflow-hidden"
       >
-        <TabsList className="flex w-full min-w-0 overflow-x-auto pb-2 gap-1.5 sm:gap-2 md:grid md:grid-cols-5 shrink-0 bg-gray-100 dark:bg-gray-800/90 p-1.5 rounded-lg">
-          <TabsTrigger value="dashboard" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
-            Dashboard
-          </TabsTrigger>
-          <TabsTrigger value="assessments" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
-            Assessments
-          </TabsTrigger>
-          <TabsTrigger value="resources" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
-            Resources
-          </TabsTrigger>
-          <TabsTrigger value="session-notes" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
+        {/* Session Notes */}
+        <AccordionItem value="session-notes" className="border-b border-border px-4 first:rounded-t-lg">
+          <AccordionTrigger className="py-4 text-left font-semibold text-base hover:no-underline hover:bg-muted/50 [&[data-state=open]]:bg-teal-50 dark:[&[data-state=open]]:bg-teal-950/30 [&[data-state=open]]:text-teal-800 dark:[&[data-state=open]]:text-teal-100">
             Session Notes
-          </TabsTrigger>
-          <TabsTrigger value="medications" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
-            Medications
-          </TabsTrigger>
-          <TabsTrigger value="wellbeing-update" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
-            Wellbeing
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Session Notes Tab */}
-        <TabsContent value="session-notes" className="space-y-4 min-w-0">
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 min-w-0 pb-4 pt-0">
           <Card className="min-w-0 overflow-hidden">
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-lg sm:text-2xl break-words">Session Notes</CardTitle>
@@ -985,9 +976,15 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+          </AccordionContent>
+        </AccordionItem>
 
-        <TabsContent value="medications" className="space-y-4 min-w-0">
+        {/* Medications */}
+        <AccordionItem value="medications" className="border-b border-border px-4">
+          <AccordionTrigger className="py-4 text-left font-semibold text-base hover:no-underline hover:bg-muted/50 [&[data-state=open]]:bg-teal-50 dark:[&[data-state=open]]:bg-teal-950/30 [&[data-state=open]]:text-teal-800 dark:[&[data-state=open]]:text-teal-100">
+            Medications
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 min-w-0 pb-4 pt-0">
           <Card className="min-w-0 overflow-hidden">
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-lg sm:text-2xl break-words">Medications</CardTitle>
@@ -1026,10 +1023,15 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+          </AccordionContent>
+        </AccordionItem>
 
-        {/* Keep your existing Dashboard, Assessments, Resources, Wellbeing tabs here... */}
-        <TabsContent value="dashboard" className="space-y-6 min-w-0">
+        {/* Dashboard */}
+        <AccordionItem value="dashboard" className="border-b border-border px-4">
+          <AccordionTrigger className="py-4 text-left font-semibold text-base hover:no-underline hover:bg-muted/50 [&[data-state=open]]:bg-teal-50 dark:[&[data-state=open]]:bg-teal-950/30 [&[data-state=open]]:text-teal-800 dark:[&[data-state=open]]:text-teal-100">
+            Dashboard
+          </AccordionTrigger>
+          <AccordionContent className="space-y-6 min-w-0 pb-4 pt-0">
           <div className="rounded-2xl bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-500 p-4 sm:p-6 text-white shadow-lg min-w-0">
             <p className="text-sm font-medium uppercase tracking-wide text-white/80">
               Welcome back
@@ -1510,9 +1512,15 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+          </AccordionContent>
+        </AccordionItem>
 
-        <TabsContent value="assessments" className="space-y-6">
+        {/* Assessments */}
+        <AccordionItem value="assessments" className="border-b border-border px-4">
+          <AccordionTrigger className="py-4 text-left font-semibold text-base hover:no-underline hover:bg-muted/50 [&[data-state=open]]:bg-teal-50 dark:[&[data-state=open]]:bg-teal-950/30 [&[data-state=open]]:text-teal-800 dark:[&[data-state=open]]:text-teal-100">
+            Assessments
+          </AccordionTrigger>
+          <AccordionContent className="space-y-6 pb-4 pt-0">
           <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-6 shadow-sm">
             <h2 className="text-2xl font-semibold text-emerald-800">
               Welcome to Your Wellbeing Space
@@ -1984,9 +1992,15 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </Tabs>
             </CardContent>
           </Card>
-        </TabsContent>
+          </AccordionContent>
+        </AccordionItem>
 
-        <TabsContent value="resources" className="space-y-4">
+        {/* Resources */}
+        <AccordionItem value="resources" className="border-b border-border px-4">
+          <AccordionTrigger className="py-4 text-left font-semibold text-base hover:no-underline hover:bg-muted/50 [&[data-state=open]]:bg-teal-50 dark:[&[data-state=open]]:bg-teal-950/30 [&[data-state=open]]:text-teal-800 dark:[&[data-state=open]]:text-teal-100">
+            Resources
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pb-4 pt-0">
           <Card>
             <CardHeader>
               <CardTitle>Mental Health Resources</CardTitle>
@@ -2126,9 +2140,15 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+          </AccordionContent>
+        </AccordionItem>
 
-        <TabsContent value="wellbeing-update" className="space-y-4">
+        {/* Wellbeing */}
+        <AccordionItem value="wellbeing-update" className="border-b border-border px-4 last:border-b-0 last:rounded-b-lg">
+          <AccordionTrigger className="py-4 text-left font-semibold text-base hover:no-underline hover:bg-muted/50 [&[data-state=open]]:bg-teal-50 dark:[&[data-state=open]]:bg-teal-950/30 [&[data-state=open]]:text-teal-800 dark:[&[data-state=open]]:text-teal-100">
+            Wellbeing
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pb-4 pt-0">
           <Card>
             <CardHeader>
               <CardTitle>Wellbeing Updates</CardTitle>
@@ -2183,8 +2203,9 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       {/* Assessment Details Modal */}
       <Dialog
