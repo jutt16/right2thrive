@@ -921,13 +921,25 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         className="space-y-4 min-w-0"
         onValueChange={setActiveTab}
       >
-        <TabsList className="flex w-full min-w-0 overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-5 shrink-0">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="assessments">Assessments</TabsTrigger>
-          <TabsTrigger value="resources">Resources</TabsTrigger>
-          <TabsTrigger value="session-notes">Session Notes</TabsTrigger>
-          <TabsTrigger value="medications">Medications</TabsTrigger>
-          <TabsTrigger value="wellbeing-update">Wellbeing</TabsTrigger>
+        <TabsList className="flex w-full min-w-0 overflow-x-auto pb-2 gap-1.5 sm:gap-2 md:grid md:grid-cols-5 shrink-0 bg-gray-100 dark:bg-gray-800/90 p-1.5 rounded-lg">
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="assessments" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
+            Assessments
+          </TabsTrigger>
+          <TabsTrigger value="resources" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
+            Resources
+          </TabsTrigger>
+          <TabsTrigger value="session-notes" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
+            Session Notes
+          </TabsTrigger>
+          <TabsTrigger value="medications" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
+            Medications
+          </TabsTrigger>
+          <TabsTrigger value="wellbeing-update" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md rounded-md px-3 py-2 text-sm font-medium shrink-0">
+            Wellbeing
+          </TabsTrigger>
         </TabsList>
 
         {/* Session Notes Tab */}
