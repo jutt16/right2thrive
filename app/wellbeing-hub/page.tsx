@@ -915,13 +915,13 @@ function WellbeingHubContent({ userData }: { userData: any }) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto min-w-0 max-w-full px-3 sm:px-4 py-6 sm:py-8">
       <Tabs
         defaultValue={activeTab}
-        className="space-y-4"
+        className="space-y-4 min-w-0"
         onValueChange={setActiveTab}
       >
-        <TabsList className="flex w-full overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-5">
+        <TabsList className="flex w-full min-w-0 overflow-x-auto pb-2 gap-2 md:grid md:grid-cols-5 shrink-0">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="assessments">Assessments</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
@@ -931,10 +931,10 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         </TabsList>
 
         {/* Session Notes Tab */}
-        <TabsContent value="session-notes" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Session Notes</CardTitle>
+        <TabsContent value="session-notes" className="space-y-4 min-w-0">
+          <Card className="min-w-0 overflow-hidden">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-2xl break-words">Session Notes</CardTitle>
               <CardDescription>Notes shared by your wellbeing coach</CardDescription>
             </CardHeader>
             <CardContent>
@@ -943,15 +943,16 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                   No session notes available
                 </p>
               ) : (
-                <div className="rounded-md border">
-                  <div className="grid grid-cols-3 gap-4 bg-muted p-4 font-medium">
-                    <div>Date</div>
-                    <div>Therapist</div>
-                    <div>Notes</div>
-                  </div>
-                  <div className="divide-y">
-                    {sessionNotes.map((note) => (
-                      <div key={note.id} className="grid grid-cols-3 gap-4 p-4">
+                <div className="rounded-md border overflow-hidden min-w-0">
+                  <div className="overflow-x-auto">
+                    <div className="grid grid-cols-3 min-w-[480px] gap-4 bg-muted p-4 font-medium">
+                      <div>Date</div>
+                      <div>Therapist</div>
+                      <div>Notes</div>
+                    </div>
+                    <div className="divide-y">
+                      {sessionNotes.map((note) => (
+                        <div key={note.id} className="grid grid-cols-3 min-w-[480px] gap-4 p-4">
                         {/* Date */}
                         <div>{formatDate(note.date || note.created_at)}</div>
 
@@ -966,6 +967,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                         <div>{note.notes}</div>
                       </div>
                     ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -973,28 +975,29 @@ function WellbeingHubContent({ userData }: { userData: any }) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="medications" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Medications</CardTitle>
+        <TabsContent value="medications" className="space-y-4 min-w-0">
+          <Card className="min-w-0 overflow-hidden">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-2xl break-words">Medications</CardTitle>
               <CardDescription>Your recorded medical history</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6 pt-0">
               {medications.length === 0 ? (
                 <p className="text-center text-gray-500">
                   No medical history added yet
                 </p>
               ) : (
-                <div className="rounded-md border">
-                  <div className="grid grid-cols-4 gap-4 bg-muted p-4 font-medium">
-                    <div>Date</div>
-                    <div>Condition</div>
-                    <div>Medications</div>
-                    <div>Therapist</div>
-                  </div>
-                  <div className="divide-y">
-                    {medications.map((med) => (
-                      <div key={med.id} className="grid grid-cols-4 gap-4 p-4">
+                <div className="rounded-md border overflow-hidden min-w-0">
+                  <div className="overflow-x-auto">
+                    <div className="grid grid-cols-4 min-w-[560px] gap-4 bg-muted p-4 font-medium">
+                      <div>Date</div>
+                      <div>Condition</div>
+                      <div>Medications</div>
+                      <div>Therapist</div>
+                    </div>
+                    <div className="divide-y">
+                      {medications.map((med) => (
+                        <div key={med.id} className="grid grid-cols-4 min-w-[560px] gap-4 p-4">
                         <div>{formatDate(med.last_updated)}</div>
                         <div>{med.condition}</div>
                         <div>{med.medications || ""}</div>
@@ -1005,6 +1008,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                         </div>
                       </div>
                     ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -1013,13 +1017,13 @@ function WellbeingHubContent({ userData }: { userData: any }) {
         </TabsContent>
 
         {/* Keep your existing Dashboard, Assessments, Resources, Wellbeing tabs here... */}
-        <TabsContent value="dashboard" className="space-y-6">
-          <div className="rounded-2xl bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-500 p-6 text-white shadow-lg">
+        <TabsContent value="dashboard" className="space-y-6 min-w-0">
+          <div className="rounded-2xl bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-500 p-4 sm:p-6 text-white shadow-lg min-w-0">
             <p className="text-sm font-medium uppercase tracking-wide text-white/80">
               Welcome back
             </p>
-            <h2 className="mt-1 text-2xl font-semibold sm:text-3xl">
-              Hello {userFirstName}! ??
+            <h2 className="mt-1 text-xl sm:text-2xl md:text-3xl font-semibold break-words">
+              Hello {userFirstName}! 👋
             </h2>
             {isLoadingBookings ? (
               <p className="mt-3 text-sm text-white/85">
@@ -1036,15 +1040,17 @@ function WellbeingHubContent({ userData }: { userData: any }) {
             )}
           </div>
 
-          <Card className="border border-cyan-100 shadow-sm">
-            <CardHeader>
-              <CardTitle>Quick Check-In: How are you feeling today?</CardTitle>
-              <CardDescription>
-                Takes 30 seconds and helps Raveen prepare for your session
+          <Card className="border border-cyan-100 shadow-sm min-w-0 overflow-hidden">
+            <CardHeader className="p-4 sm:p-6 min-w-0">
+              <CardTitle className="text-lg sm:text-xl md:text-2xl font-semibold break-words leading-snug">
+                Quick Check-In: How are you feeling today?
+              </CardTitle>
+              <CardDescription className="break-words">
+                Takes 30 seconds and helps your coach prepare for your session
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <CardContent className="p-4 sm:p-6 pt-0 min-w-0">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 min-w-0">
                 {QUICK_CHECK_IN_OPTIONS.map((option) => {
                   const isSelected = quickCheckInSelection === option.value;
                   return (
@@ -1052,14 +1058,14 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                       key={option.value}
                       type="button"
                       onClick={() => handleQuickCheckIn(option.value)}
-                      className={`flex h-full flex-col items-center justify-center gap-2 rounded-xl border p-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${isSelected
+                      className={`flex h-full min-w-0 flex-col items-center justify-center gap-2 rounded-xl border p-3 sm:p-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 break-words text-center ${isSelected
                         ? "border-teal-500 bg-teal-50 text-teal-700 shadow-sm focus:ring-teal-500 focus:ring-offset-white"
                         : "border-gray-200 text-gray-700 hover:border-teal-400 hover:bg-teal-50 focus:ring-teal-400 focus:ring-offset-white"
                         }`}
                       aria-pressed={isSelected}
                     >
-                      <span className="text-3xl">{option.emoji}</span>
-                      <span>{option.label}</span>
+                      <span className="text-2xl sm:text-3xl shrink-0">{option.emoji}</span>
+                      <span className="break-words min-w-0">{option.label}</span>
                     </button>
                   );
                 })}

@@ -58,15 +58,15 @@ export default function DashboardLayout({
   return (
     <SidebarProvider defaultOpen={true}>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="min-w-0">
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-sidebar-border bg-background/95 px-4">
-          <SidebarTrigger className="-ml-1" aria-label="Toggle sidebar" />
-          <Separator orientation="vertical" className="h-5" />
-          <span className="text-sm font-medium text-muted-foreground truncate">
+          <SidebarTrigger className="-ml-1 shrink-0" aria-label="Toggle sidebar" />
+          <Separator orientation="vertical" className="h-5 shrink-0" />
+          <span className="text-sm font-medium text-muted-foreground truncate min-w-0">
             My Wellbeing
           </span>
         </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">
+        <main className="min-w-0 flex-1 overflow-auto p-3 sm:p-4 md:p-6">
           {children}
         </main>
       </SidebarInset>
