@@ -136,7 +136,7 @@ export default function WellbeingOnboarding() {
       }}
     >
       <DialogContent 
-        className="max-w-2xl w-[calc(100vw-2rem)] sm:w-full max-h-[85dvh] sm:max-h-[90vh] overflow-hidden flex flex-col p-4 sm:p-6 !left-4 !right-4 !top-4 !bottom-4 !translate-x-0 !translate-y-0 sm:!left-[50%] sm:!top-[50%] sm:!translate-x-[-50%] sm:!translate-y-[-50%] [&>button.absolute]:hidden"
+        className="max-w-2xl w-[calc(100vw-2rem)] sm:w-full max-h-[85dvh] sm:min-h-[32rem] sm:max-h-[92vh] overflow-hidden flex flex-col p-4 sm:p-6 !left-4 !right-4 !top-4 !bottom-4 !translate-x-0 !translate-y-0 sm:!left-[50%] sm:!top-[50%] sm:!translate-x-[-50%] sm:!translate-y-[-50%] [&>button.absolute]:hidden"
         onEscapeKeyDown={(e) => {
           // Allow ESC to close but mark as completed
           handleSkip();
