@@ -136,24 +136,24 @@ export default function WellbeingOnboarding() {
       }}
     >
       <DialogContent 
-        className="max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="max-w-2xl w-[calc(100vw-2rem)] sm:w-full max-h-[85dvh] sm:max-h-[90vh] overflow-hidden flex flex-col p-4 sm:p-6 !left-4 !right-4 !top-4 !bottom-4 !translate-x-0 !translate-y-0 sm:!left-[50%] sm:!top-[50%] sm:!translate-x-[-50%] sm:!translate-y-[-50%] [&>button.absolute]:hidden"
         onEscapeKeyDown={(e) => {
           // Allow ESC to close but mark as completed
           handleSkip();
         }}
       >
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-cyan-50 rounded-full">
-                <Heart className="h-6 w-6 text-cyan-600" />
+        <DialogHeader className="shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div className="p-1.5 sm:p-2 bg-cyan-50 rounded-full shrink-0">
+                <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-cyan-600" />
               </div>
-              <div>
-                <DialogTitle className="text-2xl font-bold text-gray-800">
+              <div className="min-w-0">
+                <DialogTitle className="text-lg sm:text-2xl font-bold text-gray-800 leading-tight">
                   Welcome to Your Wellbeing Space! 🌟
                 </DialogTitle>
-                <DialogDescription className="text-base mt-2">
-                  Let's take a quick tour of your wellbeing options
+                <DialogDescription className="text-sm sm:text-base mt-1 sm:mt-2">
+                  Let&apos;s take a quick tour of your wellbeing options
                 </DialogDescription>
               </div>
             </div>
@@ -161,23 +161,23 @@ export default function WellbeingOnboarding() {
               variant="ghost"
               size="icon"
               onClick={handleSkip}
-              className="h-8 w-8"
+              className="h-8 w-8 shrink-0"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
         </DialogHeader>
 
-        <div className="mt-6 space-y-6">
+        <div className="mt-4 sm:mt-6 space-y-4 sm:space-y-6 overflow-y-auto flex-1 min-h-0">
           {/* Step Indicator - step 0 = journey stage, steps 1-5 = feature tour */}
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-1 sm:gap-2 shrink-0">
             {[0, 1, 2, 3, 4, 5].map((index) => (
               <div
                 key={index}
-                className={`flex items-center ${index < 5 ? "flex-1" : ""}`}
+                className={`flex items-center ${index < 5 ? "flex-1 min-w-0" : ""}`}
               >
                 <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
+                  className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-all text-sm ${
                     index === currentStep
                       ? "bg-cyan-600 border-cyan-600 text-white scale-110"
                       : index < currentStep
@@ -203,17 +203,17 @@ export default function WellbeingOnboarding() {
           </div>
 
           {/* Step Content */}
-          <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-lg p-8 border border-cyan-200">
+          <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-lg p-4 sm:p-8 border border-cyan-200">
             {isJourneyStageStep ? (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col items-center text-center">
-                  <div className="p-4 bg-white rounded-full shadow-md">
-                    <Compass className="h-8 w-8 text-cyan-600" />
+                  <div className="p-3 sm:p-4 bg-white rounded-full shadow-md">
+                    <Compass className="h-7 w-7 sm:h-8 sm:w-8 text-cyan-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mt-4 mb-2">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mt-3 sm:mt-4 mb-2">
                     Where are you in your journey?
                   </h3>
-                  <p className="text-gray-600 max-w-xl">
+                  <p className="text-gray-600 max-w-xl text-sm sm:text-base">
                     The Transtheoretical Model helps us personalise your experience. Choose the stage that best describes where you are right now.
                   </p>
                 </div>
@@ -251,15 +251,15 @@ export default function WellbeingOnboarding() {
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center text-center space-y-4">
-                <div className="p-4 bg-white rounded-full shadow-md">
+              <div className="flex flex-col items-center text-center space-y-3 sm:space-y-4">
+                <div className="p-3 sm:p-4 bg-white rounded-full shadow-md">
                   {currentStepData.icon}
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  <h3 className="text-lg sm:text-2xl font-bold text-gray-800 mb-2">
                     {currentStepData.number}. {currentStepData.title}
                   </h3>
-                  <p className="text-gray-600 text-lg leading-relaxed max-w-xl">
+                  <p className="text-gray-600 text-sm sm:text-lg leading-relaxed max-w-xl">
                     {currentStepData.description}
                   </p>
                 </div>
