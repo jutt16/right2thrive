@@ -1,5 +1,5 @@
 import type React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -13,6 +13,14 @@ import AppShell from "@/components/app-shell";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
+
+/** Ensures mobile browsers use device width and proper scale so content fits without zooming */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+};
 
 export const metadata: Metadata = {
   title: "Right2Thrive UK — Cultural Wellbeing Support for Young People",
@@ -195,7 +203,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen flex-col">
+          <div className="flex min-h-screen min-w-0 flex-col overflow-x-hidden">
             {/* Skip link for keyboard users */}
             <a href="#main-content" className="skip-link">
               Skip to main content
@@ -209,7 +217,7 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <PerformanceMonitor />
             </Suspense>
-            <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
+            <main id="main-content" className="min-w-0 flex-1 overflow-x-hidden" tabIndex={-1}>{children}</main>
             <FloatingChatWrapper />
             <ConditionalFooter />
             <Suspense fallback={null}>

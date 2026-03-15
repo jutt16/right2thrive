@@ -70,8 +70,20 @@
   * {
     @apply border-border;
   }
+  html {
+    /* Prevent iOS from resizing text in landscape */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+    width: 100%;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
   }
   
   /* Enhanced focus styles for accessibility */
@@ -97,6 +109,21 @@
     box-shadow: 0 0 0 4px hsl(var(--ring) / 0.2);
   }
   
+  /* Mobile: prevent content from causing horizontal scroll */
+  #main-content {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  /* Allow tables to scroll horizontally on small screens instead of forcing zoom */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Ensure media and embeds don't overflow on mobile */
+  video, iframe, embed, object {
+    max-width: 100%;
+  }
+
   /* Skip link for keyboard users */
   .skip-link {
     position: absolute;
