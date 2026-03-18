@@ -154,75 +154,80 @@ export default function QuestionForm({
         </>
       ) : (
         <>
-      {questionnaire.questions.map((q) => (
-        <div key={q.id} className="p-4 border rounded">
-          <div className="flex items-start justify-between gap-3 mb-2">
-            <p className="font-medium flex-1">{q.text}</p>
-            <TextToSpeechButton
-              text={q.text}
-              label="Listen to question"
-              className="shrink-0"
-            />
-          </div>
+          {questionnaire.questions.map((q, idx) => (
+            <div key={q.id} className="p-4 border rounded">
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="flex items-start gap-3 flex-1">
+                  <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-50 text-teal-800 text-sm font-semibold shrink-0">
+                    {idx + 1}
+                  </span>
+                  <p className="font-medium flex-1">{q.text}</p>
+                </div>
+                <TextToSpeechButton
+                  text={q.text}
+                  label="Listen to question"
+                  className="shrink-0"
+                />
+              </div>
 
-          {q.type === "text" && (
-            <textarea
-              className="w-full border rounded p-2"
-              value={responses[q.id] || ""}
-              onChange={(e) => handleChange(q.id, e.target.value)}
-            />
-          )}
-
-          {q.type === "radio" &&
-            q.choices.map((c) => (
-              <label key={c.id} className="flex items-center gap-2 mb-1">
-                <input
-                  type="radio"
-                  name={`q_${q.id}`}
-                  value={c.id}
-                  checked={responses[q.id] === String(c.id)}
+              {q.type === "text" && (
+                <textarea
+                  className="w-full border rounded p-2"
+                  value={responses[q.id] || ""}
                   onChange={(e) => handleChange(q.id, e.target.value)}
                 />
-                {c.label}
-              </label>
-            ))}
+              )}
 
-          {q.type === "checkbox" &&
-            q.choices.map((c) => {
-              const selected: number[] = responses[q.id] || [];
-              return (
-                <label key={c.id} className="flex items-center gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    value={c.id}
-                    checked={selected.includes(c.id)}
-                    onChange={(e) => {
-                      const updated = e.target.checked
-                        ? [...selected, c.id]
-                        : selected.filter((id) => id !== c.id);
-                      handleChange(q.id, updated);
-                    }}
-                  />
-                  {c.label}
-                </label>
-              );
-            })}
+              {q.type === "radio" &&
+                q.choices.map((c) => (
+                  <label key={c.id} className="flex items-center gap-2 mb-1">
+                    <input
+                      type="radio"
+                      name={`q_${q.id}`}
+                      value={c.id}
+                      checked={responses[q.id] === String(c.id)}
+                      onChange={(e) => handleChange(q.id, e.target.value)}
+                    />
+                    {c.label}
+                  </label>
+                ))}
 
-          {q.type === "scale" &&
-            q.choices.map((c) => (
-              <label key={c.id} className="mr-4">
-                <input
-                  type="radio"
-                  name={`q_${q.id}`}
-                  value={c.id}
-                  checked={responses[q.id] === String(c.id)}
-                  onChange={(e) => handleChange(q.id, e.target.value)}
-                />
-                <span className="ml-1">{c.label}</span>
-              </label>
-            ))}
-        </div>
-      ))}
+              {q.type === "checkbox" &&
+                q.choices.map((c) => {
+                  const selected: number[] = responses[q.id] || [];
+                  return (
+                    <label key={c.id} className="flex items-center gap-2 mb-1">
+                      <input
+                        type="checkbox"
+                        value={c.id}
+                        checked={selected.includes(c.id)}
+                        onChange={(e) => {
+                          const updated = e.target.checked
+                            ? [...selected, c.id]
+                            : selected.filter((id) => id !== c.id);
+                          handleChange(q.id, updated);
+                        }}
+                      />
+                      {c.label}
+                    </label>
+                  );
+                })}
+
+              {q.type === "scale" &&
+                q.choices.map((c) => (
+                  <label key={c.id} className="mr-4">
+                    <input
+                      type="radio"
+                      name={`q_${q.id}`}
+                      value={c.id}
+                      checked={responses[q.id] === String(c.id)}
+                      onChange={(e) => handleChange(q.id, e.target.value)}
+                    />
+                    <span className="ml-1">{c.label}</span>
+                  </label>
+                ))}
+            </div>
+          ))}
 
       <button
         type="submit"
