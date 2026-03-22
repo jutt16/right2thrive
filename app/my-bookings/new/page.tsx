@@ -39,6 +39,26 @@ function formatLocalYmd(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+function normalizeMeetingSlug(
+  s: string | null | undefined
+): string {
+  return (s || "online").toLowerCase().replace(/_/g, "-");
+}
+
+function sortSlotsByPreferredMeetingType<
+  T extends { meeting_type?: string }
+>(slots: T[], preferred: string | null): T[] {
+  if (!preferred || slots.length < 2) return slots;
+  const pref = normalizeMeetingSlug(preferred);
+  return [...slots].sort((a, b) => {
+    const an = normalizeMeetingSlug(a.meeting_type);
+    const bn = normalizeMeetingSlug(b.meeting_type);
+    if (an === pref && bn !== pref) return -1;
+    if (bn === pref && an !== pref) return 1;
+    return 0;
+  });
+}
+
 export default function NewBookingPage() {
   // therapist from localStorage (read-only)
   const [therapistId, setTherapistId] = useState<string>("");
@@ -92,12 +112,10 @@ export default function NewBookingPage() {
       setTherapistId(idStr);
       fetchTherapistDetails(idStr);
       fetchUserMeetingPreference()
-        .then((type) => {
-          setPreferredMeetingType(type ?? null);
-          return type;
-        })
-        .catch(() => null)
-        .then((type) => fetchAvailability(idStr, type));
+        .then((type) => setPreferredMeetingType(type ?? null))
+        .catch(() => null);
+      // Do not pass meeting_type: API would hide all slots if DB slugs differ from profile.
+      fetchAvailability(idStr);
     } else {
       setLoadingTherapist(false);
       setTherapistError(
@@ -148,11 +166,8 @@ export default function NewBookingPage() {
     return null;
   };
 
-  // fetch availability for therapist (supports meeting_type filter + date window)
-  const fetchAvailability = async (
-    id: string,
-    meetingType?: string | null
-  ) => {
+  // fetch availability (full slot list; optional ?meeting_type would hide non-matching types)
+  const fetchAvailability = async (id: string) => {
     try {
       const url = new URL(
         `${process.env.NEXT_PUBLIC_API_URL}/api/therapist/${id}/availability`
@@ -162,9 +177,6 @@ export default function NewBookingPage() {
       to.setDate(to.getDate() + AVAILABILITY_WINDOW_DAYS);
       url.searchParams.set("from", formatLocalYmd(from));
       url.searchParams.set("to", formatLocalYmd(to));
-      if (meetingType) {
-        url.searchParams.set("meeting_type", meetingType);
-      }
       const res = await fetch(url.toString());
       const data = await res.json();
       if (data?.success) {
@@ -189,8 +201,19 @@ export default function NewBookingPage() {
     setCustomStartTime("");
     setCustomEndTime("");
     const found = availability.find((a) => a.date === date);
-    setSlotsForSelectedDate(found?.slots || []);
+    setSlotsForSelectedDate(
+      sortSlotsByPreferredMeetingType(found?.slots || [], preferredMeetingType)
+    );
   };
+
+  // Re-order slots when preference loads after a date was already chosen
+  useEffect(() => {
+    if (!selectedDate) return;
+    const found = availability.find((a) => a.date === selectedDate);
+    setSlotsForSelectedDate(
+      sortSlotsByPreferredMeetingType(found?.slots || [], preferredMeetingType)
+    );
+  }, [preferredMeetingType, selectedDate, availability]);
 
   const isCustomTimeValid = (): boolean => {
     if (!customStartTime || !customEndTime) return false;
@@ -346,7 +369,7 @@ export default function NewBookingPage() {
             Available Slots on {selectedDate}
             {preferredMeetingType && (
               <span className="ml-2 text-sm font-normal text-muted-foreground">
-                (filtered by {preferredMeetingType})
+                (your preference: {preferredMeetingType}; all formats shown)
               </span>
             )}
           </h3>
