@@ -216,34 +216,6 @@ export default function GAD7Assessment() {
     router.push("/wellbeing-hub");
   };
 
-  const totalScore = answers.reduce(
-    (sum, value) => (value >= 0 ? sum + value : sum),
-    0
-  );
-
-  const getSeverityLevel = (score: number) => {
-    if (!assessmentData) return { level: "", color: "bg-gray-500" };
-
-    const range = assessmentData.score_ranges.find(
-      (r) => score >= r.min && score <= r.max
-    );
-    if (!range) return { level: "", color: "bg-gray-500" };
-
-    const colors: Record<string, string> = {
-      "Minimal anxiety": "bg-green-500",
-      "Mild anxiety": "bg-yellow-500",
-      "Moderate anxiety": "bg-orange-500",
-      "Severe anxiety": "bg-red-500",
-    };
-
-    return {
-      level: range.severity,
-      color: colors[range.severity] || "bg-gray-500",
-      description: range.description,
-    };
-  };
-
-  const severity = getSeverityLevel(totalScore);
   const progress = assessmentData
     ? ((currentQuestion + 1) / assessmentData.questions.length) * 100
     : 0;

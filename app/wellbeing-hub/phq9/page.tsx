@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,6 +63,7 @@ export default function PHQ9Assessment() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTherapist, setSelectedTherapist] = useState<string>("");
+  const [suggestRiskAssessment, setSuggestRiskAssessment] = useState(false);
 
   const router = useRouter();
 
@@ -197,6 +199,11 @@ export default function PHQ9Assessment() {
       } else if (typeof data.tokens_awarded === "number") {
         setTokensEarned(data.tokens_awarded);
       }
+
+      const assessmentObj = data.data?.assessment ?? data.data;
+      const clinicalFlags = assessmentObj?.clinical_flags;
+      setSuggestRiskAssessment(clinicalFlags?.suggest_risk_assessment === true);
+
       setShowResults(true);
     } catch (error) {
       setError(
@@ -387,6 +394,24 @@ export default function PHQ9Assessment() {
             </div>
 
             <TokenEarnedAcknowledgment tokensAwarded={tokensEarned} />
+
+            {suggestRiskAssessment && (
+              <div className="rounded-md border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+                <p className="font-medium">Suggested next step</p>
+                <p className="mt-1">
+                  Based on your responses, completing a risk assessment can help
+                  your care team support you. You can do this when you feel ready.
+                </p>
+                <Button
+                  asChild
+                  className="mt-3 bg-[#00990d] text-white hover:bg-[#3c362f]"
+                >
+                  <Link href="/wellbeing-hub/risk-assessment">
+                    Go to risk assessment
+                  </Link>
+                </Button>
+              </div>
+            )}
 
             <div className="rounded-md border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
               <p className="font-medium">Important Note</p>

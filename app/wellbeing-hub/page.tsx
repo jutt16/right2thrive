@@ -63,7 +63,10 @@ interface Assessment {
   user_id: number;
   therapist_id?: number | null;
   total_score: number;
+  /** GAD-7 / PHQ-9 labels from API (e.g. mild / moderate / severe; Little risk / Medium risk / High risk). */
   severity_level?: string;
+  /** Present on PHQ-9 detail responses when API includes it. */
+  clinical_flags?: { suggest_risk_assessment?: boolean };
   answers?: AssessmentAnswer[];
   created_at: string;
   therapist?: {
@@ -1273,7 +1276,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                       {gad7Improvement.trend === "improving" &&
                         `Your anxiety improved by ${gad7Improvement.percentage.toFixed(0)}%! `}
                       {phq9Improvement.trend === "improving" &&
-                        `Your depression improved by ${phq9Improvement.percentage.toFixed(0)}%! `}
+                        `Your PHQ-9 score improved by ${phq9Improvement.percentage.toFixed(0)}%! `}
                       {pcl5Improvement.trend === "improving" &&
                         `Your PTSD symptoms improved by ${pcl5Improvement.percentage.toFixed(0)}%! `}
                       Keep up the great work!
@@ -1325,7 +1328,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               <CardHeader>
                 <CardTitle>PHQ-9 Progress</CardTitle>
                 <CardDescription>
-                  Your depression levels over time
+                  Your PHQ-9 scores over time
                 </CardDescription>
               </CardHeader>
               <CardContent className="h-80">
