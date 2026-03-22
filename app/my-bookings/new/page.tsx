@@ -29,6 +29,16 @@ interface TherapistDetails {
   profile?: TherapistProfile | null;
 }
 
+/** Align with API: default window is today → today + 60 days (override with ?from=&to=). */
+const AVAILABILITY_WINDOW_DAYS = 60;
+
+function formatLocalYmd(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export default function NewBookingPage() {
   // therapist from localStorage (read-only)
   const [therapistId, setTherapistId] = useState<string>("");
@@ -138,7 +148,7 @@ export default function NewBookingPage() {
     return null;
   };
 
-  // fetch availability for therapist (supports meeting_type filter)
+  // fetch availability for therapist (supports meeting_type filter + date window)
   const fetchAvailability = async (
     id: string,
     meetingType?: string | null
@@ -147,6 +157,11 @@ export default function NewBookingPage() {
       const url = new URL(
         `${process.env.NEXT_PUBLIC_API_URL}/api/therapist/${id}/availability`
       );
+      const from = new Date();
+      const to = new Date();
+      to.setDate(to.getDate() + AVAILABILITY_WINDOW_DAYS);
+      url.searchParams.set("from", formatLocalYmd(from));
+      url.searchParams.set("to", formatLocalYmd(to));
       if (meetingType) {
         url.searchParams.set("meeting_type", meetingType);
       }

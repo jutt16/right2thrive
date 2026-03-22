@@ -1,0 +1,87 @@
+flowchart TD
+  START([Open Right2Thrive UK]) --> AUTH{Logged in?}
+
+  AUTH -- No --> LOGIN[Auth Login / Signup]
+  AUTH -- Yes --> EMAIL{Email verified?}
+  EMAIL -- No --> VERIFY[Verify Email]
+  EMAIL -- Yes --> THERAPIST{Therapist assigned?}
+
+  THERAPIST -- No --> COACH[Choose Wellbeing Coach]
+  COACH --> HOME[Home / My Wellbeing Space]
+
+  THERAPIST -- Yes --> SPACE[My Wellbeing Space<br/>/my-wellbeing]
+
+  SPACE --> DASH[My Wellbeing Dashboard<br/>/my-wellbeing/dashboard]
+  DASH --> BOOKINGS[My Bookings<br/>/my-bookings]
+  DASH --> TOOLS[Try a wellbeing tool<br/>/wellbeing-hub]
+  DASH --> REFLECT[Session reflection<br/>/my-wellbeing/reflect]
+  DASH --> VOICE[Voice call support<br/>/voice-call]
+  DASH --> CHAT[Message your coach<br/>/chat]
+  DASH --> QUESTIONNAIRES_LIST[Questionnaire list<br/>/my-wellbeing/questionnaires]
+
+  QUESTIONNAIRES_LIST --> QUESTIONNAIRES_DETAIL[Questionnaire detail<br/>/my-wellbeing/questionnaires/:id]
+  QUESTIONNAIRES_DETAIL --> SUBMIT_SDQ[Submit questionnaire responses<br/>/api/questionnaires/:id/submit]
+  SUBMIT_SDQ --> DASH
+
+  SPACE --> ASSESS_HUB[Wellbeing Hub<br/>/wellbeing-hub]
+  ASSESS_HUB --> GAD7[GAD-7 assessment<br/>/wellbeing-hub/gad7]
+  ASSESS_HUB --> PHQ9[PHQ-9 assessment<br/>/wellbeing-hub/phq9]
+  ASSESS_HUB --> PCL5[PCL-5 assessment<br/>/wellbeing-hub/pcl5]
+  ASSESS_HUB --> RISK[Risk assessment<br/>/wellbeing-hub/risk-assessment]
+
+  GAD7 --> GAD7_RESULTS[Show results + tokens]
+  PHQ9 --> PHQ9_RESULTS[Show results + tokens]
+  PCL5 --> PCL5_RESULTS[Show success + past assessments]
+  RISK --> RISK_RESULTS[Show risk level + guidance]
+
+  GAD7_RESULTS --> ASSESS_HUB
+  PHQ9_RESULTS --> ASSESS_HUB
+  PCL5_RESULTS --> ASSESS_HUB
+  RISK_RESULTS --> ASSESS_HUB
+
+  SPACE --> PRECHECK[Pre-session checklist<br/>/my-wellbeing/pre-session-checklist]
+  PRECHECK --> BOOKINGS
+
+  SPACE --> JOURNAL[Symptom journal<br/>/my-wellbeing/symptom-journal]
+  JOURNAL --> DASH
+
+  SPACE --> WEEKLY_GOALS[Upload weekly goals<br/>/my-wellbeing/upload-weekly-goals]
+  WEEKLY_GOALS --> DASH
+
+  SPACE --> WEEKLY_PROGRESS[Weekly progress<br/>/my-wellbeing/weekly-progress]
+  WEEKLY_PROGRESS --> DASH
+
+  SPACE --> PLAN[Wellbeing plan steps<br/>/my-wellbeing/wellbeing-plan]
+  PLAN --> DASH
+  PLAN --> DOWNLOAD[Download wellbeing plans<br/>/my-wellbeing/download]
+
+  SPACE --> TOKENS[ThriveTokens overview<br/>/my-wellbeing/thrive-tokens]
+  TOKENS --> REWARDS[Rewards catalogue<br/>/my-wellbeing/thrive-tokens/rewards]
+  REWARDS --> REWARD_DETAIL[Reward details + redeem<br/>/my-wellbeing/thrive-tokens/rewards/:id]
+  REWARD_DETAIL --> REWARDS
+
+  SPACE --> RELAPSE[Relapse prevention<br/>/wellbeing-hub/relapse-prevention]
+  RELAPSE --> ASSESS_HUB
+
+  SPACE --> SOCIAL_LIST[Social prescribing<br/>/wellbeing-hub/social-prescribing]
+  SOCIAL_LIST --> SOCIAL_DETAIL[Social prescribing detail<br/>/wellbeing-hub/social-prescribing/:id]
+  SOCIAL_DETAIL --> SOCIAL_LIST
+
+  SPACE --> CULTURAL[Cultural activities<br/>/cultural-activities]
+  CULTURAL --> CULTURAL_DETAIL[Cultural activity detail<br/>/cultural-activities/:id]
+
+  SPACE --> ANXIETY[Anxiety and trauma workshops<br/>/anxiety-and-trauma-workshops]
+
+  DASH_TOOLHUB[Try a wellbeing tool<br/>/wellbeing-hub] --> GAD7
+  DASH_TOOLHUB --> PHQ9
+  DASH_TOOLHUB --> PCL5
+  DASH_TOOLHUB --> RISK
+
+  BOOKINGS --> PRECHECK
+  BOOKINGS --> REFLECT
+
+  VOICE --> VOICE_WIDGET[ElevenLabs Convai widget<br/>start/end voice call]
+  CHAT --> CHAT_INIT[Get/create chat + fetch messages]
+  CHAT_INIT --> CHAT_LIVE[Realtime messages<br/>Laravel Echo + Reverb]
+  CHAT_LIVE --> CHAT_SEND[Send message<br/>/api/chat/send]
+
