@@ -89,7 +89,6 @@ const SIDEBAR_NAV = {
     { label: "Resources", href: "/wellbeing-hub/resources", icon: BookOpen },
     { label: "Support", href: "/wellbeing-hub/support", icon: LifeBuoy },
     { label: "Relapse Prevention", href: "/wellbeing-hub/relapse-prevention", icon: ShieldAlert },
-    { label: "Social Prescribing", href: "/wellbeing-hub/social-prescribing", icon: Users },
   ],
 };
 

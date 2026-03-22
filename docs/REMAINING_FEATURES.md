@@ -77,19 +77,6 @@ Could be driven by booking/session count or manual “treatment phase” selecti
 
 ---
 
-### 1.7 Social Prescribing
-
-| Item | Description | Status |
-|------|-------------|--------|
-| **Social prescribing** | Explicit social prescribing pathway or referrals | ❌ Not implemented |
-
-**Suggestion:** Add a Social Prescribing area that:
-- Links to local activities, groups, and services
-- Supports referral or signposting to link workers
-- Integrates with cultural activities and workshops
-
----
-
 ## 2. From Tasks Document (6th March)
 
 ### 2.1 Rewards Layout
@@ -128,7 +115,7 @@ Could be driven by booking/session count or manual “treatment phase” selecti
 | Priority | Items |
 |----------|-------|
 | **High** | Registration fix, Outcome measures at 3 points, Relapse prevention |
-| **Medium** | Rewards layout, Social prescribing, SMART goals, Transtheoretical stages |
+| **Medium** | Rewards layout, SMART goals, Transtheoretical stages |
 | **Lower** | AI-generated assessments clarification, Gaining trust/environment, Pre-session checklist |
 
 ---
@@ -139,5 +126,4 @@ Could be driven by booking/session count or manual “treatment phase” selecti
 2. Add outcome measure reminders (baseline, mid-point, end).
 3. Create Relapse Prevention content and link from Wellbeing Hub.
 4. Redesign rewards page using Apprentice Nation as reference.
-5. Explore Social Prescribing integration (content and/or referrals).
-6. Add explicit SMART goal prompts to wellbeing plan and weekly goals.
+5. Add explicit SMART goal prompts to wellbeing plan and weekly goals.

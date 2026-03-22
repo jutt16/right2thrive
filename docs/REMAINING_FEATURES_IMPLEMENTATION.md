@@ -274,64 +274,9 @@
 
 ---
 
-## 6. Social Prescribing
+## 6. Rewards Layout Improvement
 
 ### 6.1 Admin
-
-| Task | Description |
-|------|-------------|
-| **Social prescribing services** | CRUD for services (name, description, category, link, contact) |
-| **Categories** | Activities, groups, link workers, local services |
-| **Link to events** | Link cultural activities/events to social prescribing |
-| **Referral tracking** | Optional: track referrals to link workers |
-
-### 6.2 Therapist
-
-| Task | Description |
-|------|-------------|
-| **View services** | Browse social prescribing directory |
-| **Refer patient** | Create referral to service/link worker |
-| **View referrals** | See own referrals and status |
-
-### 6.3 Backend (Laravel)
-
-| Task | Description |
-|------|-------------|
-| **Migration** | `social_prescribing_services` (name, description, category, url, contact, area, is_active) |
-| **Migration** | `social_prescribing_referrals` (patient_id, service_id, referred_by, status, notes) |
-| **Models** | `SocialPrescribingService`, `SocialPrescribingReferral` |
-
-### 6.4 Admin Web Routes (Blade)
-
-| Method | Route | View | Description |
-|--------|-------|------|-------------|
-| `GET` | `/admin/social-prescribing` | `admin.social-prescribing.index` | List all services |
-| `GET` | `/admin/social-prescribing/create` | `admin.social-prescribing.create` | Create service form |
-| `POST` | `/admin/social-prescribing` | Redirect | Store service |
-| `GET` | `/admin/social-prescribing/{id}/edit` | `admin.social-prescribing.edit` | Edit service form |
-| `PUT` | `/admin/social-prescribing/{id}` | Redirect | Update service |
-
-### 6.5 Therapist Web Routes (Blade)
-
-| Method | Route | View | Description |
-|--------|-------|------|-------------|
-| `GET` | `/therapist/social-prescribing` | `therapist.social-prescribing.index` | Browse services directory |
-| `GET` | `/therapist/social-prescribing-referrals` | `therapist.social-prescribing.referrals` | List own referrals |
-| `GET` | `/therapist/patients/{id}/social-prescribing-referral` | `therapist.patients.social-prescribing-referral` | Create referral form |
-| `POST` | `/therapist/patients/{id}/social-prescribing-referral` | Redirect | Create referral |
-
-### 6.6 Patient APIs (REST – patient app only)
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| `GET` | `/api/social-prescribing` | Patient | List services (filter by category, area) |
-| `GET` | `/api/social-prescribing/{id}` | Patient | Service detail |
-
----
-
-## 7. Rewards Layout Improvement
-
-### 7.1 Admin
 
 | Task | Description |
 |------|-------------|
@@ -340,7 +285,7 @@
 | **Display options** | Grid vs list, featured rewards |
 | **Image upload** | Ensure image upload works; multiple images if needed |
 
-### 7.2 Therapist
+### 6.2 Therapist
 
 | Task | Description |
 |------|-------------|
@@ -353,7 +298,7 @@
 | **Migration** | Add `category`, `display_order`, `is_featured` to `rewards` if not present |
 | **Extend** | Ensure `GET /api/thrive-tokens/rewards` returns category, featured flag (patient API) |
 
-### 7.4 Admin Web Routes (Blade)
+### 6.4 Admin Web Routes (Blade)
 
 | Method | Route | View | Description |
 |--------|-------|------|-------------|
@@ -363,7 +308,7 @@
 | `GET` | `/admin/thrive-tokens/rewards/{id}/edit` | `admin.thrive-tokens.rewards.edit` | Edit reward form |
 | `PUT` | `/admin/thrive-tokens/rewards/{id}` | Redirect | Update reward (accept `category`, `is_featured`) |
 
-### 7.5 Patient APIs (REST – patient app only)
+### 6.5 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
@@ -371,7 +316,7 @@
 
 ---
 
-## 8. Registration Fix ("I AM UNABLE TO REGISTERED")
+## 7. Registration Fix ("I AM UNABLE TO REGISTERED")
 
 ### 8.1 Admin
 
@@ -379,7 +324,7 @@
 |------|-------------|
 | *N/A* | Fix is backend/frontend |
 
-### 8.2 Therapist
+### 7.2 Therapist
 
 | Task | Description |
 |------|-------------|
@@ -395,7 +340,7 @@
 | **Response** | Ensure API returns `{ success: false, message: "..." }` with specific reason |
 | **CORS** | Verify CORS allows frontend origin |
 
-### 8.4 Patient APIs (REST – patient app only)
+### 7.4 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
@@ -407,21 +352,21 @@
 
 ## 9. AI-Generated Assessments (Clarification)
 
-### 9.1 Admin
+### 8.1 Admin
 
 | Task | Description |
 |------|-------------|
 | **Config** | Toggle: AI-assisted vs clinician-led assessments |
 | **AI prompts** | If AI: manage prompts for baseline generation |
 
-### 9.2 Therapist
+### 8.2 Therapist
 
 | Task | Description |
 |------|-------------|
 | **View source** | See if assessment was AI-generated or self-completed |
 | **Override** | Optional: clinician can override/edit AI-generated baseline |
 
-### 9.3 Backend (Laravel)
+### 8.3 Backend (Laravel)
 
 | Task | Description |
 |------|-------------|
@@ -429,19 +374,19 @@
 | **Integration** | If AI: integrate with OpenAI/other for baseline generation (future) |
 | **Documentation** | Document current flow (self-completed vs AI) |
 
-### 9.4 Admin Web Routes (Blade)
+### 8.4 Admin Web Routes (Blade)
 
 | Method | Route | View | Description |
 |--------|-------|------|-------------|
 | `GET` | `/admin/assessments/config` | `admin.assessments.config` | Toggle AI-assisted vs clinician-led; manage AI prompts |
 
-### 9.5 Therapist Web Routes (Blade)
+### 8.5 Therapist Web Routes (Blade)
 
 | Method | Route | View | Description |
 |--------|-------|------|-------------|
 | `GET` | `/therapist/patients/{id}/assessments` | `therapist.patients.assessments` | View assessments (include `source` in data) |
 
-### 9.6 Patient APIs (REST – patient app only)
+### 8.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
@@ -451,23 +396,23 @@
 
 ---
 
-## 10. Additional UX (Pre-session Checklist, Symptom Journal, Copy Link)
+## 9. Additional UX (Pre-session Checklist, Symptom Journal, Copy Link)
 
-### 10.1 Admin
+### 9.1 Admin
 
 | Task | Description |
 |------|-------------|
 | **Checklist config** | Manage pre-session checklist items |
 | **Symptom journal** | Optional: configure mood/symptom options |
 
-### 10.2 Therapist
+### 9.2 Therapist
 
 | Task | Description |
 |------|-------------|
 | **View checklist** | See if patient completed pre-session checklist |
 | **View journal** | See patient symptom/mood journal entries |
 
-### 10.3 Backend (Laravel)
+### 9.3 Backend (Laravel)
 
 | Task | Description |
 |------|-------------|
@@ -475,7 +420,7 @@
 | **Migration** | `symptom_journal_entries` (patient_id, date, mood, symptoms JSON, notes) |
 | **Logic** | Copy link: frontend only (use `navigator.clipboard`); ensure booking has shareable link |
 
-### 10.4 Admin Web Routes (Blade)
+### 9.4 Admin Web Routes (Blade)
 
 | Method | Route | View | Description |
 |--------|-------|------|-------------|
@@ -483,14 +428,14 @@
 | `PUT` | `/admin/pre-session-checklist/config` | Redirect | Update checklist items |
 | `GET` | `/admin/symptom-journal/config` | `admin.symptom-journal.config` | Configure mood/symptom options (optional) |
 
-### 10.5 Therapist Web Routes (Blade)
+### 9.5 Therapist Web Routes (Blade)
 
 | Method | Route | View | Description |
 |--------|-------|------|-------------|
 | `GET` | `/therapist/patients/{id}/pre-session-checklist` | `therapist.patients.pre-session-checklist` | View patient checklist |
 | `GET` | `/therapist/patients/{id}/symptom-journal` | `therapist.patients.symptom-journal` | View patient journal |
 
-### 10.6 Patient APIs (REST – patient app only)
+### 9.6 Patient APIs (REST – patient app only)
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
@@ -513,7 +458,6 @@
 | High | `/api/relapse-prevention` | GET | Relapse prevention content |
 | Medium | `/api/journey-stages` | GET | Stages for onboarding |
 | Medium | `/api/user/journey-stage` | GET, PUT | Patient stage |
-| Medium | `/api/social-prescribing` | GET | Social prescribing services |
 | Medium | `/api/thrive-tokens/rewards` | GET | Add category, featured (extend) |
 | Lower | `/api/user` | PUT | Add meeting preferences (extend) |
 | Lower | `/api/pre-session-checklist` | GET, POST | Pre-session checklist |
@@ -525,7 +469,6 @@
 |----------|-------|---------|
 | High | `/admin/relapse-prevention` | CRUD relapse prevention content |
 | Medium | `/admin/journey-stages` | CRUD journey stages |
-| Medium | `/admin/social-prescribing` | CRUD social prescribing services |
 | Medium | `/admin/treatment-phases/config` | Phase config (baseline, mid-point, end) |
 | Medium | `/admin/thrive-tokens/rewards` | Manage rewards (category, featured) |
 | Lower | `/admin/smart-goal-templates` | Optional SMART prompts |
@@ -541,7 +484,6 @@
 | High | `/therapist/patients/{id}/treatment-phase` | View/set treatment phase |
 | Medium | `/therapist/patients/{id}/journey-stage` | View/update patient stage |
 | Medium | `/therapist/patients/{id}/relapse-plan` | View patient relapse plan |
-| Medium | `/therapist/social-prescribing` | Browse services, create referrals |
 | Lower | `/therapist/patients/{id}/assessments` | View assessments (with source) |
 | Lower | `/therapist/patients/{id}/pre-session-checklist` | View patient checklist |
 | Lower | `/therapist/patients/{id}/symptom-journal` | View patient journal |
@@ -557,7 +499,6 @@
 | Meeting preferences | Add columns to `users` / `profiles` |
 | Treatment phases | `patient_treatment_phases`, `outcome_measure_completions` |
 | Relapse prevention | `relapse_prevention_sections`, `patient_relapse_plans` (optional) |
-| Social prescribing | `social_prescribing_services`, `social_prescribing_referrals` |
 | Rewards | Add `category`, `is_featured` to `rewards` |
 | Assessments | Add `source` to GAD7, PHQ9, PCL5 tables |
 | Pre-session / journal | `pre_session_checklists`, `symptom_journal_entries` |
@@ -571,7 +512,6 @@
 3. **Relapse prevention** – Admin Blade CRUD + patient API  
 4. **Rewards layout** – Admin Blade views + patient API extensions  
 5. **Journey stages** – Admin/therapist Blade + patient API for onboarding  
-6. **Social prescribing** – Admin/therapist Blade + patient API  
-7. **SMART goals** – Admin Blade (optional) + patient API extensions  
-8. **Meeting preferences** – Admin/therapist Blade + patient API extension  
-9. **Pre-session checklist + symptom journal** – Admin/therapist Blade + patient API  
+6. **SMART goals** – Admin Blade (optional) + patient API extensions  
+7. **Meeting preferences** – Admin/therapist Blade + patient API extension  
+8. **Pre-session checklist + symptom journal** – Admin/therapist Blade + patient API  
