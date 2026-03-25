@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Phone } from "lucide-react";
 
 export const metadata = generateSEOMetadata({
-  title: "Support Services - Right2Thrive UK | Mental Health Support Resources",
+  title: "Support - Right2Thrive UK | Mental Health Support Resources",
   description: "Access support services and mental health resources from Right2Thrive UK. Find crisis support, culturally responsive services, and urgent mental health help in North London.",
   keywords: [
     "support services",
@@ -24,7 +24,7 @@ export default function SupportServices() {
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-[#00990d] mb-4">
-            Support Services
+            Support
           </h1>
           <p className="text-lg text-gray-700">
             Access support services and resources to help you on your wellbeing journey.

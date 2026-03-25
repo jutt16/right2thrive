@@ -75,7 +75,7 @@ export default function WellbeingDashboardPage() {
     },
     {
       label: "Try a wellbeing tool",
-      description: "Assessments, resources & more",
+      description: "Check-ins, resources & more",
       href: "/my-wellbeing",
       icon: Sparkles,
     },
@@ -113,15 +113,15 @@ export default function WellbeingDashboardPage() {
           </p>
         </motion.header>
 
-        {/* Risk Assessment */}
+        {/* Safety check */}
         <motion.section
           className="mb-8"
-          aria-labelledby="risk-assessment-heading"
+          aria-labelledby="safety-check-heading"
           variants={fadeInUp}
           transition={springSmooth}
         >
-          <h2 id="risk-assessment-heading" className="sr-only">
-            Risk Assessment
+          <h2 id="safety-check-heading" className="sr-only">
+            Safety check
           </h2>
           <Link href="/wellbeing-hub/risk-assessment" className="block group">
             <motion.div
@@ -141,7 +141,7 @@ export default function WellbeingDashboardPage() {
                   </motion.div>
                   <div>
                     <h3 className="text-lg font-semibold text-white tracking-tight">
-                      Risk Assessment
+                      Safety check
                     </h3>
                     <p className="text-amber-100/90 text-sm mt-0.5">
                       Confidential safety & wellbeing check

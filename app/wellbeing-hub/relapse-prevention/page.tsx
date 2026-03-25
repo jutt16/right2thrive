@@ -106,10 +106,10 @@ export default function RelapsePreventionPage() {
 
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-[#00990d] mb-4">
-            Relapse Prevention
+            Prevent setbacks
           </h1>
           <p className="text-lg text-gray-700">
-            Learn about early warning signs, coping strategies, and when to seek help. You can also create your own personal relapse prevention plan.
+            Learn about early warning signs, coping strategies, and when to get support. You can also create your own personal plan to help you cope.
           </p>
         </div>
 
@@ -123,7 +123,7 @@ export default function RelapsePreventionPage() {
             {sections.length > 0 && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-semibold text-gray-900">
-                  Information &amp; resources
+                  Helpful information
                 </h2>
                 {sections
                   .sort((a, b) => a.display_order - b.display_order)
@@ -246,7 +246,7 @@ export default function RelapsePreventionPage() {
                   href="/my-wellbeing/support"
                   className="text-[#00990d] hover:text-[#007a0a] underline font-medium"
                 >
-                  Support Services
+                  Support options
                 </Link>{" "}
                 for crisis and urgent support links.
               </p>

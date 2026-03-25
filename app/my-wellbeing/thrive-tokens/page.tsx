@@ -26,7 +26,7 @@ const HOW_EARNED_ITEMS = [
   {
     type: "tool",
     title: "Using a wellbeing tool",
-    description: "Tokens for trying exercises or tools in the wellbeing hub.",
+    description: "Tokens for trying exercises or tools in your wellbeing space.",
   },
   {
     type: "check_in",
