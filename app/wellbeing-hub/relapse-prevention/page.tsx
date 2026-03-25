@@ -243,7 +243,7 @@ export default function RelapsePreventionPage() {
               <p className="text-sm text-gray-800">
                 <strong>Need support now?</strong> Visit{" "}
                 <Link
-                  href="/wellbeing-hub/support"
+                  href="/my-wellbeing/support"
                   className="text-[#00990d] hover:text-[#007a0a] underline font-medium"
                 >
                   Support Services

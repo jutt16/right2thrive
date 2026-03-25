@@ -54,7 +54,7 @@ export default function About() {
                 We deliver culturally responsive support so young people and families from Black and marginalised communities can access care that truly reflects who they are.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Link href="/wellbeing-hub">
+                <Link href="/my-wellbeing">
                   <Button className="bg-white text-[#00990d] hover:bg-green-100">
                     Explore Our Support
                   </Button>
@@ -232,11 +232,11 @@ export default function About() {
             <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
               <h3 className="text-xl font-semibold text-white">Need Support?</h3>
               <p className="mt-3 text-sm text-gray-100">
-                Access our Wellbeing Hub and start your journey today.
+                Access your wellbeing space and start your journey today.
               </p>
-              <Link href="/wellbeing-hub" className="mt-6 inline-block">
+              <Link href="/my-wellbeing" className="mt-6 inline-block">
                 <Button className="bg-white text-[#00990d] hover:bg-gray-100">
-                  Access Wellbeing Hub
+                  Access My Wellbeing
                 </Button>
               </Link>
             </div>
