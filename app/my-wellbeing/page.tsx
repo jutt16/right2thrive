@@ -181,33 +181,6 @@ export default function WellbeingHub() {
       <WellbeingOnboarding />
       <div className="max-w-3xl mx-auto mt-10 mb-10 px-4">
         {/* Show "Choose Your Wellbeing Coach" card if no therapist assigned */}
-        {/* Risk Assessment - urgent safety check */}
-        <div className="rounded-xl shadow-xl border-2 border-red-300 overflow-hidden mb-6 bg-gradient-to-br from-red-50 to-amber-50">
-          <div className="bg-gradient-to-r from-red-600 to-amber-600 px-6 py-4">
-            <div className="flex items-center gap-3">
-              <ShieldAlert className="h-8 w-8 text-white shrink-0" aria-hidden />
-              <div>
-                <h2 className="text-xl font-bold text-white">Safety check</h2>
-                <p className="text-red-100 text-sm mt-0.5">
-                  A confidential safety and wellbeing check to help ensure you get the right support
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="p-6">
-            <p className="text-gray-700 mb-4">
-              This check is designed to understand how you’re feeling right now. Your responses are confidential and help your care team provide the right support when needed.
-            </p>
-            <Link
-              href="/my-wellbeing/safety-check"
-              className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
-            >
-              <ShieldAlert className="h-5 w-5" />
-              Complete safety check
-            </Link>
-          </div>
-        </div>
-
         {journeyStage && (
           <div className="rounded-xl shadow-lg border border-cyan-300 overflow-hidden mb-6 bg-gradient-to-br from-cyan-50 to-teal-50">
             <div className="bg-gradient-to-r from-cyan-600 to-teal-600 px-6 py-4">
@@ -260,12 +233,87 @@ export default function WellbeingHub() {
             </p>
           </div>
           <div className="p-6 bg-white space-y-6">
-            {wellbeingSections.map((section) => (
+            {/* "This week" first, then a prominent Safety check, then the rest of the journey */}
+            {wellbeingSections.slice(0, 1).map((section) => (
               <section key={section.title}>
                 <div className="mb-3">
-                  <h2 className="text-lg font-bold text-slate-900">{section.title}</h2>
+                  <h2 className="text-lg font-bold text-slate-900">
+                    {section.title}
+                  </h2>
                   {section.description && (
-                    <p className="text-sm text-slate-600 mt-0.5">{section.description}</p>
+                    <p className="text-sm text-slate-600 mt-0.5">
+                      {section.description}
+                    </p>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {section.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center border border-gray-200 rounded-lg px-4 py-3 hover:shadow-md hover:border-cyan-500 transition group"
+                    >
+                      <ThumbsUp className="h-5 w-5 mr-3 text-cyan-600 group-hover:scale-110 transition-transform" />
+                      <div className="min-w-0 flex-1">
+                        <span className="text-gray-800 group-hover:text-cyan-700 font-medium text-sm">
+                          {item.label}
+                        </span>
+                        {item.subtitle ? (
+                          <div className="text-gray-500 text-xs mt-0.5 group-hover:text-cyan-600">
+                            {item.subtitle}
+                          </div>
+                        ) : null}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ))}
+
+            <div className="rounded-xl shadow-xl border-2 border-red-300 overflow-hidden bg-gradient-to-br from-red-50 to-amber-50">
+              <div className="bg-gradient-to-r from-red-600 to-amber-600 px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <ShieldAlert
+                    className="h-8 w-8 text-white shrink-0"
+                    aria-hidden
+                  />
+                  <div>
+                    <h2 className="text-xl font-bold text-white">
+                      Safety check
+                    </h2>
+                    <p className="text-red-100 text-sm mt-0.5">
+                      A confidential check to help ensure you get the right
+                      support.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                <p className="text-gray-700 mb-4">
+                  This check is designed to understand how you’re feeling
+                  right now. Your responses are confidential and help your
+                  care team provide the right support when needed.
+                </p>
+                <Link
+                  href="/my-wellbeing/safety-check"
+                  className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                >
+                  <ShieldAlert className="h-5 w-5" />
+                  Complete safety check
+                </Link>
+              </div>
+            </div>
+
+            {wellbeingSections.slice(1).map((section) => (
+              <section key={section.title}>
+                <div className="mb-3">
+                  <h2 className="text-lg font-bold text-slate-900">
+                    {section.title}
+                  </h2>
+                  {section.description && (
+                    <p className="text-sm text-slate-600 mt-0.5">
+                      {section.description}
+                    </p>
                   )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
