@@ -63,11 +63,11 @@ const SIDEBAR_NAV = {
     { label: "My Weekly Progress", href: "/my-wellbeing/weekly-progress", icon: BarChart3 },
   ],
   assessments: [
-    { label: "GAD-7 (Anxiety)", href: "/wellbeing-hub/gad7", icon: ClipboardList },
-    { label: "PHQ-9 (Depression)", href: "/wellbeing-hub/phq9", icon: ClipboardList },
+    { label: "Anxiety check-in", href: "/wellbeing-hub/gad7", icon: ClipboardList },
+    { label: "Low mood check-in", href: "/wellbeing-hub/phq9", icon: ClipboardList },
     { label: "SDQ", href: "/my-wellbeing/questionnaires", icon: ClipboardList },
-    { label: "PCL-5 (PTSD)", href: "/wellbeing-hub/pcl5", icon: ClipboardList },
-    { label: "Risk Assessment", href: "/wellbeing-hub/risk-assessment", icon: ShieldAlert },
+    { label: "Trauma check-in", href: "/wellbeing-hub/pcl5", icon: ClipboardList },
+    { label: "Safety check", href: "/wellbeing-hub/risk-assessment", icon: ShieldAlert },
   ],
   engagement: [
     { label: "Thrive Tokens", href: "/my-wellbeing/thrive-tokens", icon: Coins },
@@ -88,7 +88,7 @@ const SIDEBAR_NAV = {
   resources: [
     { label: "Resources", href: "/wellbeing-hub/resources", icon: BookOpen },
     { label: "Support", href: "/wellbeing-hub/support", icon: LifeBuoy },
-    { label: "Relapse Prevention", href: "/wellbeing-hub/relapse-prevention", icon: ShieldAlert },
+    { label: "Plan for difficult times", href: "/wellbeing-hub/relapse-prevention", icon: ShieldAlert },
   ],
 };
 
