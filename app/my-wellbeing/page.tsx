@@ -35,14 +35,14 @@ const wellbeingSections: WellbeingSection[] = [
     title: "Check-ins",
     description: "Answer short questions to help guide your support.",
     items: [
-      { label: "Anxiety check-in", subtitle: "GAD-7", href: "/wellbeing-hub/gad7" },
-      { label: "Low mood check-in", subtitle: "PHQ-9", href: "/wellbeing-hub/phq9" },
+      { label: "Anxiety check-in", subtitle: "GAD-7", href: "/my-wellbeing/anxiety-check-in" },
+      { label: "Low mood check-in", subtitle: "PHQ-9", href: "/my-wellbeing/low-mood-check-in" },
       {
         label: "Strengths & difficulties check",
         subtitle: "SDQ",
         href: "/my-wellbeing/questionnaires",
       },
-      { label: "Trauma check-in", subtitle: "PCL-5", href: "/wellbeing-hub/pcl5" },
+      { label: "Trauma check-in", subtitle: "PCL-5", href: "/my-wellbeing/trauma-check-in" },
     ],
   },
   {
@@ -61,7 +61,7 @@ const wellbeingSections: WellbeingSection[] = [
       {
         label: "Prevent setbacks",
         subtitle: "Relapse prevention",
-        href: "/wellbeing-hub/relapse-prevention",
+        href: "/my-wellbeing/prevent-setbacks",
       },
     ],
   },
@@ -197,7 +197,7 @@ export default function WellbeingHub() {
               This check is designed to understand how you’re feeling right now. Your responses are confidential and help your care team provide the right support when needed.
             </p>
             <Link
-              href="/wellbeing-hub/risk-assessment"
+              href="/my-wellbeing/safety-check"
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
             >
               <ShieldAlert className="h-5 w-5" />

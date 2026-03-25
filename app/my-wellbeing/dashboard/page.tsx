@@ -123,7 +123,7 @@ export default function WellbeingDashboardPage() {
           <h2 id="safety-check-heading" className="sr-only">
             Safety check
           </h2>
-          <Link href="/wellbeing-hub/risk-assessment" className="block group">
+          <Link href="/my-wellbeing/safety-check" className="block group">
             <motion.div
               className="relative overflow-hidden rounded-2xl border border-amber-200/90 bg-white shadow-md shadow-amber-900/5 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-amber-900/10"
               whileHover={{ y: -2 }}
