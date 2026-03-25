@@ -7,6 +7,7 @@ import { ThumbsUp, ShieldAlert, Compass } from "lucide-react";
 import WellbeingOnboarding from "@/components/wellbeing-onboarding";
 import { getCurrentJourneyStage } from "@/lib/journey-stages-api";
 import type { UserJourneyStageData } from "@/lib/journey-stages-api";
+import WellbeingHubInsights from "@/app/wellbeing-hub/page";
 
 type WellbeingOption = {
   label: string;
@@ -80,6 +81,7 @@ export default function WellbeingHub() {
   const [isClient, setIsClient] = useState(false);
   const [hasTherapist, setHasTherapist] = useState(true);
   const [journeyStage, setJourneyStage] = useState<UserJourneyStageData | null>(null);
+  const [showInsights, setShowInsights] = useState(false);
 
   useEffect(() => {
     setIsClient(true); // make sure we're on the client before using localStorage
@@ -290,6 +292,30 @@ export default function WellbeingHub() {
               </section>
             ))}
           </div>
+        </div>
+
+        {/* Embedded wellbeing insights (graphs/history/session notes/medications) */}
+        <div className="mt-10 rounded-xl shadow-xl border border-slate-200 overflow-hidden bg-white">
+          <div className="px-6 py-4 flex items-center justify-between gap-4 border-b border-slate-200">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">Your wellbeing insights</h2>
+              <p className="text-sm text-slate-600 mt-1">
+                View graphs, check-in history, session notes, and any recorded medications.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowInsights((v) => !v)}
+              className="shrink-0 bg-[#00990d] text-white hover:bg-[#3c362f] font-semibold px-4 py-2 rounded-lg transition-colors"
+            >
+              {showInsights ? "Hide insights" : "Show insights"}
+            </button>
+          </div>
+          {showInsights ? (
+            <div className="p-4">
+              <WellbeingHubInsights />
+            </div>
+          ) : null}
         </div>
       </div>
     </>
