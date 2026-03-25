@@ -406,7 +406,7 @@ export default function PHQ9Assessment() {
                   asChild
                   className="mt-3 bg-[#00990d] text-white hover:bg-[#3c362f]"
                 >
-                  <Link href="/wellbeing-hub/risk-assessment">
+                  <Link href="/my-wellbeing/safety-check">
                     Go to safety check
                   </Link>
                 </Button>

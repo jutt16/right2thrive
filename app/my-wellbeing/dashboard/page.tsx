@@ -15,6 +15,7 @@ import {
 import { getThriveDashboard } from "@/lib/thrive-tokens-api";
 import { ThriveTokensCard } from "@/components/thrive-tokens/ThriveTokensCard";
 import { Card, CardContent } from "@/components/ui/card";
+import WellbeingHub from "@/app/wellbeing-hub/page";
 import {
   fadeInUp,
   staggerContainer,
@@ -229,6 +230,22 @@ export default function WellbeingDashboardPage() {
               );
             })}
           </nav>
+        </motion.section>
+
+        {/* Wellbeing insights (graphs, history, session notes, medications) */}
+        <motion.section
+          className="mt-10 pt-8 border-t border-slate-200/80"
+          aria-labelledby="insights-heading"
+          variants={fadeInUp}
+          transition={springSmooth}
+        >
+          <h2
+            id="insights-heading"
+            className="text-sm font-semibold uppercase tracking-widest text-slate-500 mb-4"
+          >
+            Your wellbeing insights
+          </h2>
+          <WellbeingHub />
         </motion.section>
 
         {/* Support */}

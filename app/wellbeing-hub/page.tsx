@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -188,6 +189,7 @@ export default function WellbeingHub() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState<any>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -201,10 +203,12 @@ export default function WellbeingHub() {
           router.push(`/auth/verify-email?email=${encodeURIComponent(parsedUser.email)}`);
           return;
         }
-        // Step-by-step migration (Option C):
-        // Keep `/wellbeing-hub/*` for individual tools, but redirect `/wellbeing-hub` landing
-        // into the simplified `/my-wellbeing` home.
-        router.replace("/my-wellbeing");
+        // Step-by-step migration:
+        // - On the standalone `/wellbeing-hub` route, redirect the landing.
+        // - When rendered from inside `/my-wellbeing/*`, keep the current URL.
+        if (pathname?.startsWith("/wellbeing-hub")) {
+          router.replace("/my-wellbeing");
+        }
         setIsAuthenticated(true);
         setUserData(parsedUser);
       } else {
@@ -1551,7 +1555,9 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               <CardFooter>
                 <Button
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
-                  onClick={() => handleTakeAssessment("/wellbeing-hub/gad7")}
+                  onClick={() =>
+                    handleTakeAssessment("/my-wellbeing/anxiety-check-in")
+                  }
                 >
                   Start Check-In
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -1572,7 +1578,9 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               <CardFooter>
                 <Button
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
-                  onClick={() => handleTakeAssessment("/wellbeing-hub/phq9")}
+                  onClick={() =>
+                    handleTakeAssessment("/my-wellbeing/low-mood-check-in")
+                  }
                 >
                   Begin Check-In
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -1596,7 +1604,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 <Button
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
                   onClick={() =>
-                    handleTakeAssessment("../my-wellbeing/questionnaires")
+                    handleTakeAssessment("/my-wellbeing/questionnaires")
                   }
                 >
                   Start Assessment
@@ -1620,7 +1628,9 @@ function WellbeingHubContent({ userData }: { userData: any }) {
               <CardFooter>
                 <Button
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
-                  onClick={() => handleTakeAssessment("/wellbeing-hub/pcl5")}
+                  onClick={() =>
+                    handleTakeAssessment("/my-wellbeing/trauma-check-in")
+                  }
                 >
                   Start Check-In
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -1642,7 +1652,7 @@ function WellbeingHubContent({ userData }: { userData: any }) {
                 <Button
                   className="bg-[#00990d] text-white hover:bg-[#3c362f]"
                   onClick={() =>
-                    handleTakeAssessment("/wellbeing-hub/risk-assessment")
+                    handleTakeAssessment("/my-wellbeing/safety-check")
                   }
                 >
                   Start Assessment
