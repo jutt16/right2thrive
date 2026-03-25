@@ -78,8 +78,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/wellbeing-hub" className="hover:text-orange-400">
-                  Wellbeing Hub
+                <Link href="/my-wellbeing" className="hover:text-orange-400">
+                  My Wellbeing
                 </Link>
               </li>
               <li>

@@ -201,6 +201,10 @@ export default function WellbeingHub() {
           router.push(`/auth/verify-email?email=${encodeURIComponent(parsedUser.email)}`);
           return;
         }
+        // Step-by-step migration (Option C):
+        // Keep `/wellbeing-hub/*` for individual tools, but redirect `/wellbeing-hub` landing
+        // into the simplified `/my-wellbeing` home.
+        router.replace("/my-wellbeing");
         setIsAuthenticated(true);
         setUserData(parsedUser);
       } else {

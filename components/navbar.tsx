@@ -136,8 +136,8 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => router.push("/my-wellbeing")}>
                   <Heart className="h-4 w-4 mr-2" /> My Wellbeing
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/wellbeing-hub")}>
-                  <ClipboardList className="h-4 w-4 mr-2" /> My Wellbeing Assessments
+                <DropdownMenuItem onClick={() => router.push("/my-wellbeing")}>
+                  <ClipboardList className="h-4 w-4 mr-2" /> My Wellbeing Tools
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/complaints")}>
                   <MessageSquareWarning className="mr-2 h-4 w-4" /> Complaints
@@ -295,11 +295,11 @@ export default function Navbar() {
                       variant="ghost"
                       className="justify-start text-green-700 hover:bg-green-100 min-h-[44px] text-base"
                       onClick={() => {
-                        router.push("/wellbeing-hub");
+                        router.push("/my-wellbeing");
                         toggleMenu();
                       }}
                     >
-                      <ClipboardList className="mr-2 h-5 w-5" /> My Wellbeing Assessments
+                      <ClipboardList className="mr-2 h-5 w-5" /> My Wellbeing Tools
                     </Button>
                     <Button
                       variant="ghost"

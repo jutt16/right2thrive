@@ -55,7 +55,6 @@ const SIDEBAR_NAV = {
   main: [
     { label: "My Dashboard", href: "/my-wellbeing/dashboard", icon: LayoutDashboard },
     { label: "My Wellbeing Space", href: "/my-wellbeing", icon: Heart },
-    { label: "Wellbeing Hub", href: "/wellbeing-hub", icon: Sparkles },
   ],
   goals: [
     { label: "My Weekly Goals", href: "/my-wellbeing/upload-weekly-goals", icon: Target },
@@ -63,11 +62,11 @@ const SIDEBAR_NAV = {
     { label: "My Weekly Progress", href: "/my-wellbeing/weekly-progress", icon: BarChart3 },
   ],
   assessments: [
-    { label: "Anxiety check-in", href: "/wellbeing-hub/gad7", icon: ClipboardList },
-    { label: "Low mood check-in", href: "/wellbeing-hub/phq9", icon: ClipboardList },
+    { label: "GAD-7 (Anxiety)", href: "/wellbeing-hub/gad7", icon: ClipboardList },
+    { label: "PHQ-9 (Depression)", href: "/wellbeing-hub/phq9", icon: ClipboardList },
     { label: "SDQ", href: "/my-wellbeing/questionnaires", icon: ClipboardList },
-    { label: "Trauma check-in", href: "/wellbeing-hub/pcl5", icon: ClipboardList },
-    { label: "Safety check", href: "/wellbeing-hub/risk-assessment", icon: ShieldAlert },
+    { label: "PCL-5 (PTSD)", href: "/wellbeing-hub/pcl5", icon: ClipboardList },
+    { label: "Risk Assessment", href: "/wellbeing-hub/risk-assessment", icon: ShieldAlert },
   ],
   engagement: [
     { label: "Thrive Tokens", href: "/my-wellbeing/thrive-tokens", icon: Coins },
@@ -88,7 +87,7 @@ const SIDEBAR_NAV = {
   resources: [
     { label: "Resources", href: "/wellbeing-hub/resources", icon: BookOpen },
     { label: "Support", href: "/wellbeing-hub/support", icon: LifeBuoy },
-    { label: "Plan for difficult times", href: "/wellbeing-hub/relapse-prevention", icon: ShieldAlert },
+    { label: "Relapse Prevention", href: "/wellbeing-hub/relapse-prevention", icon: ShieldAlert },
   ],
 };
 
@@ -193,46 +192,6 @@ export function AppSidebar() {
         <SidebarSeparator />
 
         <SidebarGroup>
-          <SidebarGroupLabel>Goals & Progress</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {SIDEBAR_NAV.goals.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={isActive(item.href)}>
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Assessments</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {SIDEBAR_NAV.assessments.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={isActive(item.href)}>
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        <SidebarGroup>
           <SidebarGroupLabel>Engagement</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -255,24 +214,6 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {SIDEBAR_NAV.booking.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={isActive(item.href)}>
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Journal</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {SIDEBAR_NAV.journal.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton asChild isActive={isActive(item.href)}>
                     <Link href={item.href}>

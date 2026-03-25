@@ -8,20 +8,63 @@ import WellbeingOnboarding from "@/components/wellbeing-onboarding";
 import { getCurrentJourneyStage } from "@/lib/journey-stages-api";
 import type { UserJourneyStageData } from "@/lib/journey-stages-api";
 
-const wellbeingOptions = [
-  { label: "My Wellbeing Dashboard", href: "/my-wellbeing/dashboard" },
-  { label: "My Weekly Goals", href: "/my-wellbeing/upload-weekly-goals" },
-  // { label: "Download", href: "/my-wellbeing/download" },
-  { label: "My Wellbeing Plan", href: "/my-wellbeing/wellbeing-plan" },
-  { label: "My Weekly Progress", href: "/my-wellbeing/weekly-progress" },
-  { label: "Anxiety check-in", href: "/wellbeing-hub/gad7" },
-  { label: "Low mood check-in", href: "/wellbeing-hub/phq9" },
-  { label: "Strengths & difficulties check-in", href: "/my-wellbeing/questionnaires" },
-  { label: "Trauma check-in", href: "/wellbeing-hub/pcl5" },
-  { label: "Safety check", href: "/wellbeing-hub/risk-assessment" },
-  { label: "Plan for difficult times", href: "/wellbeing-hub/relapse-prevention" },
-  { label: "Before your session checklist", href: "/my-wellbeing/pre-session-checklist" },
-  { label: "Symptom journal", href: "/my-wellbeing/symptom-journal" },
+type WellbeingOption = {
+  label: string;
+  href: string;
+  subtitle?: string;
+};
+
+type WellbeingSection = {
+  title: string;
+  description?: string;
+  items: WellbeingOption[];
+};
+
+// Grouped for a calmer, less "technical menu" feel.
+const wellbeingSections: WellbeingSection[] = [
+  {
+    title: "This week",
+    description: "See what you’re working on this week.",
+    items: [
+      { label: "My Wellbeing Dashboard", href: "/my-wellbeing/dashboard" },
+      { label: "My Weekly Goals", href: "/my-wellbeing/upload-weekly-goals" },
+      { label: "My Weekly Progress", href: "/my-wellbeing/weekly-progress" },
+    ],
+  },
+  {
+    title: "Check-ins",
+    description: "Answer short questions to help guide your support.",
+    items: [
+      { label: "Anxiety check-in", subtitle: "GAD-7", href: "/wellbeing-hub/gad7" },
+      { label: "Low mood check-in", subtitle: "PHQ-9", href: "/wellbeing-hub/phq9" },
+      {
+        label: "Strengths & difficulties check",
+        subtitle: "SDQ",
+        href: "/my-wellbeing/questionnaires",
+      },
+      { label: "Trauma check-in", subtitle: "PCL-5", href: "/wellbeing-hub/pcl5" },
+    ],
+  },
+  {
+    title: "Sessions & preparation",
+    description: "Get ready for your next session and keep track of how you feel.",
+    items: [
+      { label: "Pre-session checklist", href: "/my-wellbeing/pre-session-checklist" },
+      { label: "Symptom journal", href: "/my-wellbeing/symptom-journal" },
+    ],
+  },
+  {
+    title: "Your plan & journal",
+    description: "Keep your plan handy and prevent setbacks.",
+    items: [
+      { label: "My Wellbeing Plan", href: "/my-wellbeing/wellbeing-plan" },
+      {
+        label: "Prevent setbacks",
+        subtitle: "Relapse prevention",
+        href: "/wellbeing-hub/relapse-prevention",
+      },
+    ],
+  },
 ];
 
 export default function WellbeingHub() {
@@ -206,18 +249,37 @@ export default function WellbeingHub() {
               Access your personalized wellbeing tools and trackers below.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white">
-            {wellbeingOptions.map((item, index) => (
-              <Link
-                key={index}
-                href={item.href}
-                className="flex items-center border border-gray-200 rounded-lg px-4 py-3 hover:shadow-md hover:border-cyan-500 transition group"
-              >
-                <ThumbsUp className="h-5 w-5 mr-3 text-cyan-600 group-hover:scale-110 transition-transform" />
-                <span className="text-gray-800 group-hover:text-cyan-700 font-medium text-sm">
-                  {item.label}
-                </span>
-              </Link>
+          <div className="p-6 bg-white space-y-6">
+            {wellbeingSections.map((section) => (
+              <section key={section.title}>
+                <div className="mb-3">
+                  <h2 className="text-lg font-bold text-slate-900">{section.title}</h2>
+                  {section.description && (
+                    <p className="text-sm text-slate-600 mt-0.5">{section.description}</p>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {section.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center border border-gray-200 rounded-lg px-4 py-3 hover:shadow-md hover:border-cyan-500 transition group"
+                    >
+                      <ThumbsUp className="h-5 w-5 mr-3 text-cyan-600 group-hover:scale-110 transition-transform" />
+                      <div className="min-w-0 flex-1">
+                        <span className="text-gray-800 group-hover:text-cyan-700 font-medium text-sm">
+                          {item.label}
+                        </span>
+                        {item.subtitle ? (
+                          <div className="text-gray-500 text-xs mt-0.5 group-hover:text-cyan-600">
+                            {item.subtitle}
+                          </div>
+                        ) : null}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </div>

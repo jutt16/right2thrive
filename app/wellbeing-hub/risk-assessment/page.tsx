@@ -344,9 +344,9 @@ export default function RiskAssessmentPage() {
             <p className="text-lg text-red-600 text-center">{error}</p>
             <Button
               variant="outline"
-              onClick={() => router.push("/wellbeing-hub")}
+              onClick={() => router.push("/my-wellbeing")}
             >
-              Back to Wellbeing Hub
+              Back to My Wellbeing
             </Button>
           </CardContent>
         </Card>
@@ -361,10 +361,10 @@ export default function RiskAssessmentPage() {
         <Button
           variant="ghost"
           className="mb-4 flex items-center text-[#ff961b]"
-          onClick={() => router.push("/wellbeing-hub")}
+          onClick={() => router.push("/my-wellbeing")}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Wellbeing Hub
+          Back to My Wellbeing
         </Button>
 
         <Card className="mx-auto max-w-2xl border-2 border-teal-100">
@@ -426,10 +426,10 @@ export default function RiskAssessmentPage() {
           </CardContent>
           <CardFooter>
             <Button
-              onClick={() => router.push("/wellbeing-hub")}
+              onClick={() => router.push("/my-wellbeing")}
               className="w-full bg-[#00990d] text-white hover:bg-[#3c362f]"
             >
-              Return to Wellbeing Hub
+              Return to My Wellbeing
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
@@ -448,9 +448,9 @@ export default function RiskAssessmentPage() {
             </p>
             <Button
               variant="outline"
-              onClick={() => router.push("/wellbeing-hub")}
+              onClick={() => router.push("/my-wellbeing")}
             >
-              Back to Wellbeing Hub
+              Back to My Wellbeing
             </Button>
           </CardContent>
         </Card>
@@ -463,10 +463,10 @@ export default function RiskAssessmentPage() {
       <Button
         variant="ghost"
         className="mb-4 flex items-center text-[#ff961b]"
-        onClick={() => router.push("/wellbeing-hub")}
+        onClick={() => router.push("/my-wellbeing")}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Wellbeing Hub
+        Back to My Wellbeing
       </Button>
 
       <Card className="mx-auto max-w-2xl border-2 border-teal-100">

@@ -213,7 +213,7 @@ export default function GAD7Assessment() {
   };
 
   const handleSubmit = () => {
-    router.push("/wellbeing-hub");
+    router.push("/my-wellbeing");
   };
 
   const progress = assessmentData
@@ -252,10 +252,10 @@ export default function GAD7Assessment() {
       <Button
         variant="ghost"
         className="mb-4 flex items-center text-[#ff961b]"
-        onClick={() => router.push("/wellbeing-hub")}
+        onClick={() => router.push("/my-wellbeing")}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Wellbeing Hub
+        Back to My Wellbeing
       </Button>
 
       {!showResults ? (
@@ -379,7 +379,7 @@ export default function GAD7Assessment() {
               disabled={isSubmitting}
               className="bg-[#00990d] text-white hover:bg-[#3c362f]"
             >
-              {isSubmitting ? "Saving..." : "Return to Wellbeing Hub"}
+              {isSubmitting ? "Saving..." : "Return to My Wellbeing"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>

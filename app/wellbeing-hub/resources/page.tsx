@@ -161,10 +161,10 @@ export default function MentalHealthResources() {
             <ul className="space-y-3 text-gray-700 ml-6 list-disc">
               <li>
                 <Link
-                  href="/wellbeing-hub"
+                  href="/my-wellbeing"
                   className="text-[#00990d] hover:text-[#007a0a] underline font-medium"
                 >
-                  Wellbeing Hub
+                  My Wellbeing
                 </Link> – Access assessments, resources, and support
               </li>
               <li>
