@@ -139,7 +139,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  href="/wellbeing-hub/resources"
+                  href="/my-wellbeing/resources"
                   className="hover:text-orange-400"
                 >
                   Mental Health Resources
@@ -147,7 +147,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/wellbeing-hub/support"
+                  href="/my-wellbeing/support"
                   className="hover:text-orange-400"
                 >
                   Support Services

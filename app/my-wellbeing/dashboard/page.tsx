@@ -76,7 +76,7 @@ export default function WellbeingDashboardPage() {
     {
       label: "Try a wellbeing tool",
       description: "Assessments, resources & more",
-      href: "/wellbeing-hub",
+      href: "/my-wellbeing",
       icon: Sparkles,
     },
     {

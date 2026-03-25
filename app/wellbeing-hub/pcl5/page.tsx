@@ -129,9 +129,12 @@ export default function Pcl5Page() {
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-12">
-      <h1 className="text-3xl font-bold text-center mb-8 text-green-700">
-        PCL-5 PTSD Assessment
+      <h1 className="text-3xl font-bold text-center mb-2 text-green-700">
+        Trauma check-in
       </h1>
+      <p className="text-center text-sm text-green-600 mb-8">
+        Also known as PCL-5
+      </p>
 
       {/* ====== Assessment Form ====== */}
       <form
@@ -189,7 +192,7 @@ export default function Pcl5Page() {
         {success && (
           <>
             <p className="text-green-600 text-sm">
-              Assessment submitted successfully.
+              Check-in submitted successfully.
             </p>
             <TokenEarnedAcknowledgment tokensAwarded={tokensEarned} />
           </>
@@ -202,14 +205,14 @@ export default function Pcl5Page() {
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {loading ? "Submitting..." : "Submit Assessment"}
+      {loading ? "Submitting..." : "Submit check-in"}
         </Button>
       </form>
 
       {/* ====== Past Assessments ====== */}
       <div className="mt-12">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">My Assessments</h2>
+          <h2 className="text-2xl font-semibold">Your past check-ins</h2>
           <Button
             variant="outline"
             size="sm"
@@ -221,7 +224,7 @@ export default function Pcl5Page() {
         </div>
 
         {assessments.length === 0 ? (
-          <p className="text-gray-600">No assessments yet.</p>
+          <p className="text-gray-600">No check-ins yet.</p>
         ) : (
           <ul className="space-y-4">
             {assessments.map((a) => (

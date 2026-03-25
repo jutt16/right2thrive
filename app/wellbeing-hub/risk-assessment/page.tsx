@@ -370,10 +370,10 @@ export default function RiskAssessmentPage() {
         <Card className="mx-auto max-w-2xl border-2 border-teal-100">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-[#ff961b]">
-              Risk Assessment Completed
+              Safety check completed
             </CardTitle>
             <CardDescription>
-              Thank you for completing the risk assessment.
+              Thank you for completing the safety check.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -444,7 +444,7 @@ export default function RiskAssessmentPage() {
         <Card className="mx-auto w-full max-w-md border-2 border-teal-100">
           <CardContent className="flex flex-col items-center justify-center py-8 gap-4">
             <p className="text-lg text-gray-600 text-center">
-              No risk assessment questions are available at this time.
+              No safety check questions are available at this time.
             </p>
             <Button
               variant="outline"
@@ -472,7 +472,7 @@ export default function RiskAssessmentPage() {
       <Card className="mx-auto max-w-2xl border-2 border-teal-100">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-[#ff961b]">
-            Risk Assessment
+            Safety check
           </CardTitle>
           <CardDescription>
             These questions help us understand your current wellbeing and provide

@@ -374,7 +374,7 @@ export default function PHQ9Assessment() {
               Assessment Completed
             </CardTitle>
             <CardDescription>
-              Thank you for completing the PHQ-9 assessment.
+              Thank you for completing your low mood check-in.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -399,7 +399,7 @@ export default function PHQ9Assessment() {
               <div className="rounded-md border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
                 <p className="font-medium">Suggested next step</p>
                 <p className="mt-1">
-                  Based on your responses, completing a risk assessment can help
+                  Based on your responses, completing a safety check can help
                   your care team support you. You can do this when you feel ready.
                 </p>
                 <Button
@@ -407,7 +407,7 @@ export default function PHQ9Assessment() {
                   className="mt-3 bg-[#00990d] text-white hover:bg-[#3c362f]"
                 >
                   <Link href="/wellbeing-hub/risk-assessment">
-                    Go to risk assessment
+                    Go to safety check
                   </Link>
                 </Button>
               </div>

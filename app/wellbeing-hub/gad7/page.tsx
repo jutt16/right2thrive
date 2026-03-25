@@ -339,7 +339,7 @@ export default function GAD7Assessment() {
               Assessment Completed
             </CardTitle>
             <CardDescription>
-              Thank you for completing the GAD-7 assessment.
+              Thank you for completing your anxiety check-in.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">

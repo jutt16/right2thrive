@@ -41,14 +41,14 @@ const onboardingSteps: OnboardingStep[] = [
   },
   {
     number: 4,
-    title: "Mental Health Assessments",
-    description: "Complete various assessments including GAD-7 (anxiety), PHQ-9 (depression), SDQ (strengths and difficulties), and PCL-5 (PTSD). These help track your mental health and guide your care.",
+    title: "Wellbeing check-ins",
+    description: "When you feel ready, complete short check-ins (including GAD-7, PHQ-9, SDQ, and PCL-5). They help you and your care team understand how you’re doing and guide the next steps.",
     icon: <ClipboardList className="h-8 w-8 text-cyan-600" />,
   },
   {
     number: 5,
     title: "Additional Features",
-    description: "Access your profile, view bookings, submit complaints, and explore the Wellbeing Hub for quick check-ins and assessments. Everything you need is just a click away!",
+    description: "Access your profile, view bookings, submit complaints, and explore your wellbeing tools for quick check-ins. Everything you need is just a click away!",
     icon: <CheckCircle2 className="h-8 w-8 text-cyan-600" />,
   },
 ];

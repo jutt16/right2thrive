@@ -65,6 +65,14 @@ const wellbeingSections: WellbeingSection[] = [
       },
     ],
   },
+  {
+    title: "Resources & support",
+    description: "Helpful info and support when you need it.",
+    items: [
+      { label: "Resources", href: "/my-wellbeing/resources" },
+      { label: "Support", href: "/my-wellbeing/support" },
+    ],
+  },
 ];
 
 export default function WellbeingHub() {
@@ -177,23 +185,23 @@ export default function WellbeingHub() {
             <div className="flex items-center gap-3">
               <ShieldAlert className="h-8 w-8 text-white shrink-0" aria-hidden />
               <div>
-                <h2 className="text-xl font-bold text-white">Risk Assessment</h2>
+                <h2 className="text-xl font-bold text-white">Safety check</h2>
                 <p className="text-red-100 text-sm mt-0.5">
-                  Confidential safety & wellbeing check — helps ensure you receive the right support
+                  A confidential safety and wellbeing check to help ensure you get the right support
                 </p>
               </div>
             </div>
           </div>
           <div className="p-6">
             <p className="text-gray-700 mb-4">
-              This assessment is designed to understand your current emotional state. Your responses are confidential and help your care team provide appropriate support when needed.
+              This check is designed to understand how you’re feeling right now. Your responses are confidential and help your care team provide the right support when needed.
             </p>
             <Link
               href="/wellbeing-hub/risk-assessment"
               className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
             >
               <ShieldAlert className="h-5 w-5" />
-              Complete Risk Assessment
+              Complete safety check
             </Link>
           </div>
         </div>
